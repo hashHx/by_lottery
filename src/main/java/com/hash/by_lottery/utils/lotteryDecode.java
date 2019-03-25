@@ -23,8 +23,6 @@ import java.util.Map;
 public class lotteryDecode {
 
     public enum lot_abbreviation{
-//        CQSSC("CQSSC","10002"),XJSSC("XJSSC","10004"),TJSSC("TJSSC","10003"),GD11Y("GD11Y","10006"),JSK3("JSK3","10007"),
-//        BJPK10("BJPK10","10001");
         CQSSC("10002"),XJSSC("10004"),TJSSC("10003"),GD11Y("10006"),JSK3("10007"),
         BJPK10("10001");
 

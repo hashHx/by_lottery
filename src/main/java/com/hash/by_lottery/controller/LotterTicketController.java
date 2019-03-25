@@ -65,9 +65,10 @@ public class LotterTicketController {
         return service_ex.getNewTicketInfo(lotCode, lotIssue);
     }
 
-    @RequestMapping(value = "lottery/InterfaceInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "lottery/InterfaceInfo",method = RequestMethod.POST)
     public String getInfoFromInterface(String data) throws NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-        BaseLotteryTicket b = lotteryDecode.getBaseFromStore("eyJpdiI6IkJyZGRzS0ZFMUlLMmUwTzkrZ1wvSnNnPT0iLCJ2YWx1ZSI6IjJWK2pERGJUZ3FDU0JZajJha1B4djJFQmdVQXZtQ1k2RWVKdTVic21JRFp0Y2ZGakJuRUhaY21aY0tGdU9YOUsremNQS1RQZ2tJVENVSTN1MzFyNGRQWUhLQ2thTXJ0MlhwRzhSVVZtVUxHb0lZM2k2aTJNa1VCalNlV0N1dlhjQXZoOE5HYjNIQVVMMU5BZ3lxMVZrSDFKQ3lNTk1sdUxSSVVZU1dWVW5tVHRJRXdvd0R0XC9oclZsRlwvQXNtZ3FHdEhqd3FSXC9GRm4za0ZraWpBd0R4VGRxcDh6MFg4K3lHWGYxNEtBMU55Z3VxcnpOVTQrRElwRE9wSDZ1NGtMMzRLNlJDZnc1UnlqSXhCdFIxNUJkNXd1ZWRqWVpkTHRoc2JSRWlDYmF0b0ZNUkR4QzdiV2pIaXFodVEwbUh1M1wvcXJwd0tMZHVzRHROdFdnY2N6VStQZTFMckgyeXQrQ2RhelE5bVdpWFkrSlhPb3ZlemR0Znd6dExua1JXOHdjTHYiLCJtYWMiOiI1MDllNjQxZWI5NGNjZGEyOWRjOGQ4NzNlMzJlMzM4MzZhYWNjNzI2NGFmMjBkYTIwNjg3YWJiOTA2YmQ5Njk2In0=");
+//        BaseLotteryTicket b = lotteryDecode.getBaseFromStore("eyJpdiI6IkJyZGRzS0ZFMUlLMmUwTzkrZ1wvSnNnPT0iLCJ2YWx1ZSI6IjJWK2pERGJUZ3FDU0JZajJha1B4djJFQmdVQXZtQ1k2RWVKdTVic21JRFp0Y2ZGakJuRUhaY21aY0tGdU9YOUsremNQS1RQZ2tJVENVSTN1MzFyNGRQWUhLQ2thTXJ0MlhwRzhSVVZtVUxHb0lZM2k2aTJNa1VCalNlV0N1dlhjQXZoOE5HYjNIQVVMMU5BZ3lxMVZrSDFKQ3lNTk1sdUxSSVVZU1dWVW5tVHRJRXdvd0R0XC9oclZsRlwvQXNtZ3FHdEhqd3FSXC9GRm4za0ZraWpBd0R4VGRxcDh6MFg4K3lHWGYxNEtBMU55Z3VxcnpOVTQrRElwRE9wSDZ1NGtMMzRLNlJDZnc1UnlqSXhCdFIxNUJkNXd1ZWRqWVpkTHRoc2JSRWlDYmF0b0ZNUkR4QzdiV2pIaXFodVEwbUh1M1wvcXJwd0tMZHVzRHROdFdnY2N6VStQZTFMckgyeXQrQ2RhelE5bVdpWFkrSlhPb3ZlemR0Znd6dExua1JXOHdjTHYiLCJtYWMiOiI1MDllNjQxZWI5NGNjZGEyOWRjOGQ4NzNlMzJlMzM4MzZhYWNjNzI2NGFmMjBkYTIwNjg3YWJiOTA2YmQ5Njk2In0=");
+        BaseLotteryTicket b = lotteryDecode.getBaseFromStore(data);
         if (b!=null){
             service.saveBaseTicketInfo(b);
             return "ok";
