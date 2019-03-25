@@ -1,0 +1,26 @@
+server:
+  port: 33333
+
+mybatis:
+  config-location: classpath:mybatis.cfg.xml        # mybatis�����ļ�����·��
+  type-aliases-package: com.hash.by_lottery.entities    # ����Entity���������ڰ�
+  mapper-locations:
+    - classpath:mapper/**/*.xml                       # mapperӳ���ļ�
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource            # ��ǰ����Դ��������
+    driver-class-name: com.mysql.cj.jdbc.Driver          # mysql������
+    url: jdbc:mysql://47.244.143.218:3306/by_lottery?useUnicode=true&characterEncoding=utf-8              # ���ݿ�����
+    username: root
+    password: by_lottery
+    dbcp2:
+      min-idle: 5                                           # ���ݿ����ӳص���Сά��������
+      initial-size: 5                                       # ��ʼ��������
+      max-total: 5                                          # ���������
+      max-wait-millis: 200                                  # �ȴ����ӻ�ȡ�����ʱʱ��
+
+logging:
+  level:
+    mapper:
+      debug

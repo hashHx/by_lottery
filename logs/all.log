@@ -1,0 +1,9 @@
+2019-03-23 12:36:44,561  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:41:15,313  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:42:13,530  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:44:32,123  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:47:15,751  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:48:22,703  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:49:42,137  INFO DruidDataSource:1543 - {dataSource-1} closed
+2019-03-23 12:50:00,175  INFO DruidDataSource:794 - {dataSource-1} inited
+2019-03-23 12:51:42,520  INFO DruidDataSource:1543 - {dataSource-1} closed

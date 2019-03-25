@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hash.by_lottery.dao.BaseLotteryTicketDao">
+
+    <select id="findByLotCodeAndIssue" resultType="BaseLotteryTicket" parameterType="String">
+		select * from lottery_ticket where lot_code = #{code} and draw_issue = #{issue};
+	</select>
+
+
+	<insert id="insertInfo_spider" parameterType="BaseLotteryTicket" >
+		insert into lottery_ticket (l_id,lot_code,draw_code,draw_issue,draw_time) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time});
+	</insert>
+
+	<select id="getCurrentCount" resultType="String" parameterType="String">
+		SELECT COUNT(*) FROM lottery_ticket WHERE LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') and lot_code = #{lot_code};
+	</select>
+
+
+	<select id="findLotCode" parameterType="String" resultType="int">
+		select count(*) from lottery_type where lot_code = #{lot_code};
+	</select>
+
+
+
+</mapper>
