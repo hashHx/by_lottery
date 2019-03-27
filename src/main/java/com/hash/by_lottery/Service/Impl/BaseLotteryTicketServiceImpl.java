@@ -33,6 +33,11 @@ public class BaseLotteryTicketServiceImpl implements BaseLotteryTicketService {
     }
 
     @Override
+    public int saveBaseTicketInfoFromPush(BaseLotteryTicket ticket) {
+        return dao.insertInfo_push(ticket);
+    }
+
+    @Override
     public String getCurrentCount(String lotCode) {
         if (dao.getCurrentCount(lotCode)!=null){
             return dao.getCurrentCount(lotCode);

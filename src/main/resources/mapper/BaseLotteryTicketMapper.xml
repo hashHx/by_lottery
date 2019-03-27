@@ -13,6 +13,10 @@
 		insert into lottery_ticket (l_id,lot_code,draw_code,draw_issue,draw_time,lot_remark) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time},now());
 	</insert>
 
+	<insert id="insertInfo_push" parameterType="BaseLotteryTicket" >
+		insert into lottery_ticket_push (l_id,lot_code,draw_code,draw_issue,draw_time,lot_remark) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time},now());
+	</insert>
+
 	<select id="getCurrentCount" resultType="String" parameterType="String">
 		SELECT COUNT(*) FROM lottery_ticket WHERE LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') and lot_code = #{lot_code};
 	</select>

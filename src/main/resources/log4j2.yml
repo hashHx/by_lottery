@@ -1,10 +1,10 @@
 Configuration:
   status: warn
 
-  Properties: # ¶¨ÒåÈ«¾Ö±äÁ¿
-    Property: # È±Ê¡ÅäÖÃ£¨ÓÃÓÚ¿ª·¢»·¾³£©¡£ÆäËû»·¾³ÐèÒªÔÚVM²ÎÊýÖÐÖ¸¶¨£¬ÈçÏÂ£º
-      #²âÊÔ£º-Dlog.level.console=warn -Dlog.level.hash=trace
-      #Éú²ú£º-Dlog.level.console=warn -Dlog.level.hash=info
+  Properties: # ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½
+    Property: # È±Ê¡ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½VMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½
+      #ï¿½ï¿½ï¿½Ô£ï¿½-Dlog.level.console=warn -Dlog.level.hash=trace
+      #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-Dlog.level.console=warn -Dlog.level.hash=info
       - name: log.level.console
         value: trace
       - name: log.level.hash
@@ -15,16 +15,16 @@ Configuration:
         value: my-spring-boot
 
   Appenders:
-    Console:  #Êä³öµ½¿ØÖÆÌ¨
+    Console:  #ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨
       name: CONSOLE
       target: SYSTEM_OUT
       ThresholdFilter:
-        level: ${sys:log.level.console} # ¡°sys:¡±±íÊ¾£ºÈç¹ûVM²ÎÊýÖÐÃ»Ö¸¶¨Õâ¸ö±äÁ¿Öµ£¬ÔòÊ¹ÓÃ±¾ÎÄ¼þÖÐ¶¨ÒåµÄÈ±Ê¡È«¾Ö±äÁ¿Öµ
+        level: ${sys:log.level.console} # ï¿½ï¿½sys:ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½VMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã±ï¿½ï¿½Ä¼ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½È±Ê¡È«ï¿½Ö±ï¿½ï¿½ï¿½Öµ
         onMatch: ACCEPT
         onMismatch: DENY
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"
-    RollingFile: # Êä³öµ½ÎÄ¼þ£¬³¬¹ý128MB¹éµµ
+    RollingFile: # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½128MBï¿½éµµ
       - name: ROLLING_FILE
         ignoreExceptions: false
         fileName: ${log.path}/${project.name}.log
@@ -43,7 +43,7 @@ Configuration:
       AppenderRef:
         - ref: CONSOLE
         - ref: ROLLING_FILE
-    Logger: # Îªcom.xjj°üÅäÖÃÌØÊâµÄLog¼¶±ð£¬·½±ãµ÷ÊÔ
+    Logger: # Îªcom.xjjï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Logï¿½ï¿½ï¿½ð£¬·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       - name: com.hash
         additivity: false
         level: ${sys:log.level.hash}

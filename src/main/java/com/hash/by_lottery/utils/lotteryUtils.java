@@ -150,7 +150,7 @@ public class lotteryUtils {
                 if (simpleFun(one, two, three) == 3) {
                     return 3;
                 }
-                if (list.contains(8)) {
+                if (list.contains(8)||list.contains(1)) {
                     return 2;
                 } else {
                     return 1;

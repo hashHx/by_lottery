@@ -21,6 +21,7 @@ public interface ExLotteryTicketDao {
       List<ExLotteryTicket> stuffInfoToExLotteryTicket(String lot_code);
       ExLotteryTicket getNewTicketInfo(String lot_code);
       List<ExLotteryTicket> getTicketInfoList(String lot_code);
+      List<ExLotteryTicket> getTicketInfoListWithTime(String lot_code,String draw_time);
 
 }
 

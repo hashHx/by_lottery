@@ -20,4 +20,6 @@ public interface ExLotteryTicketService {
 
     List<ExLotteryTicket> getTicketList(String code);
 
+    List<ExLotteryTicket> getTicketListWithTime(String code,String time);
+
 }
