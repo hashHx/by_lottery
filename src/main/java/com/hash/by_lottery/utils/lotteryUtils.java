@@ -381,5 +381,13 @@ public class lotteryUtils {
         }
     }
 
+    public static boolean CodeVerification(String code){
+        if(code.matches("[0-9]+")){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
 
 }

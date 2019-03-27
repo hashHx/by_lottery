@@ -1,5 +1,5 @@
 server:
-  port: 33333
+  port: 33334
 
 mybatis:
   config-location: classpath:mybatis.cfg.xml        # mybatis�����ļ�����·��
@@ -11,7 +11,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource            # ��ǰ����Դ��������
     driver-class-name: com.mysql.cj.jdbc.Driver          # mysql������
-    url: jdbc:mysql://47.244.143.218:3306/by_lottery?useUnicode=true&characterEncoding=utf-8              # ���ݿ�����
+    url: jdbc:mysql://localhost:3306/by_lottery?useUnicode=true&characterEncoding=utf-8              # ���ݿ�����
     username: root
     password: by_lottery
     dbcp2:

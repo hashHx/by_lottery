@@ -27,7 +27,7 @@ public class ticketGen {
         data.put("nextDrawTime", String.valueOf(time + ticket.getLot_interval()));
         data.put("lotType", ticket.getLot_type());
         data.put("preDrawIssue", ticket.getDraw_issue());
-        data.put("drawIssue", String.valueOf(Integer.valueOf(ticket.getDraw_issue()) + 1));
+        data.put("drawIssue", String.valueOf(Long.valueOf(ticket.getDraw_issue()) + 1));
         data.put("iconUrl", ticket.getLot_imgUrl());
         data.put("videoImg", ticket.getLot_videoImg());
         data.put("videoUrl", ticket.getLot_videoUrl());

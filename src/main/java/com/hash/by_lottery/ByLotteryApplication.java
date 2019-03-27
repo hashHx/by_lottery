@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ByLotteryApplication {
+
     private static final Logger logger = Logger.getLogger(ByLotteryApplication.class);
 
     public static void main(String[] args) {

@@ -16,6 +16,8 @@ public interface ExLotteryTicketService {
 
     List<ExLotteryTicket> stuffTickerInfo(String code);
 
-    ExLotteryTicket getNewTicketInfo(String code,String issue);
+    ExLotteryTicket getNewTicketInfo(String code);
+
+    List<ExLotteryTicket> getTicketList(String code);
 
 }

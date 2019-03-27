@@ -10,7 +10,7 @@
 
 
 	<insert id="insertInfo_spider" parameterType="BaseLotteryTicket" >
-		insert into lottery_ticket (l_id,lot_code,draw_code,draw_issue,draw_time) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time});
+		insert into lottery_ticket (l_id,lot_code,draw_code,draw_issue,draw_time,lot_remark) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time},now());
 	</insert>
 
 	<select id="getCurrentCount" resultType="String" parameterType="String">

@@ -43,7 +43,7 @@ public class ResultGen {
         }
     }
 
-    public static HashMap<String, Object> getResult(HashMap<Object, Object> data, int state) {
+    public static HashMap<String, Object> getResult(Object data, int state) {
         Map map = new HashMap<>();
         switch (state) {
             case 2:
