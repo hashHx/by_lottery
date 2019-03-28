@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @ClassName lotteryUtils
@@ -54,23 +52,20 @@ public class lotteryUtils {
      * @Date: 2019/3/21
      */
     private static int Dragon_Tiger(int dragon, int tiger) {
-        if (dragon == tiger) {
-            return 2;
-        } else {
-            return dragon > tiger ? 0 : 1;
-        }
+            return  (dragon == tiger) ? 2 : dragon > tiger ? 0 : 1;
     }
+
     /**
-    * @Description: 返回总和
-    * @Param: []
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int sum_All(int[] code){
+     * @Description: 返回总和
+     * @Param: []
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int sum_All(int[] code) {
         int sum = 0;
-        for (int i:
-             code) {
+        for (int i :
+                code) {
             sum += i;
         }
         return sum;
@@ -88,18 +83,42 @@ public class lotteryUtils {
     }
 
     /**
-     * @Description: 返回总和大小 {0：大，1：小}
-     * @Param: [code]
+     * @Description: 返回总和大小 {0：大，1：小 2:和 4：通吃}
+     * @Param: [code, type]
      * @return: int
      * @Author: Hash
-     * @Date: 2019/3/20
+     * @Date: 2019/3/28
      */
-    public static int sum_BS(int[] code) {
-        if (sum_All(code) % 10 < 5) {
-            return 0;
-        } else {
-            return 1;
+    public static int sum_BS(int[] code, int type) {
+
+        int sum = sum_All(code);
+
+        switch (type) {
+            case 1:
+
+                return (code[0] + code[1]) > 11 ? 0 : 1;
+            case 2:
+
+                return sum > 22 ? 0 : 1;
+
+            case 3:
+
+                return sum == 30 ? 2 : (sum > 30 ? 0 : 1);
+
+            case 4:
+
+                return sum == 84 ? 2 : (sum > 84 ? 0 : 1);
+
+            case 6:
+
+                return sum == 84 ? 2 : (sum > 84 ? 0 : 1);
+
+            case 5:
+
+                return (code[0] == code[1]) && (code[1] == code[2]) ? 4 : (sum > 10 ? 0 : 1);
+
         }
+        return sum;
     }
 
     /**
@@ -110,11 +129,12 @@ public class lotteryUtils {
      * @Date: 2019/3/20
      */
     public static int sum_SD(int[] code) {
-        if (sum_All(code) % 2 == 1) {
-            return 0;
-        } else {
-            return 1;
-        }
+
+        return (sum_All(code) % 2) != 0 ? 0 : 1;
+    }
+
+    public static int FS_sum_SD(int[] code) {
+        return (code[0]+code[1])% 2 != 0 ? 0 : 1;
     }
 
     /**
@@ -150,7 +170,7 @@ public class lotteryUtils {
                 if (simpleFun(one, two, three) == 3) {
                     return 3;
                 }
-                if (list.contains(8)||list.contains(1)) {
+                if (list.contains(8) || list.contains(1)) {
                     return 2;
                 } else {
                     return 1;
@@ -199,39 +219,32 @@ public class lotteryUtils {
      * @Date: 2019/3/22
      */
     public static int tail_BS(int[] code) {
-        int sum = 0;
-        for (int i : code) {
-            sum += i;
-        }
-        if (sum % 10 < 5) {
-            return 1;
-        } else {
-            return 0;
-        }
 
+        return (sum_All(code) % 10) < 5 ? 1:0;
+    }
+
+
+    /**
+     * @Description: 百十和
+     * @Param: [code]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int hundredTenSum(int[] code) {
+        return code[0] + code[1];
     }
 
     /**
-    * @Description: 百十和
-    * @Param: [code]
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int hundredTenSum(int[] code){
-        return code[0]+code[1];
-    }
+     * @Description: 百个和
+     * @Param: [code]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int hundredOneSum(int[] code) {
 
-    /**
-    * @Description: 百个和
-    * @Param: [code]
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int hundredOneSum(int[] code){
-
-        return code[0]+code[2];
+        return code[0] + code[2];
     }
 
     /**
@@ -241,57 +254,46 @@ public class lotteryUtils {
      * @Author: Hash
      * @Date: 2019/3/23
      */
-    public static int TenOneSum(int[] code){
+    public static int TenOneSum(int[] code) {
 
-        return code[2]+code[1];
+        return code[2] + code[1];
     }
 
     /**
-    * @Description: 百十单双
-    * @Param: [code]
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int hundredTenSingleEven(int[] code){
+     * @Description: 百十单双
+     * @Param: [code]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int hundredTenSingleEven(int[] code) {
 
-        if (hundredTenSum(code)%2==0){
-            return 1;
-        }else {
-            return 0;
-        }
+        return (hundredTenSum(code) % 2 == 0) ? 1 : 0;
     }
 
     /**
-    * @Description: 百个单双
-    * @Param: [code]
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int hundredOneSingleEven(int[] code){
+     * @Description: 百个单双
+     * @Param: [code]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int hundredOneSingleEven(int[] code) {
 
-        if (hundredOneSum(code)%2==0){
-            return 1;
-        }else {
-            return 0;
-        }
+        return (hundredOneSum(code) % 2 == 0) ? 1 : 0;
     }
+
     /**
-    * @Description: 十个单双
-    * @Param: [code]
-    * @return: int
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static int TenOneSingleEven(int[] code){
-
-        if (TenOneSum(code)%2==0){
-            return 1;
-        }else {
-            return 0;
-        }
+     * @Description: 十个单双
+     * @Param: [code]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static int TenOneSingleEven(int[] code) {
+       return  (TenOneSum(code) % 2 == 0) ? 1 : 0;
     }
+
     /**
      * @Description: 百十大小
      * @Param: [code]
@@ -299,13 +301,9 @@ public class lotteryUtils {
      * @Author: Hash
      * @Date: 2019/3/23
      */
-    public static int hundredTenBigSmall(int[] code){
+    public static int hundredTenBigSmall(int[] code) {
 
-        if (hundredTenSum(code)%10<5){
-            return 0;
-        }else {
-            return 1;
-        }
+        return (hundredTenSum(code) % 10 < 5) ?  1: 0;
     }
 
     /**
@@ -315,14 +313,10 @@ public class lotteryUtils {
      * @Author: Hash
      * @Date: 2019/3/23
      */
-    public static int hundredOneBigSmall(int[] code){
-
-        if (hundredOneSum(code)%10<5){
-            return 0;
-        }else {
-            return 1;
-        }
+    public static int hundredOneBigSmall(int[] code) {
+        return (hundredOneSum(code) % 10 < 5) ? 1 : 0 ;
     }
+
     /**
      * @Description: 十个大小
      * @Param: [code]
@@ -330,32 +324,29 @@ public class lotteryUtils {
      * @Author: Hash
      * @Date: 2019/3/23
      */
-    public static int TenOneBigSmall(int[] code){
+    public static int TenOneBigSmall(int[] code) {
 
-        if (TenOneSum(code)%10<5){
-            return 0;
-        }else {
-            return 1;
-        }
-    }
-    /**
-    * @Description:返回下期时间
-    * @Param: [time, s]
-    * @return: java.lang.String
-    * @Author: Hash
-    * @Date: 2019/3/22
-    */
-    public String next_time(String time,int s){
-        return  String.valueOf(Integer.parseInt(time)+s);
+        return (TenOneSum(code) % 10 < 5) ? 1 : 0;
     }
 
     /**
-    * @Description: String类型datetime转时间戳
-    * @Param: [date_str]
-    * @return: java.lang.String 
-    * @Author: Hash 
-    * @Date: 2019/3/22 
-    */ 
+     * @Description:返回下期时间
+     * @Param: [time, s]
+     * @return: java.lang.String
+     * @Author: Hash
+     * @Date: 2019/3/22
+     */
+    public String next_time(String time, int s) {
+        return String.valueOf(Integer.parseInt(time) + s);
+    }
+
+    /**
+     * @Description: String类型datetime转时间戳
+     * @Param: [date_str]
+     * @return: java.lang.String
+     * @Author: Hash
+     * @Date: 2019/3/22
+     */
     public static String date2TimeStamp(String date_str) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -367,24 +358,24 @@ public class lotteryUtils {
     }
 
     /**
-    * @Description: 判断是否为数字
-    * @Param: [code, issue]
-    * @return: boolean
-    * @Author: Hash
-    * @Date: 2019/3/23
-    */
-    public static boolean CodeVerification(String code,String issue){
-        if(code.matches("[0-9]+")&&issue.matches("[0-9]+")){
+     * @Description: 判断是否为数字
+     * @Param: [code, issue]
+     * @return: boolean
+     * @Author: Hash
+     * @Date: 2019/3/23
+     */
+    public static boolean CodeVerification(String code, String issue) {
+        if (code.matches("[0-9]+") && issue.matches("[0-9]+")) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
 
-    public static boolean CodeVerification(String code){
-        if(code.matches("[0-9]+")){
+    public static boolean CodeVerification(String code) {
+        if (code.matches("[0-9]+")) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }

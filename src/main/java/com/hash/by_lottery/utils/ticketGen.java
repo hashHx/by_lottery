@@ -61,8 +61,8 @@ public class ticketGen {
                 data.put("fourthDragonTiger", DT.get(3));
                 data.put("fifthDragonTiger", DT.get(4));
                 data.put("championRunnerSum", lotteryUtils.sum_FS(intCode));
-                data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("singleOrEven", lotteryUtils.FS_sum_SD(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 break;
             //时时彩
             case 2:
@@ -77,7 +77,7 @@ public class ticketGen {
                 data.put("lastThree", lotteryUtils.threeFMB(intCode)[2]);
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 break;
             //11选5
             case 3:
@@ -86,12 +86,13 @@ public class ticketGen {
                 data.put("thirdNumber", drawCode[2]);
                 data.put("fourthNumber", drawCode[3]);
                 data.put("fifthNumber", drawCode[4]);
+                data.put("dragonTiger",lotteryUtils.DragonTiger(intCode));
                 data.put("firstThree", lotteryUtils.threeFMB(intCode)[0]);
                 data.put("middleThree", lotteryUtils.threeFMB(intCode)[1]);
                 data.put("lastThree", lotteryUtils.threeFMB(intCode)[2]);
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 break;
             //快乐十分
             case 4:
@@ -110,7 +111,7 @@ public class ticketGen {
                 data.put("fourthDragonTiger", DT.get(3));
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 data.put("tailBigSmall", lotteryUtils.tail_BS(intCode));
                 break;
             //快三
@@ -123,7 +124,7 @@ public class ticketGen {
                 data.put("thirdFcru", drawCode[2]);
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 break;
             //重庆农场
             case 6:
@@ -142,7 +143,7 @@ public class ticketGen {
                 data.put("fourthDragonTiger", DT.get(3));
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("singleOrEven", lotteryUtils.sum_SD(intCode));
-                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode));
+                data.put("bigOrSmall", lotteryUtils.sum_BS(intCode,type));
                 data.put("tailBigSmall", lotteryUtils.tail_BS(intCode));
                 break;
              //排列3
@@ -161,7 +162,7 @@ public class ticketGen {
                 data.put("tenOneBigSmall", lotteryUtils.TenOneBigSmall(intCode));
                 data.put("drawSum", lotteryUtils.sum_All(intCode));
                 data.put("drawSumSingleEven", lotteryUtils.sum_SD(intCode));
-                data.put("drawSumBigSmall", lotteryUtils.sum_BS(intCode));
+                data.put("drawSumBigSmall", lotteryUtils.sum_BS(intCode,type));
                 break;
 
 

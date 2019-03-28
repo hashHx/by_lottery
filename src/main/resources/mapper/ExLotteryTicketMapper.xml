@@ -31,4 +31,14 @@
 		where a.lot_code = b.lot_code and a.lot_code = #{lot_code} and LEFT(draw_time,10) = #{draw_time} ORDER BY draw_time  DESC;
 	</select>
 
+
+	<select id="getLimitTicketList"  resultType="ExLotteryTicket">
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		from lottery_ticket a,lottery_type b
+		where a.lot_code = b.lot_code and a.lot_code = #{lot_code} ORDER BY draw_time DESC LIMIT #{limit};
+	</select>
+
+
+
+
 </mapper>

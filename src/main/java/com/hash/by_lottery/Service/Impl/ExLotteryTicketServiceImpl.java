@@ -1,13 +1,14 @@
 package com.hash.by_lottery.Service.Impl;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.dao.ExLotteryTicketDao;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName ExLotteryTickerServiceImpl
@@ -46,8 +47,53 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         return dao.getTicketInfoListWithTime(code, time);
     }
 
+    @Override
+    public List<JSONObject> getLimitTicketList(String code, int limit) {
 
+        Stack<ExLotteryTicket> list = new Stack<>();
 
+        List<String> list_issue =  new ArrayList<>();
+
+        List<JSONObject> list_code =  new ArrayList<>();
+        List<String> list_code_all =  new ArrayList<>();
+
+        limit = 25;
+        
+
+        list =  dao.getLimitTicketList(code,limit);
+
+        //获取期数列表
+        for (ExLotteryTicket t: list
+             ) {
+            System.out.println(t.getDraw_issue());
+            list_issue.add(t.getDraw_issue());
+        }
+
+        ExLotteryTicket t = list.get(0);
+        JSONObject jsonObject = new JSONObject();
+
+        //
+        int length = t.getDraw_code().split(",").length;
+        int index = limit;
+        for (int i = 0; i < length; i++) {
+            String[] str = new String[index];
+
+            for (int j = 0; j < index; j++) {
+                str[j] = list.get(j).getDraw_code().split(",")[i];
+            }
+
+            jsonObject.put("issue",list_issue);
+            jsonObject.put("code",str);
+//            map.put("issue",list_issue);
+//            map.put("code",str);
+           // System.out.println(jsonObject.toString());
+            list_code.add(jsonObject);
+            System.out.println(list_code.get(i));
+            jsonObject.clear();
+        }
+
+        return list_code;
+    }
 
 
 }

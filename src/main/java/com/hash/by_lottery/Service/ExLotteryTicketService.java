@@ -1,5 +1,6 @@
 package com.hash.by_lottery.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public interface ExLotteryTicketService {
     List<ExLotteryTicket> getTicketList(String code);
 
     List<ExLotteryTicket> getTicketListWithTime(String code,String time);
+
+    List<JSONObject> getLimitTicketList(String code, int limit);
 
 }

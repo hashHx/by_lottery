@@ -1,6 +1,7 @@
 package com.hash.by_lottery.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
@@ -31,9 +32,9 @@ import java.util.*;
  * @Date 2019/3/21 14:33
  * @Version 1.0
  **/
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-public class LotterTicketController {
+public class LotteryTicketController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -121,7 +122,7 @@ public class LotterTicketController {
             }
     }
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/{time}",method = RequestMethod.GET)
-    public Object getExTickerInfoWithTime(@PathVariable("lotCode") String lotCode,@PathVariable("time") String time){
+    public HashMap<String, Object> getExTickerInfoWithTime(@PathVariable("lotCode") String lotCode, @PathVariable("time") String time){
 
         Map map = new HashMap();
         if (lotteryUtils.CodeVerification(lotCode)){
@@ -144,6 +145,11 @@ public class LotterTicketController {
         }
     }
 
+
+    @RequestMapping(value = "/lottery/TicketTrend/{lotCode}",method = RequestMethod.GET)
+    public List<JSONObject> getTrendByLotCode(@PathVariable("lotCode") String lotCode){
+        return service_ex.getLimitTicketList(lotCode,25);
+    }
 
     @RequestMapping(value = "/lottery/newTicketInfo/{lotCode}",method = RequestMethod.GET)
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode){

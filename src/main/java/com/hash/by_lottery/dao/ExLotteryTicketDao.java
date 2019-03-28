@@ -3,8 +3,10 @@ package com.hash.by_lottery.dao;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @ClassName BaseLotteryTicketDao
@@ -22,6 +24,7 @@ public interface ExLotteryTicketDao {
       ExLotteryTicket getNewTicketInfo(String lot_code);
       List<ExLotteryTicket> getTicketInfoList(String lot_code);
       List<ExLotteryTicket> getTicketInfoListWithTime(String lot_code,String draw_time);
+      Stack<ExLotteryTicket> getLimitTicketList(@Param("lot_code") String lot_code, @Param("limit") int limit);
 
 }
 
