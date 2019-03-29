@@ -1,9 +1,10 @@
 package com.hash.by_lottery.utils;
 
+import com.hash.by_lottery.Service.BaseLotteryTicketService;
+import com.hash.by_lottery.Service.ExLotteryTicketService;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName lotteryUtils
@@ -52,7 +53,7 @@ public class lotteryUtils {
      * @Date: 2019/3/21
      */
     private static int Dragon_Tiger(int dragon, int tiger) {
-            return  (dragon == tiger) ? 2 : dragon > tiger ? 0 : 1;
+        return (dragon == tiger) ? 2 : dragon > tiger ? 0 : 1;
     }
 
     /**
@@ -134,7 +135,7 @@ public class lotteryUtils {
     }
 
     public static int FS_sum_SD(int[] code) {
-        return (code[0]+code[1])% 2 != 0 ? 0 : 1;
+        return (code[0] + code[1]) % 2 != 0 ? 0 : 1;
     }
 
     /**
@@ -220,7 +221,7 @@ public class lotteryUtils {
      */
     public static int tail_BS(int[] code) {
 
-        return (sum_All(code) % 10) < 5 ? 1:0;
+        return (sum_All(code) % 10) < 5 ? 1 : 0;
     }
 
 
@@ -291,7 +292,7 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int TenOneSingleEven(int[] code) {
-       return  (TenOneSum(code) % 2 == 0) ? 1 : 0;
+        return (TenOneSum(code) % 2 == 0) ? 1 : 0;
     }
 
     /**
@@ -303,7 +304,7 @@ public class lotteryUtils {
      */
     public static int hundredTenBigSmall(int[] code) {
 
-        return (hundredTenSum(code) % 10 < 5) ?  1: 0;
+        return (hundredTenSum(code) % 10 < 5) ? 1 : 0;
     }
 
     /**
@@ -314,7 +315,7 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int hundredOneBigSmall(int[] code) {
-        return (hundredOneSum(code) % 10 < 5) ? 1 : 0 ;
+        return (hundredOneSum(code) % 10 < 5) ? 1 : 0;
     }
 
     /**
@@ -365,7 +366,7 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static boolean CodeVerification(String code, String issue) {
-        if (code.matches("[0-9]+") && issue.matches("[0-9]+")) {
+        if (code.matches("[0-9]+") && issue.matches("[0-9]+")|| issue.matches("^\\d{4}[\\-](0?[1-9]|1[012])[\\-](0?[1-9]|[12][0-9]|3[01])$")) {
             return false;
         } else {
             return true;
@@ -380,5 +381,32 @@ public class lotteryUtils {
         }
     }
 
+//    public static boolean TimeVerification(String code,String time) {
+//        if (code.matches("[0-9]+")) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
+
+    public static HashMap<String, Object> ResultByCodeVerification(BaseLotteryTicketService service, ExLotteryTicketService service_ex, Object... args) {
+
+        try {
+            if (args[0] == null || CodeVerification((String) args[0])) {
+                return ResultGen.getResult(new HashMap<Object, Object>(), 4);
+            }
+            if (args[1] != null){
+                if (CodeVerification((String) args[0],(String) args[1])){
+                    return ResultGen.getResult(new HashMap<Object, Object>(), 4);
+                }
+            }
+            if (service.findCode((String) args[0]) == 0) {
+                return ResultGen.getResult(new HashMap<Object, Object>(), 2);
+            }
+        } catch (Exception e) {
+            return ResultGen.getResult(new HashMap<Object, Object>(), 1);
+        }
+        return null;
+    }
 
 }

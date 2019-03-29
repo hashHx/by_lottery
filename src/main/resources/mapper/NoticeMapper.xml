@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hash.by_lottery.dao.NoticeDao">
+
+
+	<resultMap id="noticeResultMap" type="Notice">
+		<id property="id" column="id"/>
+		<result property="Sort" column="sort" />
+		<result property="isNotice" column="is_notice"/>
+		<result property="showType" column="show_type"/>
+		<result property="contentType" column="content_type" />
+		<result property="content" column="content"/>
+	</resultMap>
+
+
+    <select id="getNotices" resultMap="noticeResultMap">
+		select id,sort,is_notice,show_type,content_type,content from lottery_notices where notice_state = 1;
+	</select>
+
+
+
+
+
+
+</mapper>
