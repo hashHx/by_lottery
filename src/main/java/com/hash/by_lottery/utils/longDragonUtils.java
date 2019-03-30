@@ -10,7 +10,23 @@ package com.hash.by_lottery.utils;
 
 public class longDragonUtils {
 
-    //pK10系列长龙工具类
+    private volatile static longDragonUtils instance = null;
+
+    private longDragonUtils(){};
+
+    public static longDragonUtils getInstance(){
+
+        if (instance==null){
+            synchronized (longDragonUtils.class){
+                if (instance==null){
+                    instance = new longDragonUtils();
+                }
+            }
+        }
+
+        return instance;
+    }
+
 
 
 
