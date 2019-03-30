@@ -179,7 +179,6 @@ public class lotteryUtils {
             } else {
                 simpleFun(one, two, three);
             }
-
         } else {
             simpleFun(one, two, three);
         }
@@ -220,7 +219,6 @@ public class lotteryUtils {
      * @Date: 2019/3/22
      */
     public static int tail_BS(int[] code) {
-
         return (sum_All(code) % 10) < 5 ? 1 : 0;
     }
 
@@ -244,7 +242,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int hundredOneSum(int[] code) {
-
         return code[0] + code[2];
     }
 
@@ -256,7 +253,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int TenOneSum(int[] code) {
-
         return code[2] + code[1];
     }
 
@@ -268,7 +264,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int hundredTenSingleEven(int[] code) {
-
         return (hundredTenSum(code) % 2 == 0) ? 1 : 0;
     }
 
@@ -280,7 +275,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int hundredOneSingleEven(int[] code) {
-
         return (hundredOneSum(code) % 2 == 0) ? 1 : 0;
     }
 
@@ -303,7 +297,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int hundredTenBigSmall(int[] code) {
-
         return (hundredTenSum(code) % 10 < 5) ? 1 : 0;
     }
 
@@ -326,7 +319,6 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static int TenOneBigSmall(int[] code) {
-
         return (TenOneSum(code) % 10 < 5) ? 1 : 0;
     }
 
@@ -366,7 +358,7 @@ public class lotteryUtils {
      * @Date: 2019/3/23
      */
     public static boolean CodeVerification(String code, String issue) {
-        if (code.matches("[0-9]+") && issue.matches("[0-9]+")|| issue.matches("^\\d{4}[\\-](0?[1-9]|1[012])[\\-](0?[1-9]|[12][0-9]|3[01])$")) {
+        if (code.matches("[0-9]+") && issue.matches("[0-9]+") || issue.matches("^\\d{4}[\\-](0?[1-9]|1[012])[\\-](0?[1-9]|[12][0-9]|3[01])$")) {
             return false;
         } else {
             return true;
@@ -381,22 +373,22 @@ public class lotteryUtils {
         }
     }
 
-//    public static boolean TimeVerification(String code,String time) {
-//        if (code.matches("[0-9]+")) {
-//            return false;
-//        } else {
-//            return true;
-//        }
-//    }
 
+    /**
+    * @Description: 多参数检验输入数据
+    * @Param: [service, service_ex, args]
+    * @return: java.util.HashMap<java.lang.String,java.lang.Object>
+    * @Author: Hash
+    * @Date: 2019/3/29
+    */
     public static HashMap<String, Object> ResultByCodeVerification(BaseLotteryTicketService service, ExLotteryTicketService service_ex, Object... args) {
 
         try {
             if (args[0] == null || CodeVerification((String) args[0])) {
                 return ResultGen.getResult(new HashMap<Object, Object>(), 4);
             }
-            if (args[1] != null){
-                if (CodeVerification((String) args[0],(String) args[1])){
+            if (args[1] != null) {
+                if (CodeVerification((String) args[0], (String) args[1])) {
                     return ResultGen.getResult(new HashMap<Object, Object>(), 4);
                 }
             }

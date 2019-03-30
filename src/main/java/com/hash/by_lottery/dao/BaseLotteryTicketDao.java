@@ -19,6 +19,7 @@ public interface BaseLotteryTicketDao {
      int insertInfo_push(BaseLotteryTicket ticket);
      String getCurrentCount(String lot_code);
      int findLotCode(String lot_code);
+     BaseLotteryTicket getNewTicketInfo(String lot_code);
 
 
 }

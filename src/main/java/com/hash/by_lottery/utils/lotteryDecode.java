@@ -1,7 +1,6 @@
 package com.hash.by_lottery.utils;
 
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
 import org.slf4j.Logger;
@@ -19,27 +18,24 @@ import java.util.Map;
 
 
 /**
-* @Description:  彩票解密工具类
-* @Author: Hash
-* @Date: 2019/3/23
-*/
+ * @Description: 彩票解密工具类
+ * @Author: Hash
+ * @Date: 2019/3/23
+ */
 public class lotteryDecode {
 
     Logger logger = LoggerFactory.getLogger(lotteryDecode.class);
 
-    public enum lot_abbreviation{
-        CQSSC("10002"),XJSSC("10004"),TJSSC("10003"),GD11Y("10006"),JSK3("10007"),
-        BJPK10("10001"),XYFT("10057");
+    //    *绑定彩票缩写
+    public enum lot_abbreviation {
+        CQSSC("10002"), XJSSC("10004"), TJSSC("10003"), GD11Y("10006"), JSK3("10007"),
+        BJPK10("10001"), XYFT("10057");
 
         private String code;
 
-
-
-        lot_abbreviation( String code) {
+        lot_abbreviation(String code) {
             this.code = code;
         }
-
-
 
         public String getCode() {
             return code;
@@ -72,35 +68,17 @@ public class lotteryDecode {
         return decbbdt;
     }
 
-//    public static BaseLotteryTicket  getBaseFromStore(String data) throws NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-//        String key  = "183539dd5c12888273044df4456aaca3";
-////        String a =decodeResult("eyJpdiI6IkJyZGRzS0ZFMUlLMmUwTzkrZ1wvSnNnPT0iLCJ2YWx1ZSI6IjJWK2pERGJUZ3FDU0JZajJha1B4djJFQmdVQXZtQ1k2RWVKdTVic21JRFp0Y2ZGakJuRUhaY21aY0tGdU9YOUsremNQS1RQZ2tJVENVSTN1MzFyNGRQWUhLQ2thTXJ0MlhwRzhSVVZtVUxHb0lZM2k2aTJNa1VCalNlV0N1dlhjQXZoOE5HYjNIQVVMMU5BZ3lxMVZrSDFKQ3lNTk1sdUxSSVVZU1dWVW5tVHRJRXdvd0R0XC9oclZsRlwvQXNtZ3FHdEhqd3FSXC9GRm4za0ZraWpBd0R4VGRxcDh6MFg4K3lHWGYxNEtBMU55Z3VxcnpOVTQrRElwRE9wSDZ1NGtMMzRLNlJDZnc1UnlqSXhCdFIxNUJkNXd1ZWRqWVpkTHRoc2JSRWlDYmF0b0ZNUkR4QzdiV2pIaXFodVEwbUh1M1wvcXJwd0tMZHVzRHROdFdnY2N6VStQZTFMckgyeXQrQ2RhelE5bVdpWFkrSlhPb3ZlemR0Znd6dExua1JXOHdjTHYiLCJtYWMiOiI1MDllNjQxZWI5NGNjZGEyOWRjOGQ4NzNlMzJlMzM4MzZhYWNjNzI2NGFmMjBkYTIwNjg3YWJiOTA2YmQ5Njk2In0=",
-////                key);
-//        String a =decodeResult(data, key);
-//        String b[] = a.split(":",3);
-//        String c = b[2].substring(1,b[2].length()-2);
-//        Map map = (Map) JSONObject.parse(c);
-//         JSONObject jsonObjectData = (JSONObject) map.get("data");
-//         String time = (String) map.get("time");
-//         String s = jsonObjectData.getString("lottery");
-//         return new BaseLotteryTicket().setL_id(IdGen.get().nextId()).setDraw_code(jsonObjectData.getString("code")).setDraw_issue(jsonObjectData.getString("issue")).setLot_code(lot_abbreviation.valueOf(jsonObjectData.getString("lottery")).getCode()).setDraw_time(time) ;
-//    }
 
-
-    public static BaseLotteryTicket  getBaseFromStore(String data) throws NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        String key  = "07edde1ca4efc5fbb5577053fa621926";
-//        String a =decodeResult("eyJpdiI6IkJyZGRzS0ZFMUlLMmUwTzkrZ1wvSnNnPT0iLCJ2YWx1ZSI6IjJWK2pERGJUZ3FDU0JZajJha1B4djJFQmdVQXZtQ1k2RWVKdTVic21JRFp0Y2ZGakJuRUhaY21aY0tGdU9YOUsremNQS1RQZ2tJVENVSTN1MzFyNGRQWUhLQ2thTXJ0MlhwRzhSVVZtVUxHb0lZM2k2aTJNa1VCalNlV0N1dlhjQXZoOE5HYjNIQVVMMU5BZ3lxMVZrSDFKQ3lNTk1sdUxSSVVZU1dWVW5tVHRJRXdvd0R0XC9oclZsRlwvQXNtZ3FHdEhqd3FSXC9GRm4za0ZraWpBd0R4VGRxcDh6MFg4K3lHWGYxNEtBMU55Z3VxcnpOVTQrRElwRE9wSDZ1NGtMMzRLNlJDZnc1UnlqSXhCdFIxNUJkNXd1ZWRqWVpkTHRoc2JSRWlDYmF0b0ZNUkR4QzdiV2pIaXFodVEwbUh1M1wvcXJwd0tMZHVzRHROdFdnY2N6VStQZTFMckgyeXQrQ2RhelE5bVdpWFkrSlhPb3ZlemR0Znd6dExua1JXOHdjTHYiLCJtYWMiOiI1MDllNjQxZWI5NGNjZGEyOWRjOGQ4NzNlMzJlMzM4MzZhYWNjNzI2NGFmMjBkYTIwNjg3YWJiOTA2YmQ5Njk2In0=",
-//                key);
-       // String jsonData = data.getString("data");
-       String a =decodeResult(data, key);
-        String b[] = a.split(":",3);
-        String c = b[2].substring(1,b[2].length()-2);
-           Map map = (Map) JSONObject.parse(c);
-           JSONObject jsonObjectData = (JSONObject) map.get("data");
-           String time = (String) map.get("time");
-           String s = jsonObjectData.getString("lottery");
-           return new BaseLotteryTicket().setL_id(IdGen.get().nextId()).setDraw_code(jsonObjectData.getString("code")).setDraw_issue(jsonObjectData.getString("issue")).setLot_code(lot_abbreviation.valueOf(jsonObjectData.getString("lottery")).getCode()).setDraw_time(time) ;
-
+    public static BaseLotteryTicket getBaseFromStore(String data) throws NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        String key = "07edde1ca4efc5fbb5577053fa621926";
+        String a = decodeResult(data, key);
+        String b[] = a.split(":", 3);
+        String c = b[2].substring(1, b[2].length() - 2);
+        Map map = (Map) JSONObject.parse(c);
+        JSONObject jsonObjectData = (JSONObject) map.get("data");
+        String time = (String) map.get("time");
+        String s = jsonObjectData.getString("lottery");
+        return new BaseLotteryTicket().setL_id(IdGen.get().nextId()).setDraw_code(jsonObjectData.getString("code")).setDraw_issue(jsonObjectData.getString("issue")).setLot_code(lot_abbreviation.valueOf(jsonObjectData.getString("lottery")).getCode()).setDraw_time(time);
     }
 
 }

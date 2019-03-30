@@ -13,8 +13,6 @@ import java.util.Map;
 
 public class ResultGen {
 
-
-
     public enum error {
         NOT_CONNECTION("服务器出错或数据库连接失败!", 1), LOT_NON_EXISTENT("彩种不存在!", 2), ISSUE_NON_EXISTENT("期数不存在!", 3), ILLEGAL_PARAMETER("非法参数!", 4);
 

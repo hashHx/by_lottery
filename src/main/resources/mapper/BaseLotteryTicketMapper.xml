@@ -9,23 +9,28 @@
 	</select>
 
 
-	<insert id="insertInfo_spider" parameterType="BaseLotteryTicket" >
+    <insert id="insertInfo_spider" parameterType="BaseLotteryTicket">
 		insert into lottery_ticket (l_id,lot_code,draw_code,draw_issue,draw_time,lot_remark) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time},now());
 	</insert>
 
-	<insert id="insertInfo_push" parameterType="BaseLotteryTicket" >
+    <insert id="insertInfo_push" parameterType="BaseLotteryTicket">
 		insert into lottery_ticket_push (l_id,lot_code,draw_code,draw_issue,draw_time,lot_remark) values (#{l_id},#{lot_code},#{draw_code},#{draw_issue},#{draw_time},now());
 	</insert>
 
-	<select id="getCurrentCount" resultType="String" parameterType="String">
+    <select id="getCurrentCount" resultType="String" parameterType="String">
 		SELECT COUNT(*) FROM lottery_ticket WHERE LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') and lot_code = #{lot_code};
 	</select>
 
 
-	<select id="findLotCode" parameterType="String" resultType="int">
+    <select id="findLotCode" parameterType="String" resultType="int">
 		select count(*) from lottery_type where lot_code = #{lot_code};
 	</select>
 
+    <select id="getNewTicketInfo" parameterType="String" resultType="BaseLotteryTicket">
+		select draw_code,draw_issue
+		from lottery_ticket
+		where lot_code = #{lot_code} and draw_issue = (select MAX(draw_issue) from lottery_ticket where lot_code = #{lot_code});
+	</select>
 
 
 </mapper>

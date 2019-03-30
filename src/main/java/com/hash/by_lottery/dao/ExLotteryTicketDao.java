@@ -26,6 +26,7 @@ public interface ExLotteryTicketDao {
       List<ExLotteryTicket> getTicketInfoList_(String lot_code);
       List<ExLotteryTicket> getTicketInfoListWithTime(String lot_code,String draw_time);
       List<ExLotteryTicket> getLimitTicketList(@Param("lot_code") String lot_code, @Param("limit") int limit);
+      ExLotteryTicket getTicketInfoByIssue(String lot_code,String draw_issue);
 
 }
 
