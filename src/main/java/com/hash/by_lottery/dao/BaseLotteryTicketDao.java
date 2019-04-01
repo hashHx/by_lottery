@@ -1,6 +1,7 @@
 package com.hash.by_lottery.dao;
 
 import com.hash.by_lottery.entities.BaseLotteryTicket;
+import com.hash.by_lottery.entities.ExLotteryTicket;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

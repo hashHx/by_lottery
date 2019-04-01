@@ -171,7 +171,11 @@ public class LotteryTicketController {
 
     }
 
+    @RequestMapping(value = "/lottery/n", method = RequestMethod.GET)
+    public Object test(){
 
+        return service_ex.getLongDragonInfo("10057");
+    }
 
     private void countFun(Map map, String lotCode) {
         int count = Integer.parseInt(service.getCurrentCount(lotCode));

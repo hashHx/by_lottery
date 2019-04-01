@@ -25,4 +25,6 @@ public interface ExLotteryTicketService {
 
     List<JSONObject> getLimitTicketList(String code, int limit);
 
+    List getLongDragonInfo(String lot_code);
+
 }
