@@ -72,6 +72,24 @@ public class lotteryUtils {
         return sum;
     }
 
+    
+    /** 
+    * @Description: 返回合数列表 
+    * @Param: [code] 
+    * @return: int[] 
+    * @Author: Hash 
+    * @Date: 2019/4/1 
+    */ 
+    public static int[] sum_number(int[] code){
+        int[] temp = {code.length};
+        for (int i = 0; i < code.length; i++) {
+            temp[i] = (code[i]%10) + code[i];
+        }
+        return temp;
+    }
+    
+    
+    
     /**
      * @Description: 返回冠亚和
      * @Param: [code]
@@ -222,6 +240,9 @@ public class lotteryUtils {
         return (sum_All(code) % 10) < 5 ? 1 : 0;
     }
 
+    public static int tail_SD(int[] code) {
+        return (sum_All(code) % 2) == 0 ? 1 : 0;
+    }
 
     /**
      * @Description: 百十和
