@@ -1,10 +1,7 @@
 package com.hash.by_lottery.utils;
 
-import com.alibaba.fastjson.JSONArray;
-
 import com.hash.by_lottery.entities.ExLotteryTicket;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.hash.by_lottery.entities.LongDragon;
 
 
 import java.util.ArrayList;
@@ -25,47 +22,14 @@ import java.util.List;
 public class longDragonUtils {
 
 
-
-//    private volatile static longDragonUtils instance = null;
-//
-//
-//    private longDragonUtils() {
-//
-//    }
-//
-//    public static longDragonUtils getInstance() {
-//
-//        if (instance == null) {
-//            synchronized (longDragonUtils.class) {
-//                if (instance == null) {
-//                    instance = new longDragonUtils();
-//                }
-//            }
-//        }
-//        return instance;
-//    }
-
-
-    @Data
-    @Accessors(chain = true)
-    public class data {
-        private int rank;
-        private int state;
-        private int count;
-    }
-
-
-
-
     public static List countRankAndState(int type, ExLotteryTicket ticket, ExLotteryTicket preTicket) {
+
         int[] code = lotteryCodeAdapter.toCalculate(ticket.getDraw_code());
         int[] code_pre = lotteryCodeAdapter.toCalculate(preTicket.getDraw_code());
 
         ArrayList DT = (ArrayList) lotteryUtils.DragonTiger(lotteryCodeAdapter.toCalculate(ticket.getDraw_code()));
         ArrayList DT_pre = (ArrayList) lotteryUtils.DragonTiger(lotteryCodeAdapter.toCalculate(preTicket.getDraw_code()));
 
-        System.out.println(DT);
-        System.out.println(DT_pre);
 
         List<List<Boolean>> countStates = new ArrayList<>();
 
@@ -137,7 +101,7 @@ public class longDragonUtils {
                 }
                 //龙
                 for (int i = 0; i < DT.size(); i++) {
-                    System.out.println(DT.get(i)+"___"+DT_pre.get(i));
+                    System.out.println(DT.get(i) + "___" + DT_pre.get(i));
                     if ((Integer) DT.get(i) == 0 && (Integer) DT_pre.get(i) == 0) {
                         countState_5.add(true);
                     } else {
@@ -404,7 +368,6 @@ public class longDragonUtils {
                 //龙
 
                 for (int i = 0; i < DT.size(); i++) {
-                    System.out.println(DT.get(i)+"___"+DT_pre.get(i));
                     if ((Integer) DT.get(i) == 0 && (Integer) DT_pre.get(i) == 0) {
                         countState_5.add(true);
                     } else {
@@ -538,7 +501,7 @@ public class longDragonUtils {
                 }
                 //龙
 
-                if (DT.get(0) == "0" && DT_pre.get(0) == "0") {
+                if ((Integer) DT.get(0) == 0 && (Integer) DT_pre.get(0) == 0) {
                     countState_5.add(true);
                 } else {
                     countState_5.add(false);
@@ -549,7 +512,7 @@ public class longDragonUtils {
                     countState_5.add(false);
                 }
                 //虎
-                if (DT.get(0) == "1" && DT_pre.get(0) == "1") {
+                if ((Integer)DT.get(0) == 1 && (Integer)DT_pre.get(0) == 1) {
                     countState_6.add(true);
                 } else {
                     countState_6.add(false);
@@ -599,8 +562,57 @@ public class longDragonUtils {
                 break;
 
         }
+
         return countStates;
     }
 
+    /**
+     * @Description: 创建longDragon基本列表
+     * @Param: [list]
+     * @return: java.util.List
+     * @Author: Hash
+     * @Date: 2019/4/2
+     */
+    public static List positionMarker(List<List> list) {
+        List arr = new ArrayList();
+        List array = new ArrayList();
+        for (int i = 0; i < list.size(); i++) {
+            arr = (List) list.get(i);
+            for (int j = 0; j < arr.size(); j++) {
+                if ((boolean) arr.get(j)) {
+                    array.add(new LongDragon().setRank(j).setState(i).setCount(2));
+                }
+            }
+        }
+        return array;
+    }
+
+    /** 
+    * @Description: 计算长龙COUNT数 
+    * @Param: [PM, CRAS] 
+    * @return: boolean
+    * @Author: Hash 
+    * @Date: 2019/4/2 
+    */ 
+    public static boolean counter(List<LongDragon> PM, List<List> CRAS) {
+        boolean flag = false;
+        for (int i = 0; i < PM.size(); i++) {
+            int count = PM.get(i).getCount();
+            int rank = PM.get(i).getRank();
+            int state = PM.get(i).getState();
+            if ((boolean)CRAS.get(state).get(rank)){
+                PM.get(i).setCount(count+1);
+                flag = true;
+            }else {
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
 }
+
+
+
+
 

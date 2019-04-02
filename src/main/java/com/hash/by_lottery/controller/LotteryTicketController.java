@@ -171,10 +171,10 @@ public class LotteryTicketController {
 
     }
 
-    @RequestMapping(value = "/lottery/n", method = RequestMethod.GET)
-    public Object test(){
+    @RequestMapping(value = "/lottery/longDragonRemind/{lotCode}", method = RequestMethod.GET)
+    public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode){
 
-        return service_ex.getLongDragonInfo("10057");
+        return service_ex.getLongDragonInfo(lotCode);
     }
 
     private void countFun(Map map, String lotCode) {
