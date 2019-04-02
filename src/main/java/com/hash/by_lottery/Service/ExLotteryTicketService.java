@@ -27,4 +27,6 @@ public interface ExLotteryTicketService {
 
     List getLongDragonInfo(String lot_code);
 
+    JSONObject getTicketTypeInfo();
+
 }

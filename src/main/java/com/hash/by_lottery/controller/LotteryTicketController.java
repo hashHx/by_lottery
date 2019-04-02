@@ -89,7 +89,6 @@ public class LotteryTicketController {
             }
         }
 
-
         return "error";
     }
 
@@ -171,7 +170,8 @@ public class LotteryTicketController {
 
     }
 
-    @RequestMapping(value = "/lottery/longDragonRemind/{lotCode}", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/lottery/dragonRemind/{lotCode}", method = RequestMethod.GET)
     public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode){
 
         return service_ex.getLongDragonInfo(lotCode);
@@ -183,5 +183,10 @@ public class LotteryTicketController {
         int totalCount = (int) map.get("totalCount");
         map.put("surplusCount", totalCount - count);
 
+    }
+
+    @RequestMapping(value = "/lottery/ticketTypeInfo", method = RequestMethod.GET)
+    public Object getTicketTypeInfo(){
+        return service_ex.getTicketTypeInfo();
     }
 }

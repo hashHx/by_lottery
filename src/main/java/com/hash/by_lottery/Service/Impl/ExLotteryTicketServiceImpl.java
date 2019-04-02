@@ -9,7 +9,6 @@ import com.hash.by_lottery.dao.ExLotteryTicketDao;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.entities.LongDragon;
 import com.hash.by_lottery.utils.longDragonUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -114,11 +113,36 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         }
         for (LongDragon ld :
                 PM) {
-            ld.setRank(ld.getRank()+1);
-            ld.setState(ld.getState()+1);
+            ld.setRank(ld.getRank() + 1);
+            ld.setState(ld.getState() + 1);
         }
-
         return PM;
+    }
+
+    @Override
+    public JSONObject getTicketTypeInfo() {
+        ArrayList<ExLotteryTicket> arr = (ArrayList) dao.getTicketTypeInfo();
+        JSONArray array = new JSONArray();
+        JSONObject object = new JSONObject();
+        if (arr!=null){
+            for (ExLotteryTicket e:
+                 arr) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("lotCode",e.getLot_code());
+                jsonObject.put("lotName",e.getLot_name());
+                jsonObject.put("lotType",e.getLot_type());
+                jsonObject.put("iconUrl",e.getLot_imgUrl());
+                jsonObject.put("lotState",e.getLot_state());
+                jsonObject.put("isHot",e.getIs_hot());
+                array.add(jsonObject);
+            }
+            object.put("error_code",0);
+            object.put("data",array);
+        }else {
+            object.put("error_code",1);
+            object.put("data","数据出错");
+        }
+        return object;
     }
 
 

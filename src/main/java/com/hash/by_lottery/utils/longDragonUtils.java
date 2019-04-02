@@ -101,7 +101,6 @@ public class longDragonUtils {
                 }
                 //龙
                 for (int i = 0; i < DT.size(); i++) {
-                    System.out.println(DT.get(i) + "___" + DT_pre.get(i));
                     if ((Integer) DT.get(i) == 0 && (Integer) DT_pre.get(i) == 0) {
                         countState_5.add(true);
                     } else {

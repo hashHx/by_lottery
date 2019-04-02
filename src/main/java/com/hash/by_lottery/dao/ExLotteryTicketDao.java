@@ -19,7 +19,6 @@ import java.util.Stack;
 @Mapper
 public interface ExLotteryTicketDao {
 
-
       List<ExLotteryTicket> stuffInfoToExLotteryTicket(String lot_code);
       ExLotteryTicket getNewTicketInfo(String lot_code);
       List<ExLotteryTicket> getTicketInfoList(String lot_code);
@@ -27,6 +26,7 @@ public interface ExLotteryTicketDao {
       List<ExLotteryTicket> getTicketInfoListWithTime(String lot_code,String draw_time);
       List<ExLotteryTicket> getLimitTicketList(@Param("lot_code") String lot_code, @Param("limit") int limit);
       ExLotteryTicket getTicketInfoByIssue(String lot_code,String draw_issue);
+      List<ExLotteryTicket> getTicketTypeInfo();
 
 }
 

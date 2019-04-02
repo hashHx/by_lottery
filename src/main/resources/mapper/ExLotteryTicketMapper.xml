@@ -50,6 +50,11 @@
 		where a.lot_code = b.lot_code and a.lot_code = #{lot_code} and draw_issue = #{draw_issue};
 	</select>
 
+	<select id="getTicketTypeInfo"  resultType="ExLotteryTicket">
+		select lot_code,lot_name,lot_type,lot_imgUrl,lot_state,is_hot
+		from lottery_type
+	</select>
+
 
 
 

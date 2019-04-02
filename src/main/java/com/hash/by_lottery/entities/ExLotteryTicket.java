@@ -17,7 +17,6 @@ import lombok.Setter;
 @Setter
 public class ExLotteryTicket  {
 
-
     private Long l_id;
     private String lot_name;
     private int lot_count;
@@ -30,5 +29,7 @@ public class ExLotteryTicket  {
     private String draw_code;
     private String draw_issue;
     private String draw_time;
+    private int lot_state;
+    private int is_hot;
 
 }
