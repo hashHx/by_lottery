@@ -143,9 +143,7 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/newTicketInfo/{lotCode}", method = RequestMethod.GET)
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode) {
-
         Map map = new HashMap();
-        // try {
         if (lotteryUtils.CodeVerification(lotCode)) {
             //参数错误
             return ResultGen.getResult((HashMap<Object, Object>) map, 4);
@@ -164,15 +162,41 @@ public class LotteryTicketController {
                 }
             }
         }
-        // }catch (Exception e){
-        //  return ResultGen.getResult((HashMap<Object, Object>) map,1);
-        // }
+    }
+
+
+    @RequestMapping(value = "/lottery/indexTickets", method = RequestMethod.GET)
+    public HashMap<String, Object> getIndexTickets() {
+
+        ArrayList<String > arrayList = new ArrayList();
+        ArrayList arr =new ArrayList();
+        arrayList.add("11001");
+        arrayList.add("11002");
+        arrayList.add("11003");
+        arrayList.add("10057");
+        arrayList.add("10001");
+        arrayList.add("10037");
+        arrayList.add("10036");
+        arrayList.add("10003");
+        arrayList.add("10004");
+        arrayList.add("10005");  arrayList.add("10006"); arrayList.add("10007"); arrayList.add("10008"); arrayList.add("10009");
+        for (String code :
+             arrayList) {
+            Map map = new HashMap();
+            ExLotteryTicket t = service_ex.getNewTicketInfo(code);
+            map = ticketGen.getresult(t, t.getLot_type());
+            arr.add(map);
+        }
+            return ResultGen.getResult(arr, 0);
+
 
     }
 
 
+
+
     @RequestMapping(value = "/lottery/dragonRemind/{lotCode}", method = RequestMethod.GET)
-    public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode){
+    public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode) {
 
         return service_ex.getLongDragonInfo(lotCode);
     }
@@ -186,7 +210,7 @@ public class LotteryTicketController {
     }
 
     @RequestMapping(value = "/lottery/ticketTypeInfo", method = RequestMethod.GET)
-    public Object getTicketTypeInfo(){
+    public Object getTicketTypeInfo() {
         return service_ex.getTicketTypeInfo();
     }
 }

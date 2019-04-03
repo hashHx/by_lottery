@@ -1,9 +1,13 @@
 package com.hash.by_lottery.Service.Impl;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.hash.by_lottery.Service.ConfigService;
 import com.hash.by_lottery.dao.BannerDao;
+import com.hash.by_lottery.dao.ConfigDao;
 import com.hash.by_lottery.dao.NoticeDao;
+import com.hash.by_lottery.entities.Config;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +28,64 @@ public class ConfigServiceImpl implements ConfigService {
     private BannerDao bannerDao;
     @Autowired
     private NoticeDao noticeDao;
+    @Autowired
+    private ConfigDao configDao;
 
 
     @Override
-    public JSONObject getConfig() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("Banners",bannerDao.getBanners());
-        jsonObject.put("Notices",noticeDao.getNotices());
-        jsonObject.put("CustomerServiceUrl",CustomerServiceUrl);
+    public com.alibaba.fastjson.JSONObject getConfig() {
+        com.alibaba.fastjson.JSONObject jsonObject = new com.alibaba.fastjson.JSONObject();
+        jsonObject.put("Banners", bannerDao.getBanners());
+        jsonObject.put("Notices", noticeDao.getNotices());
+        jsonObject.put("CustomerServiceUrl", CustomerServiceUrl);
         return jsonObject;
+    }
+
+    @Override
+    public JSONArray getConfigById(int id) {
+        String s = configDao.getConfigById(id);
+        if (s.startsWith("[")){
+            return JSONArray.fromObject(s) ;
+        }else {
+            s = "[" + s + "]";
+            return JSONArray.fromObject(s) ;
+        }
+
+    }
+
+
+    /**
+     * @Description:
+     * @Param: [id]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/4/3
+     */
+    @Override
+    public int updateConfigById(int id) {
+        Config config = new Config();
+        config.setConfig_id(id);
+        config.setConfig_content(updateConfigContentSwitch(id));
+        configDao.updateConfigById(config);
+        return 1;
+    }
+
+    public String updateConfigContentSwitch(int id) {
+        switch (id) {
+            case 1:
+                //JSONArray array = this.getConfigById(id)
+                return null;
+            case 2:
+                com.alibaba.fastjson.JSONObject jsonObject = new com.alibaba.fastjson.JSONObject();
+                jsonObject.put("webName","彩票开奖网");
+                jsonObject.put("webLogo","https://xxxx.xxx.xxx/img/logo.png");
+                jsonObject.put("webCopyright","版权信息");
+                jsonObject.put("webBackup","备案信息");
+                jsonObject.put("appRQcode","https://xxxx.xxx.xxx/img/logo.png");
+                return jsonObject.toJSONString();
+
+        }
+        return null;
     }
 
 }
