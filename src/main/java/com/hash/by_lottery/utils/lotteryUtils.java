@@ -422,4 +422,10 @@ public class lotteryUtils {
         return null;
     }
 
+    public static String getString(String str,char start,char end){
+        int countStart = str.indexOf(start);
+        int countEnd = str.lastIndexOf(end);
+        return str.substring(countStart,countEnd);
+    }
+
 }

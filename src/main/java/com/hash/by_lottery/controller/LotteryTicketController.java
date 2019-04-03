@@ -1,18 +1,24 @@
 package com.hash.by_lottery.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.utils.*;
+import lombok.Data;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
+import javax.annotation.security.DenyAll;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -73,7 +79,7 @@ public class LotteryTicketController {
 
 
     @RequestMapping(value = "lottery/InterfaceInfo", method = RequestMethod.POST)
-    public String getInfoFromInterface(HttpServletRequest request, String data) throws NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public String getInfoFromInterface(HttpServletRequest request) throws NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         Map<String, String[]> requestMsg = request.getParameterMap();
 
@@ -193,8 +199,6 @@ public class LotteryTicketController {
     }
 
 
-
-
     @RequestMapping(value = "/lottery/dragonRemind/{lotCode}", method = RequestMethod.GET)
     public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode) {
 
@@ -213,4 +217,40 @@ public class LotteryTicketController {
     public Object getTicketTypeInfo() {
         return service_ex.getTicketTypeInfo();
     }
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public Object getSIXSUMHistory(){
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "application/json");
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            ResponseEntity<JSONObject> response =  restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
+            //
+            JSONObject body = response.getBody().getJSONObject("result");
+            JSONArray dataArray = body.getJSONArray("data");
+            System.out.println(body);
+
+        JSONObject js = new JSONObject();
+        js.put("key","value");
+        saveSpace.INSTANCE.setValue(js);
+        System.out.println(saveSpace.INSTANCE.getValue());
+        return dataArray;
+    }
+
+    public enum saveSpace{
+        INSTANCE;
+
+        private static JSONObject value;
+
+        public JSONObject getValue() {
+            return value;
+        }
+
+        public void setValue(JSONObject value) {
+            this.value = value;
+        }
+    }
+
 }
