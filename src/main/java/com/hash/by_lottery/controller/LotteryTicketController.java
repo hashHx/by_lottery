@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -60,7 +62,10 @@ public class LotteryTicketController {
     public String getSpiderInfo(BaseLotteryTicket ticket) {
         if (ticket != null) {
             ticket.setL_id(IdGen.get().nextId());
-            return String.valueOf(service.saveBaseTicketInfo(ticket));
+            service.saveBaseTicketInfo(ticket);
+            ExLotteryTicket newTicket = service_ex.getNewTicketInfo(ticket.getLot_code());
+            saveSpace.INSTANCE.setValue(newTicket.getLot_code(), newTicket);
+            return "ok";
         } else {
             return "error";
         }
@@ -147,6 +152,41 @@ public class LotteryTicketController {
         return service_ex.getLimitTicketList(lotCode, 25);
     }
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public void getSIXSUMHistory() {
+        if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") == null) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "application/json");
+            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+            ResponseEntity<JSONObject> response = restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
+            JSONObject body = response.getBody().getJSONObject("result");
+            JSONArray dataArray = body.getJSONArray("data");
+            JSONObject firstData = (JSONObject) dataArray.get(0);
+            if (saveSpace.INSTANCE.getValue() != null) {
+                if (saveSpace.INSTANCE.getValue().get("11009") != firstData.get("11009")) {
+                    JSONObject newValue = new JSONObject();
+                    newValue.put("11009_List", dataArray);
+                    newValue.put("11009", firstData);
+                    saveSpace.INSTANCE.setValue(newValue);
+                    logger.trace("六合彩数据更新，时间：" + System.currentTimeMillis());
+                    System.out.println("六合彩数据更新，时间：" + System.currentTimeMillis());
+                } else {
+
+                    JSONObject newValue = saveSpace.INSTANCE.getValue();
+                    newValue.put("11009_List", dataArray);
+                    newValue.put("11009", firstData);
+                    logger.trace("六合彩数据创建，时间：" + System.currentTimeMillis());
+                    System.out.println("六合彩数据创建，时间：" + System.currentTimeMillis());
+                }
+            }
+        } else {
+            System.out.println(saveSpace.INSTANCE.getValue() + "  from saveSpace");
+        }
+    }
+
     @RequestMapping(value = "/lottery/newTicketInfo/{lotCode}", method = RequestMethod.GET)
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
@@ -174,26 +214,59 @@ public class LotteryTicketController {
     @RequestMapping(value = "/lottery/indexTickets", method = RequestMethod.GET)
     public HashMap<String, Object> getIndexTickets() {
 
-        ArrayList<String > arrayList = new ArrayList();
-        ArrayList arr =new ArrayList();
-        arrayList.add("11001");
-        arrayList.add("11002");
-        arrayList.add("11003");
-        arrayList.add("10057");
-        arrayList.add("10001");
-        arrayList.add("10037");
-        arrayList.add("10036");
-        arrayList.add("10003");
-        arrayList.add("10004");
-        arrayList.add("10005");  arrayList.add("10006"); arrayList.add("10007"); arrayList.add("10008"); arrayList.add("10009");
+        ArrayList<String> arrayList1 = new ArrayList();
+        ArrayList<String> arrayList2 = new ArrayList();
+        ArrayList arr = new ArrayList();
+
+        arrayList1.add("11002");
+        arrayList1.add("11001");
+        arrayList1.add("11007");
+        arrayList1.add("11004");
         for (String code :
-             arrayList) {
+                arrayList1) {
             Map map = new HashMap();
-            ExLotteryTicket t = service_ex.getNewTicketInfo(code);
-            map = ticketGen.getresult(t, t.getLot_type());
-            arr.add(map);
+            if (saveSpace.INSTANCE.getValue().get(code) == null) {
+                ExLotteryTicket t = service_ex.getNewTicketInfo(code);
+                saveSpace.INSTANCE.setValue(t.getLot_code(),t);
+                map = ticketGen.getresult(t, t.getLot_type());
+                arr.add(map);
+            } else {
+                ExLotteryTicket t =(ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                map = ticketGen.getresult(t, t.getLot_type());
+                arr.add(map);
+            }
         }
-            return ResultGen.getResult(arr, 0);
+        if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
+            arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+        } else {
+            this.getSIXSUMHistory();
+            arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+        }
+        //arrayList2.add("11009"); //liuhecai
+        arrayList2.add("10001");
+        arrayList2.add("11003");
+        arrayList2.add("10002");
+        arrayList2.add("11010");
+        arrayList2.add("11006");
+        arrayList2.add("11011"); //dongjing
+        arrayList2.add("10006");
+        arrayList2.add("10005");
+        arrayList2.add("11008");
+        for (String code :
+                arrayList2) {
+            Map map = new HashMap();
+            if (saveSpace.INSTANCE.getValue().get(code) == null) {
+                ExLotteryTicket t = service_ex.getNewTicketInfo(code);
+                saveSpace.INSTANCE.setValue(t.getLot_code(),t);
+                map = ticketGen.getresult(t, t.getLot_type());
+                arr.add(map);
+            } else {
+                ExLotteryTicket t =(ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                map = ticketGen.getresult(t, t.getLot_type());
+                arr.add(map);
+            }
+        }
+        return ResultGen.getResult(arr, 0);
 
 
     }
@@ -217,32 +290,16 @@ public class LotteryTicketController {
     public Object getTicketTypeInfo() {
         return service_ex.getTicketTypeInfo();
     }
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public Object getSIXSUMHistory(){
 
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Accept", "application/json");
-            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-            ResponseEntity<JSONObject> response =  restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
-            //
-            JSONObject body = response.getBody().getJSONObject("result");
-            JSONArray dataArray = body.getJSONArray("data");
-            System.out.println(body);
 
-        JSONObject js = new JSONObject();
-        js.put("key","value");
-        saveSpace.INSTANCE.setValue(js);
-        System.out.println(saveSpace.INSTANCE.getValue());
-        return dataArray;
-    }
-
-    public enum saveSpace{
+    public enum saveSpace {
         INSTANCE;
 
-        private static JSONObject value;
+        private JSONObject value;
+
+        private saveSpace() {
+            value = new JSONObject();
+        }
 
         public JSONObject getValue() {
             return value;
@@ -250,6 +307,17 @@ public class LotteryTicketController {
 
         public void setValue(JSONObject value) {
             this.value = value;
+        }
+
+        public void setValue(String key, Object value) {
+            if (this.value.get(key) != null) {
+                this.value.remove(key);
+                this.value.put(key, value);
+                System.out.println(key+" update "+value);
+            } else {
+                this.value.put(key, value);
+                System.out.println(key+" create "+value);
+            }
         }
     }
 
