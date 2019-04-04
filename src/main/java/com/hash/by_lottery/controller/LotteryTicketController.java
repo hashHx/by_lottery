@@ -165,6 +165,7 @@ public class LotteryTicketController {
             JSONObject body = response.getBody().getJSONObject("result");
             JSONArray dataArray = body.getJSONArray("data");
             JSONObject firstData = (JSONObject) dataArray.get(0);
+            lotteryUtils.SIXSUM_utils(firstData);
             if (saveSpace.INSTANCE.getValue() != null) {
                 if (saveSpace.INSTANCE.getValue().get("11009") != firstData.get("11009")) {
                     JSONObject newValue = new JSONObject();
@@ -174,7 +175,6 @@ public class LotteryTicketController {
                     logger.trace("六合彩数据更新，时间：" + System.currentTimeMillis());
                     System.out.println("六合彩数据更新，时间：" + System.currentTimeMillis());
                 } else {
-
                     JSONObject newValue = saveSpace.INSTANCE.getValue();
                     newValue.put("11009_List", dataArray);
                     newValue.put("11009", firstData);
@@ -222,6 +222,7 @@ public class LotteryTicketController {
         arrayList1.add("11001");
         arrayList1.add("11007");
         arrayList1.add("11004");
+        arrayList1.add("11005");
         for (String code :
                 arrayList1) {
             Map map = new HashMap();
@@ -236,11 +237,14 @@ public class LotteryTicketController {
                 arr.add(map);
             }
         }
+        //香港6和
         if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
             arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+            System.out.println("290370312760923709263709237936");
         } else {
             this.getSIXSUMHistory();
             arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         //arrayList2.add("11009"); //liuhecai
         arrayList2.add("10001");

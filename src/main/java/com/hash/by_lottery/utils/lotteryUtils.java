@@ -1,5 +1,6 @@
 package com.hash.by_lottery.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 
@@ -371,6 +372,17 @@ public class lotteryUtils {
         return "";
     }
 
+    public static String date2TimeStamp_SIXSUM(String date_str) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return String.valueOf(sdf.parse(date_str).getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
     /**
      * @Description: 判断是否为数字
      * @Param: [code, issue]
@@ -427,5 +439,15 @@ public class lotteryUtils {
         int countEnd = str.lastIndexOf(end);
         return str.substring(countStart,countEnd);
     }
+
+    public static void SIXSUM_utils(JSONObject jsonObject){
+        jsonObject.put("lotCode","11009");
+        jsonObject.put("lotName","香港六合彩");
+        jsonObject.put("lotType",7);
+        jsonObject.put("serverTime", System.currentTimeMillis());
+        Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate"))+" 21:30:00"));
+        jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
+    }
+
 
 }
