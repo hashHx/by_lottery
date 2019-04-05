@@ -4,6 +4,7 @@ package com.hash.by_lottery.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.ConfigService;
 
+import net.sf.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,13 @@ public class ConfigController {
     @RequestMapping(value = "/config/webSiteInfo/1",method = RequestMethod.GET)
     public int updateWebSiteInfo(){
 
-        return configService.updateConfigById(2);
+        return configService.updateConfigById(2,null);
     }
 
+    @RequestMapping(value = "/config/gameDetail/3",method = RequestMethod.GET)
+    public JSONArray updateGameDetail(){
+        return configService.getConfigById(3);
+    }
 
 
 }

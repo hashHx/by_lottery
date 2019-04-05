@@ -46,7 +46,7 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
     @Override
     public List<ExLotteryTicket> getTicketList(String code) {
 
-        return dao.getTicketInfoList(code) == null ? dao.getTicketInfoList(code) : dao.getTicketInfoList_(code);
+        return dao.getTicketInfoList(code) != null ? dao.getTicketInfoList(code) : dao.getTicketInfoList_(code);
     }
 
     @Override

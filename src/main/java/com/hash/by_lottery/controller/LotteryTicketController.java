@@ -4,8 +4,10 @@ package com.hash.by_lottery.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
+import com.hash.by_lottery.Service.ConfigService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
+import com.hash.by_lottery.entities.Config;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.utils.*;
 import lombok.Data;
@@ -50,6 +52,9 @@ public class LotteryTicketController {
 
     @Autowired
     private ExLotteryTicketService service_ex;
+
+    @Autowired
+    private ConfigService service_config;
 
     @RequestMapping(value = "/lottery/ticketInfo/{lotCode}/{lotIssue}", method = RequestMethod.GET)
     public String getTickerInfo(@PathVariable("lotCode") String lotCode, @PathVariable("lotIssue") String lotIssue) {
@@ -103,10 +108,20 @@ public class LotteryTicketController {
         return "error";
     }
 
+    @RequestMapping(value = "lottery/gameDetail/{lot_type}")
+    public Object getGameDetail(@PathVariable("lot_type") String lot_type){
+        net.sf.json.JSONObject jsonObject = (net.sf.json.JSONObject) service_config.getConfigById(3).get(0);
+        if (lot_type=="6"){
+            return jsonObject.get("4");
+        }
+        return jsonObject.get(lot_type);
+    }
 
-    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/DrawNumber", method = RequestMethod.GET)
     public Object getExTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
+
+        if (lotteryUtils.ResultByCodeVerification(service, service_ex, map, lotCode) != null) {
             List<ExLotteryTicket> list = service_ex.getTicketList(lotCode);
             List<Object> ticketList_ = new ArrayList();
             for (ExLotteryTicket eticket : list
@@ -116,6 +131,9 @@ public class LotteryTicketController {
                 ticketList_.add(map);
             }
             return ResultGen.getResult(ticketList_, 0);
+        } else {
+            return lotteryUtils.ResultByCodeVerification(service, service_ex, map, lotCode);
+        }
     }
 
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/{time}", method = RequestMethod.GET)

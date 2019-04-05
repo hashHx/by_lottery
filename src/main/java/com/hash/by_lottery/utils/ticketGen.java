@@ -35,8 +35,8 @@ public class ticketGen {
         data.put("drawNumberArr", ticket.getDraw_code().split(","));
         String[] drawCode = ticket.getDraw_code().split(",");
         data.put("isDraw", false);
-        data.put("lot_state",ticket.getLot_state());
-        data.put("is_hot",ticket.getIs_hot());
+        data.put("lotState",ticket.getLot_state());
+        data.put("isHot",ticket.getIs_hot());
         data.put("countDownArr", new ArrayList());
         data.put("countDownHours", "");
         data.put("countDownMinutes", "");
