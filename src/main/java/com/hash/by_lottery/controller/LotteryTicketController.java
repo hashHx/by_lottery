@@ -107,19 +107,15 @@ public class LotteryTicketController {
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}", method = RequestMethod.GET)
     public Object getExTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
-
-        if (lotteryUtils.ResultByCodeVerification(service, service_ex, map, lotCode) != null) {
             List<ExLotteryTicket> list = service_ex.getTicketList(lotCode);
             List<Object> ticketList_ = new ArrayList();
             for (ExLotteryTicket eticket : list
             ) {
                 map = ticketGen.getresult(eticket, eticket.getLot_type());
+                System.out.println(map);
                 ticketList_.add(map);
             }
             return ResultGen.getResult(ticketList_, 0);
-        } else {
-            return lotteryUtils.ResultByCodeVerification(service, service_ex, map, lotCode);
-        }
     }
 
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/{time}", method = RequestMethod.GET)
@@ -240,11 +236,9 @@ public class LotteryTicketController {
         //香港6和
         if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
             arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
-            System.out.println("290370312760923709263709237936");
         } else {
             this.getSIXSUMHistory();
             arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         //arrayList2.add("11009"); //liuhecai
         arrayList2.add("10001");

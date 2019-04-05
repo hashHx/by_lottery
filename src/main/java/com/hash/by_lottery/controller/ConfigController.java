@@ -50,4 +50,6 @@ public class ConfigController {
         return configService.updateConfigById(2);
     }
 
+
+
 }
