@@ -1,8 +1,10 @@
 package com.hash.by_lottery.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
+import com.hash.by_lottery.entities.ExLotteryTicket;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,24 +75,23 @@ public class lotteryUtils {
         return sum;
     }
 
-    
-    /** 
-    * @Description: 返回合数列表 
-    * @Param: [code] 
-    * @return: int[] 
-    * @Author: Hash 
-    * @Date: 2019/4/1 
-    */ 
-    public static int[] sum_number(int[] code){
+
+    /**
+     * @Description: 返回合数列表
+     * @Param: [code]
+     * @return: int[]
+     * @Author: Hash
+     * @Date: 2019/4/1
+     */
+    public static int[] sum_number(int[] code) {
         int[] temp = {code.length};
         for (int i = 0; i < code.length; i++) {
-            temp[i] = (code[i]%10) + code[i];
+            temp[i] = (code[i] % 10) + code[i];
         }
         return temp;
     }
-    
-    
-    
+
+
     /**
      * @Description: 返回冠亚和
      * @Param: [code]
@@ -408,12 +409,12 @@ public class lotteryUtils {
 
 
     /**
-    * @Description: 多参数检验输入数据
-    * @Param: [service, service_ex, args]
-    * @return: java.util.HashMap<java.lang.String,java.lang.Object>
-    * @Author: Hash
-    * @Date: 2019/3/29
-    */
+     * @Description: 多参数检验输入数据
+     * @Param: [service, service_ex, args]
+     * @return: java.util.HashMap<java.lang.String, java.lang.Object>
+     * @Author: Hash
+     * @Date: 2019/3/29
+     */
     public static HashMap<String, Object> ResultByCodeVerification(BaseLotteryTicketService service, ExLotteryTicketService service_ex, Object... args) {
 
         try {
@@ -434,20 +435,80 @@ public class lotteryUtils {
         return null;
     }
 
-    public static String getString(String str,char start,char end){
+    public static String getString(String str, char start, char end) {
         int countStart = str.indexOf(start);
         int countEnd = str.lastIndexOf(end);
-        return str.substring(countStart,countEnd);
+        return str.substring(countStart, countEnd);
     }
 
-    public static void SIXSUM_utils(JSONObject jsonObject){
-        jsonObject.put("lotCode","11009");
-        jsonObject.put("lotName","香港六合彩");
-        jsonObject.put("lotType",7);
+    public static void SIXSUM_utils(JSONObject jsonObject) {
+        jsonObject.put("lotCode", "11009");
+        jsonObject.put("lotName", "香港六合彩");
+        jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
-        Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate"))+" 21:30:00"));
+        Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
         jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
     }
 
+    public static JSONObject allNumberCount(List<ExLotteryTicket> list) {
+        ArrayList<int[]> objects = new ArrayList<>();
+        for (ExLotteryTicket e :
+                list) {
+            objects.add(lotteryCodeAdapter.toCalculate(e.getDraw_code()));
+        }
+
+        int[] count = new int[10];
+        for (int[] i : objects) {
+            for (int j :
+                    i) {
+                count[j]++;
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("numberCount", count);
+        System.out.println(count);
+        return jsonObject;
+    }
+
+    public static JSONObject doubleNumberCount(List<ExLotteryTicket> list) {
+        ArrayList<int[]> objects = new ArrayList<>();
+        JSONArray array = new JSONArray();
+        for (ExLotteryTicket e :
+                list) {
+            objects.add(lotteryCodeAdapter.toCalculate(e.getDraw_code()));
+        }
+        int length = objects.get(0).length;
+        int[][] doubleNum = new int[length][4];
+        for (int[] i : objects) {
+            for (int j = 0; j < length; j++) {
+                if (i[j] % 2 == 1) {
+                    doubleNum[j][0]++;
+                } else {
+                    doubleNum[j][1]++;
+                }
+                if (i[j] > 4) {
+                    doubleNum[j][2]++;
+                } else {
+                    doubleNum[j][3]++;
+                }
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("doubleCount", doubleNum);
+        return jsonObject ;
+    }
+
+
+    public static JSONObject complexView(List<ExLotteryTicket> list){
+        ArrayList
+        for (ExLotteryTicket e:
+             list) {
+
+        }
+    }
+
+    public static JSONObject singleView(List<ExLotteryTicket> list){
+
+    }
 
 }

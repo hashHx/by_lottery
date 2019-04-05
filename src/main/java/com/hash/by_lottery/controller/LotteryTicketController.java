@@ -288,7 +288,7 @@ public class LotteryTicketController {
     }
 
 
-    @RequestMapping(value = "/lottery/dragonRemind/{lotCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/LongCount", method = RequestMethod.GET)
     public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode) {
 
         return service_ex.getLongDragonInfo(lotCode);
@@ -306,6 +306,25 @@ public class LotteryTicketController {
     public Object getTicketTypeInfo() {
         return service_ex.getTicketTypeInfo();
     }
+
+
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/EvenCount", method = RequestMethod.GET)
+    public Object getDoubleNumber(@PathVariable("lotCode")String lotCode){
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        int type = list.get(0).getLot_type();
+        if (type == 1 || type == 4 || type == 6){
+            return lotteryUtils.doubleNumberCount(list);
+        }
+        if (type == 2 || type == 3 ){
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(lotteryUtils.allNumberCount(list));
+            jsonArray.add(lotteryUtils.doubleNumberCount(list));
+            return jsonArray;
+        }
+        return null;
+    }
+
+
 
 
     public enum saveSpace {

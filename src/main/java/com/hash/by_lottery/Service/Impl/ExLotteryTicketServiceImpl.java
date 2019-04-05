@@ -146,4 +146,10 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
     }
 
 
+    public List<ExLotteryTicket> getTicketInfoDoubleList(String code){
+        return dao.getTicketInfoDoubleList(code);
+    }
+
+
+
 }

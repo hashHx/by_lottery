@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MissionComponent {
 
-    //@Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 5000)
     public void getSIXSUMHistory() {
         if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("ticket") == null) {
             RestTemplate restTemplate = new RestTemplate();

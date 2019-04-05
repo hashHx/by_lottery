@@ -29,7 +29,9 @@ public class lotteryDecode {
     //    *绑定彩票缩写
     public enum lot_abbreviation {
         CQSSC("10002"), XJSSC("10004"), TJSSC("10003"), GD11Y("10006"), JSK3("10007"),
-        BJPK10("10001"), XYFT("10057");
+        BJPK10("10001"), XYFT("10057"),HBK3("10032"),SH11Y("10018"),AH11Y("100017"),
+        JS11Y("10007"),AHK3("10030"),HB11Y("10020"),NMGK3("10029"),BJK3("10033"),
+        GXK3("10026"), GD10F("10005"),CQ10F("10009");
 
         private String code;
 
