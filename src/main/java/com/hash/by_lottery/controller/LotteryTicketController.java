@@ -65,7 +65,11 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/spider", method = RequestMethod.POST)
     public String getSpiderInfo(BaseLotteryTicket ticket) {
-        if (ticket != null) {
+        if (ticket.getDraw_code() != null) {
+            BaseLotteryTicket check = service.getTickerInfo(ticket.getLot_code(),ticket.getDraw_issue());
+            if (check!=null){
+                return "二四你在逗我呢";
+            }
             ticket.setL_id(IdGen.get().nextId());
             service.saveBaseTicketInfo(ticket);
             ExLotteryTicket newTicket = service_ex.getNewTicketInfo(ticket.getLot_code());
@@ -109,9 +113,9 @@ public class LotteryTicketController {
     }
 
     @RequestMapping(value = "lottery/gameDetail/{lot_type}")
-    public Object getGameDetail(@PathVariable("lot_type") String lot_type){
+    public Object getGameDetail(@PathVariable("lot_type") String lot_type) {
         net.sf.json.JSONObject jsonObject = (net.sf.json.JSONObject) service_config.getConfigById(3).get(0);
-        if (lot_type=="6"){
+        if (lot_type == "6") {
             return jsonObject.get("4");
         }
         return jsonObject.get(lot_type);
@@ -167,8 +171,8 @@ public class LotteryTicketController {
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public void getSIXSUMHistory() {
-        if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") == null) {
+    public JSONObject getSIXSUMHistory() {
+       // if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") == null) {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -180,30 +184,37 @@ public class LotteryTicketController {
             JSONArray dataArray = body.getJSONArray("data");
             JSONObject firstData = (JSONObject) dataArray.get(0);
             lotteryUtils.SIXSUM_utils(firstData);
-            if (saveSpace.INSTANCE.getValue() != null) {
-                if (saveSpace.INSTANCE.getValue().get("11009") != firstData.get("11009")) {
-                    JSONObject newValue = new JSONObject();
-                    newValue.put("11009_List", dataArray);
-                    newValue.put("11009", firstData);
-                    saveSpace.INSTANCE.setValue(newValue);
-                    logger.trace("六合彩数据更新，时间：" + System.currentTimeMillis());
-                    System.out.println("六合彩数据更新，时间：" + System.currentTimeMillis());
-                } else {
-                    JSONObject newValue = saveSpace.INSTANCE.getValue();
-                    newValue.put("11009_List", dataArray);
-                    newValue.put("11009", firstData);
-                    logger.trace("六合彩数据创建，时间：" + System.currentTimeMillis());
-                    System.out.println("六合彩数据创建，时间：" + System.currentTimeMillis());
-                }
-            }
-        } else {
-            System.out.println(saveSpace.INSTANCE.getValue() + "  from saveSpace");
-        }
+            return firstData;
+//            if (saveSpace.INSTANCE.getValue() != null) {
+//                if (saveSpace.INSTANCE.getValue().get("11009") != firstData.get("11009")) {
+//                    JSONObject newValue = new JSONObject();
+//                    newValue.put("11009_List", dataArray);
+//                    newValue.put("11009", firstData);
+//                    saveSpace.INSTANCE.setValue(newValue);
+//                    logger.trace("六合彩数据更新，时间：" + System.currentTimeMillis());
+//                    System.out.println("六合彩数据更新，时间：" + System.currentTimeMillis());
+//                } else {
+//                    JSONObject newValue = saveSpace.INSTANCE.getValue();
+//                    newValue.put("11009_List", dataArray);
+//                    newValue.put("11009", firstData);
+//                    logger.trace("六合彩数据创建，时间：" + System.currentTimeMillis());
+//                    System.out.println("六合彩数据创建，时间：" + System.currentTimeMillis());
+//                }
+//            }
+//        } else {
+//            System.out.println(saveSpace.INSTANCE.getValue() + "  from saveSpace");
+//        }
     }
 
     @RequestMapping(value = "/lottery/newTicketInfo/{lotCode}", method = RequestMethod.GET)
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
+        if (lotCode.equals("11009")) {
+            this.getSIXSUMHistory();
+            JSONObject jsonObject = (JSONObject) saveSpace.INSTANCE.getValue().get("11009");
+            map = JSONObject.toJavaObject(jsonObject, Map.class);
+            return ResultGen.getResult((Map<Object, Object>) map, 0);
+        }
         if (lotteryUtils.CodeVerification(lotCode)) {
             //参数错误
             return ResultGen.getResult((HashMap<Object, Object>) map, 4);
@@ -227,11 +238,11 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/indexTickets", method = RequestMethod.GET)
     public HashMap<String, Object> getIndexTickets() {
+        this.getSIXSUMHistory();
 
         ArrayList<String> arrayList1 = new ArrayList();
         ArrayList<String> arrayList2 = new ArrayList();
         ArrayList arr = new ArrayList();
-
         arrayList1.add("11002");
         arrayList1.add("11001");
         arrayList1.add("11007");
@@ -242,22 +253,24 @@ public class LotteryTicketController {
             Map map = new HashMap();
             if (saveSpace.INSTANCE.getValue().get(code) == null) {
                 ExLotteryTicket t = service_ex.getNewTicketInfo(code);
-                saveSpace.INSTANCE.setValue(t.getLot_code(),t);
+                saveSpace.INSTANCE.setValue(t.getLot_code(), t);
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             } else {
-                ExLotteryTicket t =(ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                ExLotteryTicket t = (ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             }
         }
         //香港6和
-        if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
-            arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
-        } else {
-            this.getSIXSUMHistory();
-            arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
-        }
+        // if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
+        this.getSIXSUMHistory();
+        arr.add(this.getSIXSUMHistory());
+       // arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+        //  } else {
+        //     this.getSIXSUMHistory();
+        //      arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+        //  }
         //arrayList2.add("11009"); //liuhecai
         arrayList2.add("10001");
         arrayList2.add("11003");
@@ -273,11 +286,11 @@ public class LotteryTicketController {
             Map map = new HashMap();
             if (saveSpace.INSTANCE.getValue().get(code) == null) {
                 ExLotteryTicket t = service_ex.getNewTicketInfo(code);
-                saveSpace.INSTANCE.setValue(t.getLot_code(),t);
+                saveSpace.INSTANCE.setValue(t.getLot_code(), t);
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             } else {
-                ExLotteryTicket t =(ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                ExLotteryTicket t = (ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             }
@@ -290,7 +303,6 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/LongCount", method = RequestMethod.GET)
     public Object longDragonRemindByLotCode(@PathVariable("lotCode") String lotCode) {
-
         return service_ex.getLongDragonInfo(lotCode);
     }
 
@@ -309,23 +321,32 @@ public class LotteryTicketController {
 
 
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/EvenCount", method = RequestMethod.GET)
-    public Object getDoubleNumber(@PathVariable("lotCode")String lotCode){
+    public Object getDoubleNumber(@PathVariable("lotCode") String lotCode) {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
         int type = list.get(0).getLot_type();
-        if (type == 1 || type == 4 || type == 6){
-            return lotteryUtils.doubleNumberCount(list);
-        }
-        if (type == 2 || type == 3 ){
-            JSONArray jsonArray = new JSONArray();
-            jsonArray.add(lotteryUtils.allNumberCount(list));
+        JSONArray jsonArray = new JSONArray();
+        if (type == 1 || type == 4 || type == 6) {
             jsonArray.add(lotteryUtils.doubleNumberCount(list));
+            return jsonArray;
+        }
+        if (type == 2 || type == 3) {
+
+            jsonArray.add(lotteryUtils.doubleNumberCount(list));
+            jsonArray.add(lotteryUtils.allNumberCount(list));
             return jsonArray;
         }
         return null;
     }
 
 
-
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/SizeParityHistory", method = RequestMethod.GET)
+    public JSONObject getSizeParityHistory(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketInfoDoubleList(lotCode);
+        JSONObject js = new JSONObject();
+        js.put("complexView", lotteryUtils.complexView(list));
+        js.put("singleView", lotteryUtils.singleView(list));
+        return js;
+    }
 
     public enum saveSpace {
         INSTANCE;
@@ -348,10 +369,10 @@ public class LotteryTicketController {
             if (this.value.get(key) != null) {
                 this.value.remove(key);
                 this.value.put(key, value);
-                System.out.println(key+" update "+value);
+                System.out.println(key + " update " + value);
             } else {
                 this.value.put(key, value);
-                System.out.println(key+" create "+value);
+                System.out.println(key + " create " + value);
             }
         }
     }

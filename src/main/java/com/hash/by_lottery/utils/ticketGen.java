@@ -32,7 +32,8 @@ public class ticketGen {
         data.put("videoImg", ticket.getLot_videoImg());
         data.put("videoUrl", ticket.getLot_videoUrl());
         data.put("totalCount", ticket.getLot_count());
-        data.put("drawNumberArr", ticket.getDraw_code().split(","));
+        //data.put("drawNumberArr", ticket.getDraw_code().split(","));
+        data.put("drawNumberArr",lotteryCodeAdapter.toCalculate(ticket.getDraw_code()));
         String[] drawCode = ticket.getDraw_code().split(",");
         data.put("isDraw", false);
         data.put("lotState",ticket.getLot_state());
@@ -68,7 +69,7 @@ public class ticketGen {
                 break;
             //时时彩
             case 2:
-                data.put("dragonTiger", DT.get(0));
+                data.put("dragonTigerArr", DT);
                 data.put("firstNumber", drawCode[0]);
                 data.put("secondNumber", drawCode[1]);
                 data.put("thirdNumber", drawCode[2]);
@@ -88,7 +89,7 @@ public class ticketGen {
                 data.put("thirdNumber", drawCode[2]);
                 data.put("fourthNumber", drawCode[3]);
                 data.put("fifthNumber", drawCode[4]);
-                data.put("dragonTiger",lotteryUtils.DragonTiger(intCode));
+                data.put("dragonTigerArr",lotteryUtils.DragonTiger(intCode));
                 data.put("firstThree", lotteryUtils.threeFMB(intCode)[0]);
                 data.put("middleThree", lotteryUtils.threeFMB(intCode)[1]);
                 data.put("lastThree", lotteryUtils.threeFMB(intCode)[2]);

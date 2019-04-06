@@ -441,13 +441,14 @@ public class lotteryUtils {
         return str.substring(countStart, countEnd);
     }
 
-    public static void SIXSUM_utils(JSONObject jsonObject) {
+    public static JSONObject SIXSUM_utils(JSONObject jsonObject) {
         jsonObject.put("lotCode", "11009");
         jsonObject.put("lotName", "香港六合彩");
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
         jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
+        return jsonObject;
     }
 
     public static JSONObject allNumberCount(List<ExLotteryTicket> list) {
@@ -495,20 +496,172 @@ public class lotteryUtils {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("doubleCount", doubleNum);
-        return jsonObject ;
+        return jsonObject;
     }
 
 
-    public static JSONObject complexView(List<ExLotteryTicket> list){
-        ArrayList
-        for (ExLotteryTicket e:
-             list) {
-
+    public static Object[][] complexView(List<ExLotteryTicket> list) {
+        int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        ArrayList<String> date = getpastDaysList(15);
+        Map<String, ArrayList<int[]>> map = new LinkedHashMap();
+        for (String dateStr :
+                date) {
+            ArrayList<int[]> dateSTRING = new ArrayList<>();
+            for (ExLotteryTicket e :
+                    list) {
+                if (e.getDraw_time().substring(0, 10).equals(dateStr)) {
+                    int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
+                    dateSTRING.add(ints);
+                }
+                map.put(dateStr, dateSTRING);
+            }
         }
+        System.out.println(map);
+        Iterator iter = map.entrySet().iterator();
+        ArrayList<JSONObject> jsonArray = new ArrayList<>();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            String key = (String) entry.getKey();
+            List<int[]> val = (List) entry.getValue();
+            int[][] group = new int[bollNum][4];
+            for (int[] ints :
+                    val) {
+                for (int i = 0; i < bollNum; i++) {
+                    if (ints[i] % 2 == 1) {
+                        group[i][0]++;
+                    } else {
+                        group[i][1]++;
+                    }
+                    if (ints[i] > 4) {
+                        group[i][2]++;
+                    } else {
+                        group[i][3]++;
+                    }
+                }
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(key, group);
+            jsonArray.add(jsonObject);
+        }
+
+        Object[][][] objs = new Object[bollNum][date.size()][4];
+        for (int i = 0; i < 4; i++) {
+            Object[][] objects = new Object[date.size()][5];
+        for (int j = 0; j <date.size() ; j++) {
+
+            String data = (String) jsonArray.get(j).keySet().toArray()[0];
+            int[][] boll = (int[][]) jsonArray.get(j).get(data);
+                objects[j][0] = data;
+                objects[j][1] = boll[i][0];
+                objects[j][2] = boll[i][1];
+                objects[j][3] = boll[i][2];
+                objects[j][4] = boll[i][3];
+            }
+            objs[i] = objects;
+        }
+        return objs;
     }
 
-    public static JSONObject singleView(List<ExLotteryTicket> list){
 
+    public static Object[][] singleView(List<ExLotteryTicket> list) {
+        int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        ArrayList<String> date = getpastDaysList(15);
+        Map<String, ArrayList<int[]>> map = new LinkedHashMap<>();
+        for (String dateStr :
+                date) {
+            ArrayList<int[]> dateSTRING = new ArrayList<>();
+            for (ExLotteryTicket e :
+                    list) {
+                if (e.getDraw_time().substring(0, 10).equals(dateStr)) {
+                    int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
+                    dateSTRING.add(ints);
+                }
+                map.put(dateStr, dateSTRING);
+            }
+        }
+
+        Iterator iter = map.entrySet().iterator();
+        ArrayList<JSONObject> jsonArray = new ArrayList<>();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            String key = (String) entry.getKey();
+            List<int[]> val = (List) entry.getValue();
+            int[][] group = new int[4][bollNum];
+            for (int[] ints :
+                    val) {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < bollNum; j++) {
+                        if (ints[j] % 2 == 1) {
+                            group[0][j]++;
+                        } else {
+                            group[1][j]++;
+                        }
+                        if (ints[j] > 4) {
+                            group[2][j]++;
+                        } else {
+                            group[3][j]++;
+                        }
+                    }
+                }
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(key, group);
+            jsonArray.add(jsonObject);
+        }
+
+        Object[][][] objs = new Object[4][date.size()][bollNum];
+        for (int i = 0; i < 4; i++) {
+            Object[][] objects = new Object[date.size()][bollNum + 1];
+            for (int j = 0; j <date.size() ; j++) {
+                String data = (String) jsonArray.get(j).keySet().toArray()[0];
+                int[][] boll = (int[][]) jsonArray.get(j).get(data);
+                objects[j][0] = data;
+                for (int k = 1; k < bollNum + 1; k++) {
+                    objects[j][k] = boll[i][k - 1];
+                }
+            }
+            objs[i] = objects;
+        }
+        return objs;
     }
 
+    public static ArrayList<String> getpastDaysList(int intervals) {
+        ArrayList<String> pastDaysList = new ArrayList<>();
+        ArrayList<String> fetureDaysList = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            pastDaysList.add(getPastDate(i));
+            fetureDaysList.add(getFetureDate(i));
+        }
+        return pastDaysList;
+    }
+
+    /**
+     * 获取过去第几天的日期
+     *
+     * @param past
+     * @return
+     */
+    public static String getPastDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return result;
+    }
+
+    /**
+     * 获取未来 第 past 天的日期
+     *
+     * @param past
+     * @return
+     */
+    public static String getFetureDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return result;
+    }
 }

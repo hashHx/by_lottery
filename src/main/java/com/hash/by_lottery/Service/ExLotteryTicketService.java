@@ -29,6 +29,6 @@ public interface ExLotteryTicketService {
 
     JSONObject getTicketTypeInfo();
 
-    List<ExLotteryTicket> getTicketInfoDoubleList();
+    List<ExLotteryTicket> getTicketInfoDoubleList(String lotCode);
 
 }
