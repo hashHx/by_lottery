@@ -84,9 +84,9 @@ public class lotteryUtils {
      * @Date: 2019/4/1
      */
     public static int[] sum_number(int[] code) {
-        int[] temp = {code.length};
+        int[] temp = new int[code.length];
         for (int i = 0; i < code.length; i++) {
-            temp[i] = (code[i] % 10) + code[i];
+            temp[i] = (code[i] % 10) + (code[i]/10);
         }
         return temp;
     }
@@ -447,22 +447,38 @@ public class lotteryUtils {
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
-        jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
+        switch ((int)jsonObject.get("issue")%3){
+            case 1:
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(345600000)));
+                System.out.println("_____________________"+jsonObject.get("issue"));
+                System.out.println(time);
+            case 2:
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
+            case 0:
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
+        }
+        System.out.println((int)jsonObject.get("issue")%3);
         return jsonObject;
     }
 
     public static JSONObject allNumberCount(List<ExLotteryTicket> list) {
         ArrayList<int[]> objects = new ArrayList<>();
+        int type = list.get(0).getLot_type();
         for (ExLotteryTicket e :
                 list) {
             objects.add(lotteryCodeAdapter.toCalculate(e.getDraw_code()));
         }
+        int[] count = null;
+        if (type==2){
+            count = new int[10];}
 
-        int[] count = new int[10];
+        if (type==3){
+            count = new int[11];
+        }
         for (int[] i : objects) {
             for (int j :
                     i) {
-                count[j]++;
+                count[j-1]++;
             }
         }
         JSONObject jsonObject = new JSONObject();

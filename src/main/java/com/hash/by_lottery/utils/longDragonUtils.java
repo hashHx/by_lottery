@@ -133,9 +133,9 @@ public class longDragonUtils {
                     }
                 }
                 if (lotteryUtils.sum_BS(code, 2) % 2 != 0 && lotteryUtils.sum_BS(code_pre, 2) % 2 != 0) {
-                    countState_1.add(10, true);
+                    countState_1.add(true);// 11 改为 6
                 } else {
-                    countState_1.add(10, false);
+                    countState_1.add(false);
                 }
                 //双
                 for (int i = 0; i < 5; i++) {
@@ -146,9 +146,9 @@ public class longDragonUtils {
                     }
                 }
                 if (lotteryUtils.sum_BS(code, 2) % 2 == 0 && lotteryUtils.sum_BS(code_pre, 2) % 2 == 0) {
-                    countState_2.add(10, true);
+                    countState_2.add(true);
                 } else {
-                    countState_2.add(10, false);
+                    countState_2.add(false);
                 }
                 //大
                 for (int i = 0; i < 5; i++) {
@@ -330,7 +330,7 @@ public class longDragonUtils {
                 }
                 //大
                 for (int i = 0; i < 8; i++) {
-                    if ((code[i] > 5 && code_pre[i] > 5)) {
+                    if ((code[i] >= 11 && code_pre[i] >=11)) {
                         countState_3.add(true);
                     } else {
                         countState_3.add(false);
@@ -348,7 +348,7 @@ public class longDragonUtils {
                 }
                 //小
                 for (int i = 0; i < 8; i++) {
-                    if ((code[i] < 6 && code_pre[i] < 6)) {
+                    if ((code[i] < 11 && code_pre[i] < 11)) {
                         countState_4.add(true);
                     } else {
                         countState_4.add(false);

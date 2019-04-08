@@ -102,6 +102,9 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         List CRAS = longDragonUtils.countRankAndState(t.getLot_type(), t, t_);
         List<LongDragon> PM = longDragonUtils.positionMarker(CRAS);
         while (true) {
+            if (Long.parseLong(t_.getDraw_issue())%100==1){
+                break;
+            }
             t = t_;
             issue = Long.parseLong(t.getDraw_issue()) - 1;
             t_ = dao.getTicketInfoByIssue(lot_code, String.valueOf(issue));

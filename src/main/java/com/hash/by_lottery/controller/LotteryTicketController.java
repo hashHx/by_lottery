@@ -210,8 +210,7 @@ public class LotteryTicketController {
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
         if (lotCode.equals("11009")) {
-            this.getSIXSUMHistory();
-            JSONObject jsonObject = (JSONObject) saveSpace.INSTANCE.getValue().get("11009");
+            JSONObject jsonObject = this.getSIXSUMHistory();
             map = JSONObject.toJavaObject(jsonObject, Map.class);
             return ResultGen.getResult((Map<Object, Object>) map, 0);
         }
