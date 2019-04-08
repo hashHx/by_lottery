@@ -50,4 +50,9 @@ public class BaseLotteryTicketServiceImpl implements BaseLotteryTicketService {
     public int findCode(String code) {
         return dao.findLotCode(code);
     }
+
+    @Override
+    public Long getFirstIssue(String lot_code) {
+        return dao.getFirstIssue(lot_code);
+    }
 }

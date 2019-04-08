@@ -21,6 +21,7 @@ public interface BaseLotteryTicketDao {
      String getCurrentCount(String lot_code);
      int findLotCode(String lot_code);
      BaseLotteryTicket getNewTicketInfo(String lot_code);
+     Long getFirstIssue(String lot_code);
 
 
 }

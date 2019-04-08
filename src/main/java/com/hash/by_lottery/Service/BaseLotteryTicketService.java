@@ -17,5 +17,6 @@ public interface BaseLotteryTicketService {
     int saveBaseTicketInfoFromPush(BaseLotteryTicket ticket);
     String getCurrentCount(String lotCode);
     int findCode(String code);
+    Long getFirstIssue(String lot_code);
 
 }

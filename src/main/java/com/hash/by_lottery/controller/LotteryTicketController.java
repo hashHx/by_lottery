@@ -10,8 +10,6 @@ import com.hash.by_lottery.entities.BaseLotteryTicket;
 import com.hash.by_lottery.entities.Config;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.utils.*;
-import lombok.Data;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +64,8 @@ public class LotteryTicketController {
     @RequestMapping(value = "/lottery/spider", method = RequestMethod.POST)
     public String getSpiderInfo(BaseLotteryTicket ticket) {
         if (ticket.getDraw_code() != null) {
-            BaseLotteryTicket check = service.getTickerInfo(ticket.getLot_code(),ticket.getDraw_issue());
-            if (check!=null){
+            BaseLotteryTicket check = service.getTickerInfo(ticket.getLot_code(), ticket.getDraw_issue());
+            if (check != null) {
                 return "二四你在逗我呢";
             }
             ticket.setL_id(IdGen.get().nextId());
@@ -124,6 +122,9 @@ public class LotteryTicketController {
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/DrawNumber", method = RequestMethod.GET)
     public Object getExTickerInfo(@PathVariable("lotCode") String lotCode) {
         Map map = new HashMap();
+        if (lotCode.equals("11009")) {
+            return ResultGen.getResult(this.getSIXSUMHistoryList(), 0);
+        }
 
         if (lotteryUtils.ResultByCodeVerification(service, service_ex, map, lotCode) != null) {
             List<ExLotteryTicket> list = service_ex.getTicketList(lotCode);
@@ -131,7 +132,6 @@ public class LotteryTicketController {
             for (ExLotteryTicket eticket : list
             ) {
                 map = ticketGen.getresult(eticket, eticket.getLot_type());
-                System.out.println(map);
                 ticketList_.add(map);
             }
             return ResultGen.getResult(ticketList_, 0);
@@ -172,19 +172,19 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public JSONObject getSIXSUMHistory() {
-       // if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") == null) {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Accept", "application/json");
-            headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
-            HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-            ResponseEntity<JSONObject> response = restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
-            JSONObject body = response.getBody().getJSONObject("result");
-            JSONArray dataArray = body.getJSONArray("data");
-            JSONObject firstData = (JSONObject) dataArray.get(0);
-            lotteryUtils.SIXSUM_utils(firstData);
-            return firstData;
+        // if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") == null) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept", "application/json");
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        ResponseEntity<JSONObject> response = restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
+        JSONObject body = response.getBody().getJSONObject("result");
+        JSONArray dataArray = body.getJSONArray("data");
+        JSONObject firstData = (JSONObject) dataArray.get(0);
+        lotteryUtils.SIXSUM_utils(firstData);
+        return firstData;
 //            if (saveSpace.INSTANCE.getValue() != null) {
 //                if (saveSpace.INSTANCE.getValue().get("11009") != firstData.get("11009")) {
 //                    JSONObject newValue = new JSONObject();
@@ -205,6 +205,26 @@ public class LotteryTicketController {
 //            System.out.println(saveSpace.INSTANCE.getValue() + "  from saveSpace");
 //        }
     }
+
+    public ArrayList getSIXSUMHistoryList() {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept", "application/json");
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        ResponseEntity<JSONObject> response = restTemplate.exchange("https://1680660.com/smallSixMobile/findSmallSixHistory.do?year=2019", HttpMethod.GET, entity, JSONObject.class);
+        JSONObject body = response.getBody().getJSONObject("result");
+        JSONArray dataArray = body.getJSONArray("data");
+        ArrayList<JSONObject> arrayList = new ArrayList<>();
+        for (Object ob :
+                dataArray) {
+            JSONObject jsonObject = (JSONObject) ob;
+            arrayList.add(lotteryUtils.SIXSUM_utils(jsonObject));
+        }
+        return arrayList;
+    }
+
 
     @RequestMapping(value = "/lottery/newTicketInfo/{lotCode}", method = RequestMethod.GET)
     public HashMap<String, Object> getNewTickerInfo(@PathVariable("lotCode") String lotCode) {
@@ -265,7 +285,7 @@ public class LotteryTicketController {
         // if (LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009") != null) {
         this.getSIXSUMHistory();
         arr.add(this.getSIXSUMHistory());
-       // arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
+        // arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));
         //  } else {
         //     this.getSIXSUMHistory();
         //      arr.add(LotteryTicketController.saveSpace.INSTANCE.getValue().get("11009"));

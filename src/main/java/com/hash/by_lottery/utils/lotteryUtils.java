@@ -450,8 +450,6 @@ public class lotteryUtils {
         switch ((int)jsonObject.get("issue")%3){
             case 1:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(345600000)));
-                System.out.println("_____________________"+jsonObject.get("issue"));
-                System.out.println(time);
             case 2:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
             case 0:
@@ -680,4 +678,7 @@ public class lotteryUtils {
         String result = format.format(today);
         return result;
     }
+
+
+
 }
