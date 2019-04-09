@@ -247,6 +247,7 @@ public class LotteryTicketController {
                     //期数不存在
                     return ResultGen.getResult((HashMap<Object, Object>) map, 3);
                 } else {
+                    ticketGen.setIssue(service.getFirstIssue(lotCode));
                     map = ticketGen.getresult(t, t.getLot_type());
                     return ResultGen.getResult((HashMap<Object, Object>) map, 0);
                 }
@@ -358,6 +359,7 @@ public class LotteryTicketController {
     }
 
 
+
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/SizeParityHistory", method = RequestMethod.GET)
     public JSONObject getSizeParityHistory(@PathVariable("lotCode") String lotCode) {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketInfoDoubleList(lotCode);
@@ -366,6 +368,12 @@ public class LotteryTicketController {
         js.put("singleView", lotteryUtils.singleView(list));
         return js;
     }
+
+    @RequestMapping(value = "/lottery/allTickets", method = RequestMethod.GET)
+    public net.sf.json.JSONArray getAllTicket(){
+        return  net.sf.json.JSONArray.fromObject("[{\"name\":\"热门彩\",\"list\":[{\"lotCode\":\"11002\",\"lotType\":\"2\",\"lotName\":\"五分时时彩\"},{\"lotCode\":\"11001\",\"lotType\":\"2\",\"lotName\":\"三分时时彩\"},{\"lotCode\":\"11007\",\"lotType\":\"1\",\"lotName\":\"五分赛车\"},{\"lotCode\":\"11004\",\"lotType\":\"5\",\"lotName\":\"五分快三\"},{\"lotCode\":\"11005\",\"lotType\":\"5\",\"lotName\":\"三分快三\"},{\"lotCode\":\"11009\",\"lotType\":\"7\",\"lotName\":\"香港六合彩\"},{\"lotCode\":\"10001\",\"lotType\":\"1\",\"lotName\":\"北京PK10\"},{\"lotCode\":\"11003\",\"lotType\":\"2\",\"lotName\":\"QQ分分彩\"},{\"lotCode\":\"10002\",\"lotType\":\"2\",\"lotName\":\"重庆欢乐生肖\"},{\"lotCode\":\"11010\",\"lotType\":\"1\",\"lotName\":\"极速赛车\"},{\"lotCode\":\"11006\",\"lotType\":\"5\",\"lotName\":\"台北快三\"},{\"lotCode\":\"11011\",\"lotType\":\"3\",\"lotName\":\"东京11选5\"},{\"lotCode\":\"10006\",\"lotType\":\"3\",\"lotName\":\"广东11选5\"},{\"lotCode\":\"10005\",\"lotType\":\"4\",\"lotName\":\"广东快乐十分\"},{\"lotCode\":\"11008\",\"lotType\":\"1\",\"lotName\":\"香港跑马\"}]},{\"name\":\"PK10系列\",\"list\":[{\"lotCode\":\"11007\",\"lotType\":\"1\",\"lotName\":\"五分赛车\"},{\"lotCode\":\"10001\",\"lotType\":\"1\",\"lotName\":\"北京PK10\"},{\"lotCode\":\"11010\",\"lotType\":\"1\",\"lotName\":\"极速赛车\"},{\"lotCode\":\"11008\",\"lotType\":\"1\",\"lotName\":\"香港跑马\"},{\"lotCode\":\"10057\",\"lotType\":\"1\",\"lotName\":\"幸运飞艇\"}]},{\"name\":\"时时彩系列\",\"list\":[{\"lotCode\":\"11002\",\"lotType\":\"2\",\"lotName\":\"五分时时彩\"},{\"lotCode\":\"11001\",\"lotType\":\"2\",\"lotName\":\"三分时时彩\"},{\"lotCode\":\"11003\",\"lotType\":\"2\",\"lotName\":\"QQ分分彩\"},{\"lotCode\":\"10003\",\"lotType\":\"2\",\"lotName\":\"天津时时彩\"},{\"lotCode\":\"10004\",\"lotType\":\"2\",\"lotName\":\"新疆时时彩\"}]},{\"name\":\"快三系列\",\"list\":[{\"lotCode\":\"10007\",\"lotType\":\"5\",\"lotName\":\"江苏快3\"},{\"lotCode\":\"10026\",\"lotType\":\"5\",\"lotName\":\"广西快3\"},{\"lotCode\":\"10027\",\"lotType\":\"5\",\"lotName\":\"吉林快3\"},{\"lotCode\":\"10028\",\"lotType\":\"5\",\"lotName\":\"河北快3\"},{\"lotCode\":\"10029\",\"lotType\":\"5\",\"lotName\":\"内蒙古快3\"},{\"lotCode\":\"10030\",\"lotType\":\"5\",\"lotName\":\"安徽快3\"},{\"lotCode\":\"10031\",\"lotType\":\"5\",\"lotName\":\"福建快3\"},{\"lotCode\":\"10020\",\"lotType\":\"5\",\"lotName\":\"湖北快3\"},{\"lotCode\":\"10033\",\"lotType\":\"5\",\"lotName\":\"北京快3\"},{\"lotCode\":\"11006\",\"lotType\":\"5\",\"lotName\":\"台北快3\"},{\"lotCode\":\"11004\",\"lotType\":\"5\",\"lotName\":\"五分快3\"},{\"lotCode\":\"11005\",\"lotType\":\"5\",\"lotName\":\"三分快3\"}]},{\"name\":\"11选5系列\",\"list\":[{\"lotCode\":\"11011\",\"lotType\":\"3\",\"lotName\":\"东京11选5\"},{\"lotCode\":\"10006\",\"lotType\":\"3\",\"lotName\":\"广东11选5\"},{\"lotCode\":\"10017\",\"lotType\":\"3\",\"lotName\":\"安徽11选5\"},{\"lotCode\":\"11014\",\"lotType\":\"3\",\"lotName\":\"北京11选5\"},{\"lotCode\":\"10020\",\"lotType\":\"3\",\"lotName\":\"湖北11选5\"},{\"lotCode\":\"\",\"lotType\":\"3\",\"lotName\":\"江苏11选5\"},{\"lotCode\":\"10019\",\"lotType\":\"3\",\"lotName\":\"辽宁11选5\"},{\"lotCode\":\"10018\",\"lotType\":\"3\",\"lotName\":\"上海11选5\"}]},{\"name\":\"快乐十分系列\",\"list\":[{\"lotCode\":\"10005\",\"lotType\":\"4\",\"lotName\":\"广东快乐十分\"},{\"lotCode\":\"10046\",\"lotType\":\"8\",\"lotName\":\"PC蛋蛋幸运28\"},{\"lotCode\":\"10011\",\"lotType\":\"4\",\"lotName\":\"澳洲幸运8\"},{\"lotCode\":\"10034\",\"lotType\":\"4\",\"lotName\":\"天津快乐十分\"},{\"lotCode\":\"10009\",\"lotType\":\"4\",\"lotName\":\"重庆幸运农场\"}]},{\"name\":\"六合彩系列\",\"list\":[{\"lotCode\":\"11009\",\"lotType\":\"7\",\"lotName\":\"香港六合彩\"},{\"lotCode\":\"11012\",\"lotType\":\"7\",\"lotName\":\"十分六合彩\"},{\"lotCode\":\"11013\",\"lotType\":\"7\",\"lotName\":\"五分六合彩\"}]}]");
+    }
+
 
     public enum saveSpace {
         INSTANCE;

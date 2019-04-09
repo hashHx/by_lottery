@@ -37,7 +37,6 @@
 		from lottery_ticket
 		where lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') order by draw_issue limit 1 
 	</select>
-	
-	<select id="getlot"
+
 
 </mapper>

@@ -40,12 +40,18 @@ public class ticketGen {
         Long issue_ = firstIssue;
         Long count = new Long(ticket.getLot_count());
         if ((issue - issue_ + 1) == count) {
+            System.out.println(issue - issue_ + 1);
             //本期为最后一期
             JSONObject jsonObject = getClosedList();
             Long closing = (Long) jsonObject.get(ticket.getLot_code());
-            if (closing != 0L){
+            if (closing != 0L) {
                 data.replace("drawIssue", "");
                 data.put("nextDrawTime", String.valueOf(time + closing));
+            }
+            if (ticket.getLot_code().equals("10002")) {
+                if ((issue - issue_ + 1) == 9L) {
+                    data.put("nextDrawTime", String.valueOf(time + 15600000L));
+                }
             }
         }
         data.put("iconUrl", ticket.getLot_imgUrl());
@@ -200,5 +206,6 @@ public class ticketGen {
         object.put("10005", 37200000L);
         return object;
     }
+
 
 }
