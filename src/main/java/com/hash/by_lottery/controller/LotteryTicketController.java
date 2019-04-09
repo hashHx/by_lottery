@@ -274,10 +274,12 @@ public class LotteryTicketController {
             if (saveSpace.INSTANCE.getValue().get(code) == null) {
                 ExLotteryTicket t = service_ex.getNewTicketInfo(code);
                 saveSpace.INSTANCE.setValue(t.getLot_code(), t);
+                ticketGen.setIssue(service.getFirstIssue(t.getLot_code()));
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             } else {
                 ExLotteryTicket t = (ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                ticketGen.setIssue(service.getFirstIssue(t.getLot_code()));
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             }
@@ -306,11 +308,13 @@ public class LotteryTicketController {
             Map map = new HashMap();
             if (saveSpace.INSTANCE.getValue().get(code) == null) {
                 ExLotteryTicket t = service_ex.getNewTicketInfo(code);
+                ticketGen.setIssue(service.getFirstIssue(t.getLot_code()));
                 saveSpace.INSTANCE.setValue(t.getLot_code(), t);
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             } else {
                 ExLotteryTicket t = (ExLotteryTicket) saveSpace.INSTANCE.getValue().get(code);
+                ticketGen.setIssue(service.getFirstIssue(t.getLot_code()));
                 map = ticketGen.getresult(t, t.getLot_type());
                 arr.add(map);
             }
