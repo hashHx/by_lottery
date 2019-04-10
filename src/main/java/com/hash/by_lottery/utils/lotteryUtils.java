@@ -86,7 +86,7 @@ public class lotteryUtils {
     public static int[] sum_number(int[] code) {
         int[] temp = new int[code.length];
         for (int i = 0; i < code.length; i++) {
-            temp[i] = (code[i] % 10) + (code[i]/10);
+            temp[i] = (code[i] % 10) + (code[i] / 10);
         }
         return temp;
     }
@@ -447,7 +447,7 @@ public class lotteryUtils {
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
-        switch ((int)jsonObject.get("issue")%3){
+        switch ((int) jsonObject.get("issue") % 3) {
             case 1:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(345600000)));
             case 2:
@@ -455,10 +455,17 @@ public class lotteryUtils {
             case 0:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
         }
-        System.out.println((int)jsonObject.get("issue")%3);
+        System.out.println((int) jsonObject.get("issue") % 3);
         return jsonObject;
     }
 
+    /**
+     * @Description: 双面统计数字
+     * @Param: [list]
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Author: Hash
+     * @Date: 2019/4/9
+     */
     public static JSONObject allNumberCount(List<ExLotteryTicket> list) {
         ArrayList<int[]> objects = new ArrayList<>();
         int type = list.get(0).getLot_type();
@@ -467,16 +474,17 @@ public class lotteryUtils {
             objects.add(lotteryCodeAdapter.toCalculate(e.getDraw_code()));
         }
         int[] count = null;
-        if (type==2){
-            count = new int[10];}
+        if (type == 2) {
+            count = new int[10];
+        }
 
-        if (type==3){
+        if (type == 3) {
             count = new int[11];
         }
         for (int[] i : objects) {
             for (int j :
                     i) {
-                count[j-1]++;
+                count[j - 1]++;
             }
         }
         JSONObject jsonObject = new JSONObject();
@@ -485,6 +493,13 @@ public class lotteryUtils {
         return jsonObject;
     }
 
+    /**
+     * @Description: 双面统计 单个球
+     * @Param: [list]
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Author: Hash
+     * @Date: 2019/4/9
+     */
     public static JSONObject doubleNumberCount(List<ExLotteryTicket> list) {
         ArrayList<int[]> objects = new ArrayList<>();
         JSONArray array = new JSONArray();
@@ -514,6 +529,13 @@ public class lotteryUtils {
     }
 
 
+    /**
+     * @Description: 单双大小历史查询 综合查询
+     * @Param: [list]
+     * @return: java.lang.Object[][]
+     * @Author: Hash
+     * @Date: 2019/4/9
+     */
     public static Object[][] complexView(List<ExLotteryTicket> list) {
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         ArrayList<String> date = getpastDaysList(15);
@@ -561,10 +583,10 @@ public class lotteryUtils {
         Object[][][] objs = new Object[bollNum][date.size()][4];
         for (int i = 0; i < 4; i++) {
             Object[][] objects = new Object[date.size()][5];
-        for (int j = 0; j <date.size() ; j++) {
+            for (int j = 0; j < date.size(); j++) {
 
-            String data = (String) jsonArray.get(j).keySet().toArray()[0];
-            int[][] boll = (int[][]) jsonArray.get(j).get(data);
+                String data = (String) jsonArray.get(j).keySet().toArray()[0];
+                int[][] boll = (int[][]) jsonArray.get(j).get(data);
                 objects[j][0] = data;
                 objects[j][1] = boll[i][0];
                 objects[j][2] = boll[i][1];
@@ -576,7 +598,13 @@ public class lotteryUtils {
         return objs;
     }
 
-
+    /**
+     * @Description: 单双大小历史查询  单独查询
+     * @Param: [list]
+     * @return: java.lang.Object[][]
+     * @Author: Hash
+     * @Date: 2019/4/9
+     */
     public static Object[][] singleView(List<ExLotteryTicket> list) {
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         ArrayList<String> date = getpastDaysList(15);
@@ -626,7 +654,7 @@ public class lotteryUtils {
         Object[][][] objs = new Object[4][date.size()][bollNum];
         for (int i = 0; i < 4; i++) {
             Object[][] objects = new Object[date.size()][bollNum + 1];
-            for (int j = 0; j <date.size() ; j++) {
+            for (int j = 0; j < date.size(); j++) {
                 String data = (String) jsonArray.get(j).keySet().toArray()[0];
                 int[][] boll = (int[][]) jsonArray.get(j).get(data);
                 objects[j][0] = data;
@@ -638,6 +666,87 @@ public class lotteryUtils {
         }
         return objs;
     }
+
+
+    public static ArrayList getDSBSRoadBead(List<ExLotteryTicket> list) {
+        int bollNum = list.get(0).getDraw_code().split(",").length;
+        int[][] ints = new int[list.size()][bollNum];
+        for (int i = 0; i < bollNum; i++) {
+            for (int j = 0; j < list.size(); j++) {
+                ints[i][j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
+            }
+        }
+        ArrayList DS = new ArrayList(); //单双
+        ArrayList BS = new ArrayList(); //大小
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < bollNum; j++) {
+                switch (list.get(i).getLot_type()) {
+                    case 1:
+                        //                     if ()
+                }
+            }
+        }
+        return null;
+    }
+
+    //单双过滤器
+    private static int[] DS_Filter(int[] i) {
+        for (int j = 0; j < i.length; j++) {
+            i[j] = (i[j] % 2 == 1 ? 0 : 1);
+        }
+        return i;
+    }
+
+    //大小过滤器
+    private static int[] BS_Filter(int[] i, int type) {
+        switch (type) {
+            case 1:
+                for (int j = 0; j < i.length; j++) {
+                    i[j] = (i[j] > 5 ? 0 : 1);
+                }
+                return i;
+            case 2:
+                for (int j = 0; j < i.length; j++) {
+                    i[j] = (i[j] > 4 ? 0 : 1);
+                }
+                return i;
+            case 3:
+                for (int j = 0; j < i.length; j++) {
+                    i[j] = (i[j] > 5 ? 0 : 1);
+                }
+                return i;
+            case 4:
+                for (int j = 0; j < i.length; j++) {
+                    i[j] = (i[j] > 10 ? 0 : 1);
+                }
+                return i;
+            case 6:
+                for (int j = 0; j < i.length; j++) {
+                    i[j] = (i[j] > 10 ? 0 : 1);
+                }
+                return i;
+        }
+        return i;
+    }
+
+    private static List<List<Integer>> moreArr(int[] args){
+        List<List<Integer>>result=new ArrayList<>();
+        List<Integer> list=new ArrayList();
+        for(int i=0;i<args.length-1;i++){
+            list.add(args[i]);
+            if (args[i]!=args[i+1]){
+                result.add(list);
+                list=new ArrayList<>();
+            }
+        }
+        return result;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(moreArr(new int[]{0,0,0,1,0,0,1,1,0,0}));
+    }
+
 
     public static ArrayList<String> getpastDaysList(int intervals) {
         ArrayList<String> pastDaysList = new ArrayList<>();
@@ -678,7 +787,6 @@ public class lotteryUtils {
         String result = format.format(today);
         return result;
     }
-
 
 
 }

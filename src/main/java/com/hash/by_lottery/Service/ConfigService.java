@@ -10,7 +10,7 @@ public interface ConfigService {
 
     JSONArray getConfigById(int id);
 
-    int updateConfigById(int id,JSONObject content);
+    int updateConfigById(int id,Object content);
 
 
 }

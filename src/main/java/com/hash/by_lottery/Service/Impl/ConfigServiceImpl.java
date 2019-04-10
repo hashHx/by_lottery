@@ -56,7 +56,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public int updateConfigById(int id, com.alibaba.fastjson.JSONObject content) {
+    public int updateConfigById(int id, Object content) {
         Config config = new Config();
         config.setConfig_id(id);
         //config.setConfig_content(updateConfigContentSwitch(id));

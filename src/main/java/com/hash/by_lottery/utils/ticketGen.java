@@ -39,6 +39,7 @@ public class ticketGen {
         Long issue = Long.parseLong(ticket.getDraw_issue());
         Long issue_ = firstIssue;
         Long count = new Long(ticket.getLot_count());
+        if (issue_!=0L){
         if ((issue - issue_ + 1) == count) {
             System.out.println(issue - issue_ + 1);
             //本期为最后一期
@@ -53,7 +54,7 @@ public class ticketGen {
                     data.put("nextDrawTime", String.valueOf(time + 15600000L));
                 }
             }
-        }
+        }}
         data.put("iconUrl", ticket.getLot_imgUrl());
         data.put("videoImg", ticket.getLot_videoImg());
         data.put("videoUrl", ticket.getLot_videoUrl());
