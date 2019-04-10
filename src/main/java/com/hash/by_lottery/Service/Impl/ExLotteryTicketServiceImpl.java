@@ -153,6 +153,16 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         return dao.getTicketInfoDoubleList(code);
     }
 
+    @Override
+    public List<ExLotteryTicket> getIndexTickets(List<String> list) {
+        return dao.getNewTicketInfoList(list);
+    }
+
+    @Override
+    public void insertCache(ExLotteryTicket ex) {
+
+        System.out.println(dao.insertCache(ex)+"执行影响数量");
+    }
 
 
 }

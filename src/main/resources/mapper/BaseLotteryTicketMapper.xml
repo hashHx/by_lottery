@@ -34,8 +34,8 @@
 
 	<select id="getFirstIssue" parameterType="String" resultType="Long">
 		select draw_issue
-		from lottery_ticket
-		where lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') order by draw_issue limit 1 
+		from ticket_cache
+		where lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') order by draw_issue limit 1
 	</select>
 
 

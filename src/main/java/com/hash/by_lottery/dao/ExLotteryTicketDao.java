@@ -28,6 +28,8 @@ public interface ExLotteryTicketDao {
       ExLotteryTicket getTicketInfoByIssue(String lot_code,String draw_issue);
       List<ExLotteryTicket> getTicketTypeInfo();
       List<ExLotteryTicket> getTicketInfoDoubleList(String lot_code);
+      List<ExLotteryTicket> getNewTicketInfoList(@Param("codes")List<String> codes);
+      int insertCache(ExLotteryTicket ex);
 
 }
 

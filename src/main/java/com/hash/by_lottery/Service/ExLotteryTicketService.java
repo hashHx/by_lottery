@@ -31,4 +31,8 @@ public interface ExLotteryTicketService {
 
     List<ExLotteryTicket> getTicketInfoDoubleList(String lotCode);
 
+    List<ExLotteryTicket> getIndexTickets(List<String> list);
+
+    void insertCache(ExLotteryTicket ex);
+
 }
