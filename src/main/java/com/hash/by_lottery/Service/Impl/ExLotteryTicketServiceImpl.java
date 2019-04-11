@@ -160,8 +160,7 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
 
     @Override
     public void insertCache(ExLotteryTicket ex) {
-
-        System.out.println(dao.insertCache(ex)+"执行影响数量");
+        dao.insertCache(ex);
     }
 
 

@@ -451,11 +451,11 @@ public class lotteryUtils {
             case 1:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(345600000)));
             case 2:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
             case 0:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
         }
-        System.out.println((int) jsonObject.get("issue") % 3);
+        //System.out.println((int) jsonObject.get("issue") % 3);
         return jsonObject;
     }
 
@@ -484,12 +484,14 @@ public class lotteryUtils {
         for (int[] i : objects) {
             for (int j :
                     i) {
-                count[j - 1]++;
+                {
+                    count[j]++;
+                }
+
             }
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("numberCount", count);
-        System.out.println(count);
         return jsonObject;
     }
 
@@ -501,12 +503,17 @@ public class lotteryUtils {
      * @Date: 2019/4/9
      */
     public static JSONObject doubleNumberCount(List<ExLotteryTicket> list) {
+        int type = list.get(0).getLot_type();
         ArrayList<int[]> objects = new ArrayList<>();
+        ArrayList<List> arrayList = new ArrayList();
         JSONArray array = new JSONArray();
         for (ExLotteryTicket e :
                 list) {
-            objects.add(lotteryCodeAdapter.toCalculate(e.getDraw_code()));
+            int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
+            arrayList.add(lotteryUtils.DragonTiger(ints));
+            objects.add(ints);
         }
+
         int length = objects.get(0).length;
         int[][] doubleNum = new int[length][4];
         for (int[] i : objects) {
@@ -523,6 +530,56 @@ public class lotteryUtils {
                 }
             }
         }
+        if (type == 1) {
+            int[][] dt = new int[5][2];
+            for (List l :
+                    arrayList) {
+                for (int i = 0; i < l.size(); i++) {
+                    if ((int) l.get(i) == 0) {
+                        dt[i][0]++;
+                    } else {
+                        dt[i][1]++;
+                    }
+                }
+            }
+            int[][] newDoubleNum = new int[5][6];
+            //for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    for (int k = 0; k < 4; k++) {
+                        newDoubleNum[j][k] = doubleNum[j][k];
+                    }
+                    newDoubleNum[j][4] = dt[j][0];
+                    newDoubleNum[j][5] = dt[j][1];
+                }
+
+           // }
+            for (int i = 0; i < 5; i++) {
+                doubleNum[i] = newDoubleNum[i];
+            }
+
+        }
+        if (type == 4) {
+            int[] dt = new int[2];
+            for (List l :
+                    arrayList) {
+                    if ((int) l.get(0) == 0) {
+                        dt[0]++;
+                    } else {
+                        dt[1]++;
+                    }
+            }
+
+            int[] newDoubleNum = new int[6];
+            for (int i = 0; i < 4; i++) {
+                newDoubleNum[i] = doubleNum[0][i];
+            }
+            newDoubleNum[4] = dt[0];
+            newDoubleNum[5] = dt[1];
+            doubleNum[0] = newDoubleNum;
+        }
+        //龙虎
+
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("doubleCount", doubleNum);
         return jsonObject;
@@ -549,16 +606,16 @@ public class lotteryUtils {
                     int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
                     dateSTRING.add(ints);
                 }
-                map.put(dateStr, dateSTRING);
             }
+            map.put(dateStr, dateSTRING);
         }
-        System.out.println(map);
+
         Iterator iter = map.entrySet().iterator();
         ArrayList<JSONObject> jsonArray = new ArrayList<>();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();
-            List<int[]> val = (List) entry.getValue();
+            ArrayList<int[]> val = (ArrayList<int[]>) entry.getValue();
             int[][] group = new int[bollNum][4];
             for (int[] ints :
                     val) {
@@ -579,9 +636,8 @@ public class lotteryUtils {
             jsonObject.put(key, group);
             jsonArray.add(jsonObject);
         }
-
         Object[][][] objs = new Object[bollNum][date.size()][4];
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < bollNum; i++) {
             Object[][] objects = new Object[date.size()][5];
             for (int j = 0; j < date.size(); j++) {
 
@@ -606,9 +662,53 @@ public class lotteryUtils {
      * @Date: 2019/4/9
      */
     public static Object[][] singleView(List<ExLotteryTicket> list) {
+//        int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+//        ArrayList<String> date = getpastDaysList(15);
+//        Map<String, ArrayList<int[]>> map = new LinkedHashMap<>();
+//        for (String dateStr :
+//                date) {
+//            ArrayList<int[]> dateSTRING = new ArrayList<>();
+//            for (ExLotteryTicket e :
+//                    list) {
+//                if (e.getDraw_time().substring(0, 10).equals(dateStr)) {
+//                    int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
+//                    dateSTRING.add(ints);
+//                }
+//                map.put(dateStr, dateSTRING);
+//            }
+//        }
+//
+//        Iterator iter = map.entrySet().iterator();
+//        ArrayList<JSONObject> jsonArray = new ArrayList<>();
+//        while (iter.hasNext()) {
+//            Map.Entry entry = (Map.Entry) iter.next();
+//            String key = (String) entry.getKey();
+//            List<int[]> val = (List) entry.getValue();
+//            int[][] group = new int[4][bollNum];
+//            for (int[] ints :
+//                    val) {
+//                for (int i = 0; i < 4; i++) {
+//                    for (int j = 0; j < bollNum; j++) {
+//                        if (ints[j] % 2 == 1) {
+//                            group[0][j]++;
+//                        } else {
+//                            group[1][j]++;
+//                        }
+//                        if (ints[j] > 4) {
+//                            group[2][j]++;
+//                        } else {
+//                            group[3][j]++;
+//                        }
+//                    }
+//                }
+//            }
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put(key, group);
+//            jsonArray.add(jsonObject);
+//        }
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         ArrayList<String> date = getpastDaysList(15);
-        Map<String, ArrayList<int[]>> map = new LinkedHashMap<>();
+        Map<String, ArrayList<int[]>> map = new LinkedHashMap();
         for (String dateStr :
                 date) {
             ArrayList<int[]> dateSTRING = new ArrayList<>();
@@ -618,8 +718,8 @@ public class lotteryUtils {
                     int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
                     dateSTRING.add(ints);
                 }
-                map.put(dateStr, dateSTRING);
             }
+            map.put(dateStr, dateSTRING);
         }
 
         Iterator iter = map.entrySet().iterator();
@@ -627,22 +727,20 @@ public class lotteryUtils {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             String key = (String) entry.getKey();
-            List<int[]> val = (List) entry.getValue();
-            int[][] group = new int[4][bollNum];
+            ArrayList<int[]> val = (ArrayList<int[]>) entry.getValue();
+            int[][] group = new int[bollNum][4];
             for (int[] ints :
                     val) {
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < bollNum; j++) {
-                        if (ints[j] % 2 == 1) {
-                            group[0][j]++;
-                        } else {
-                            group[1][j]++;
-                        }
-                        if (ints[j] > 4) {
-                            group[2][j]++;
-                        } else {
-                            group[3][j]++;
-                        }
+                for (int i = 0; i < bollNum; i++) {
+                    if (ints[i] % 2 == 1) {
+                        group[i][0]++;
+                    } else {
+                        group[i][1]++;
+                    }
+                    if (ints[i] > 4) {
+                        group[i][2]++;
+                    } else {
+                        group[i][3]++;
                     }
                 }
             }
@@ -659,7 +757,7 @@ public class lotteryUtils {
                 int[][] boll = (int[][]) jsonArray.get(j).get(data);
                 objects[j][0] = data;
                 for (int k = 1; k < bollNum + 1; k++) {
-                    objects[j][k] = boll[i][k - 1];
+                    objects[j][k] = boll[k - 1][i];
                 }
             }
             objs[i] = objects;
@@ -668,9 +766,10 @@ public class lotteryUtils {
     }
 
 
-    public static ArrayList getDSBSRoadBead(List<ExLotteryTicket> list) {
+    public static JSONObject getDSBSRoadBead(List<ExLotteryTicket> list) {
         int bollNum = list.get(0).getDraw_code().split(",").length;
-        int[][] ints = new int[list.size()][bollNum];
+        int type = list.get(0).getLot_type();
+        int[][] ints = new int[bollNum][list.size()];
         for (int i = 0; i < bollNum; i++) {
             for (int j = 0; j < list.size(); j++) {
                 ints[i][j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
@@ -678,73 +777,74 @@ public class lotteryUtils {
         }
         ArrayList DS = new ArrayList(); //单双
         ArrayList BS = new ArrayList(); //大小
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < bollNum; j++) {
-                switch (list.get(i).getLot_type()) {
-                    case 1:
-                        //                     if ()
-                }
-            }
+        for (int i = 0; i < bollNum; i++) {
+            int[] DSs = ints[i];
+            int[] BSs = ints[i];
+            DS.add(moreArr(DS_Filter(DSs)));
+            BS.add(moreArr(BS_Filter(BSs, type)));
         }
-        return null;
+        JSONObject object = new JSONObject();
+        object.put("SIZE", BS);
+        object.put("DoubleSingle", DS);
+        return object;
     }
 
     //单双过滤器
     private static int[] DS_Filter(int[] i) {
+        int[] ints = new int[i.length];
         for (int j = 0; j < i.length; j++) {
-            i[j] = (i[j] % 2 == 1 ? 0 : 1);
+            ints[j] = (i[j] % 2 == 1 ? 0 : 1);
+
         }
-        return i;
+
+        return ints;
     }
 
     //大小过滤器
     private static int[] BS_Filter(int[] i, int type) {
+        int[] ints = new int[i.length];
+
         switch (type) {
             case 1:
                 for (int j = 0; j < i.length; j++) {
-                    i[j] = (i[j] > 5 ? 0 : 1);
+                    ints[j] = (i[j] > 5 ? 0 : 1);
                 }
-                return i;
+                return ints;
             case 2:
                 for (int j = 0; j < i.length; j++) {
-                    i[j] = (i[j] > 4 ? 0 : 1);
+                    ints[j] = (i[j] > 4 ? 0 : 1);
                 }
-                return i;
+                return ints;
             case 3:
                 for (int j = 0; j < i.length; j++) {
-                    i[j] = (i[j] > 5 ? 0 : 1);
+                    ints[j] = (i[j] > 5 ? 0 : 1);
                 }
-                return i;
+                return ints;
             case 4:
                 for (int j = 0; j < i.length; j++) {
-                    i[j] = (i[j] > 10 ? 0 : 1);
+                    ints[j] = (i[j] > 10 ? 0 : 1);
                 }
-                return i;
+                return ints;
             case 6:
                 for (int j = 0; j < i.length; j++) {
-                    i[j] = (i[j] > 10 ? 0 : 1);
+                    ints[j] = (i[j] > 10 ? 0 : 1);
                 }
-                return i;
+                return ints;
         }
         return i;
     }
 
-    private static List<List<Integer>> moreArr(int[] args){
-        List<List<Integer>>result=new ArrayList<>();
-        List<Integer> list=new ArrayList();
-        for(int i=0;i<args.length-1;i++){
+    private static List<List<Integer>> moreArr(int[] args) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> list = new ArrayList();
+        for (int i = 0; i < args.length - 1; i++) {
             list.add(args[i]);
-            if (args[i]!=args[i+1]){
+            if (args[i] != args[i + 1]) {
                 result.add(list);
-                list=new ArrayList<>();
+                list = new ArrayList<>();
             }
         }
         return result;
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(moreArr(new int[]{0,0,0,1,0,0,1,1,0,0}));
     }
 
 
