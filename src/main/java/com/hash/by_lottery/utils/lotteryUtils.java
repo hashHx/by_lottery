@@ -476,20 +476,30 @@ public class lotteryUtils {
         int[] count = null;
         if (type == 2) {
             count = new int[10];
+            for (int[] i : objects) {
+                for (int j :
+                        i) {
+                    {
+                        count[j]++;
+                    }
+
+                }
+            }
         }
 
         if (type == 3) {
             count = new int[11];
-        }
-        for (int[] i : objects) {
-            for (int j :
-                    i) {
-                {
-                    count[j]++;
-                }
+            for (int[] i : objects) {
+                for (int j :
+                        i) {
+                    {
+                        count[j-1]++;
+                    }
 
+                }
             }
         }
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("numberCount", count);
         return jsonObject;
