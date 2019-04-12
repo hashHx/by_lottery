@@ -24,6 +24,7 @@ public class longDragonUtils {
 
     public static List countRankAndState(int type, ExLotteryTicket ticket, ExLotteryTicket preTicket) {
 
+        System.out.println(ticket.getDraw_code()+"       "+preTicket.getDraw_code());
         int[] code = lotteryCodeAdapter.toCalculate(ticket.getDraw_code());
         int[] code_pre = lotteryCodeAdapter.toCalculate(preTicket.getDraw_code());
 
@@ -158,7 +159,7 @@ public class longDragonUtils {
                         countState_3.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 2) > 22 && lotteryUtils.sum_BS(code_pre, 2) > 22) {
+                if (lotteryUtils.sum_BS(code, 2)==0 && lotteryUtils.sum_BS(code_pre, 2) ==0) {
                     countState_3.add(true);
                 } else {
                     countState_3.add(false);
@@ -171,7 +172,7 @@ public class longDragonUtils {
                         countState_4.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 2) <= 22 && lotteryUtils.sum_BS(code_pre, 2) <= 22) {
+                if (lotteryUtils.sum_BS(code, 2)==1  && lotteryUtils.sum_BS(code_pre, 2) ==1) { //???
                     countState_4.add(true);
                 } else {
                     countState_4.add(false);
@@ -248,7 +249,7 @@ public class longDragonUtils {
                         countState_3.add(false);
                     }
                 }
-                if (lotteryUtils.sum_FS(code) > 29 && lotteryUtils.sum_FS(code_pre) > 29) {
+                if (lotteryUtils.sum_BS(code,3) ==0 && lotteryUtils.sum_BS(code_pre,3) ==0) {
                     countState_3.add(true);
                 } else {
                     countState_3.add(false);
@@ -266,7 +267,7 @@ public class longDragonUtils {
                         countState_4.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 3) <= 29 && lotteryUtils.sum_BS(code_pre, 3) <= 29) {
+                if (lotteryUtils.sum_BS(code, 3)==1 && lotteryUtils.sum_BS(code_pre, 3) ==1) {
                     countState_4.add(true);
                 } else {
                     countState_4.add(false);
@@ -336,7 +337,7 @@ public class longDragonUtils {
                         countState_3.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 4) > 84 && lotteryUtils.sum_BS(code_pre, 4) > 84) {
+                if (lotteryUtils.sum_BS(code, 4) ==0 && lotteryUtils.sum_BS(code_pre, 4) ==0) {
                     countState_3.add(true);
                 } else {
                     countState_3.add(false);
@@ -354,7 +355,7 @@ public class longDragonUtils {
                         countState_4.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 4) < 84 && lotteryUtils.sum_BS(code_pre, 4) < 84) {
+                if (lotteryUtils.sum_BS(code, 4) ==1 && lotteryUtils.sum_BS(code_pre, 4) ==1) {
                     countState_4.add(true);
                 } else {
                     countState_4.add(false);
@@ -374,7 +375,7 @@ public class longDragonUtils {
                     }
                 }
                 //rank 9 和
-                if (lotteryUtils.sum_BS(code, 4) == 84 && lotteryUtils.sum_BS(code_pre, 4) == 84) {
+                if (lotteryUtils.sum_BS(code, 4) == 2 && lotteryUtils.sum_BS(code_pre, 4) == 2) {
                     countState_5.add(true);
                 } else {
                     countState_5.add(false);
@@ -464,13 +465,13 @@ public class longDragonUtils {
                 }
                 //大
                 for (int i = 0; i < 8; i++) {
-                    if ((code[i] > 5 && code_pre[i] > 5)) {
+                    if ((code[i] >= 11 && code_pre[i] >=11)) {
                         countState_3.add(true);
                     } else {
                         countState_3.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 4) > 84 && lotteryUtils.sum_BS(code_pre, 4) > 84) {
+                if (lotteryUtils.sum_BS(code, 4) ==0 && lotteryUtils.sum_BS(code_pre, 4) ==0) {
                     countState_3.add(true);
                 } else {
                     countState_3.add(false);
@@ -482,13 +483,13 @@ public class longDragonUtils {
                 }
                 //小
                 for (int i = 0; i < 8; i++) {
-                    if ((code[i] < 6 && code_pre[i] < 6)) {
+                    if ((code[i] < 11 && code_pre[i] < 11)) {
                         countState_4.add(true);
                     } else {
                         countState_4.add(false);
                     }
                 }
-                if (lotteryUtils.sum_BS(code, 4) < 84 && lotteryUtils.sum_BS(code_pre, 4) < 84) {
+                if (lotteryUtils.sum_BS(code, 4) ==1 && lotteryUtils.sum_BS(code_pre, 4) ==1) {
                     countState_4.add(true);
                 } else {
                     countState_4.add(false);
@@ -500,21 +501,26 @@ public class longDragonUtils {
                 }
                 //龙
 
-                if ((Integer) DT.get(0) == 0 && (Integer) DT_pre.get(0) == 0) {
-                    countState_5.add(true);
-                } else {
-                    countState_5.add(false);
+                for (int i = 0; i < DT.size(); i++) {
+                    if ((Integer) DT.get(i) == 0 && (Integer) DT_pre.get(i) == 0) {
+                        countState_5.add(true);
+                    } else {
+                        countState_5.add(false);
+                    }
                 }
-                if (lotteryUtils.sum_BS(code, 4) == 84 && lotteryUtils.sum_BS(code_pre, 4) == 84) {
+                //rank 9 和
+                if (lotteryUtils.sum_BS(code, 4) == 2 && lotteryUtils.sum_BS(code_pre, 4) == 2) {
                     countState_5.add(true);
                 } else {
                     countState_5.add(false);
                 }
                 //虎
-                if ((Integer)DT.get(0) == 1 && (Integer)DT_pre.get(0) == 1) {
-                    countState_6.add(true);
-                } else {
-                    countState_6.add(false);
+                for (int i = 0; i < DT.size(); i++) {
+                    if ((Integer) DT.get(i) == 1 && (Integer) DT_pre.get(i) == 1) {
+                        countState_6.add(true);
+                    } else {
+                        countState_6.add(false);
+                    }
                 }
 
                 //尾大
@@ -603,7 +609,7 @@ public class longDragonUtils {
                 PM.get(i).setCount(count+1);
                 flag = true;
             }else {
-                flag = false;
+                continue;
             }
         }
         return flag;

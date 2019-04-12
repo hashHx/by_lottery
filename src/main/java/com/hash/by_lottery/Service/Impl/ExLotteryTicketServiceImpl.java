@@ -98,17 +98,18 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         boolean flag = false;
         ExLotteryTicket t = dao.getNewTicketInfo(lot_code);
         Long issue = Long.parseLong(t.getDraw_issue()) - 1;
+        System.out.println(issue);
         ExLotteryTicket t_ = dao.getTicketInfoByIssue(lot_code, String.valueOf(issue));
         List CRAS = longDragonUtils.countRankAndState(t.getLot_type(), t, t_);
         List<LongDragon> PM = longDragonUtils.positionMarker(CRAS);
         while (true) {
-            if (Long.parseLong(t_.getDraw_issue())%100==1){
-                break;
-            }
+//            if (Long.parseLong(t_.getDraw_issue())%100==1){
+//                break;
+//            }
             t = t_;
             issue = Long.parseLong(t.getDraw_issue()) - 1;
             t_ = dao.getTicketInfoByIssue(lot_code, String.valueOf(issue));
-            CRAS = longDragonUtils.countRankAndState(t.getLot_type(), t, t_);
+            CRAS = AndOperation(CRAS,longDragonUtils.countRankAndState(t.getLot_type(), t, t_));
             flag = longDragonUtils.counter(PM, CRAS);
             if (flag == false) {
                 break;
@@ -163,5 +164,20 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         dao.insertCache(ex);
     }
 
+    //&操作判断是否继续叠加
+    private static List AndOperation(List<List> list1,List<List> list2){
+        List listOut = new ArrayList();
+        int l = list1.size();
+        for (int i = 0; i < l; i++) {
+            List listIn = new ArrayList();
+            int l_ = list1.get(i).size();
+            for (int j = 0; j < l_; j++) {
+                listIn.add(((boolean)list1.get(i).get(j))&((boolean)list2.get(i).get(j)));
+            }
+           listOut.add(listIn);
+        }
+        System.out.println(listOut);
+        return listOut;
+    }
 
 }

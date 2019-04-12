@@ -35,7 +35,7 @@ public class ticketGen {
         data.put("drawIssue", String.valueOf(Long.valueOf(ticket.getDraw_issue()) + 1));
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(ticket.getDraw_time()));
         data.put("preDrawTime", time);
-        data.put("nextDrawTime", String.valueOf(time + (ticket.getLot_interval() * 1000)+2500));
+        data.put("nextDrawTime", String.valueOf(time + (ticket.getLot_interval() * 1000)+2100));
         Long issue = Long.parseLong(ticket.getDraw_issue());
         Long issue_ = firstIssue;
         Long count = new Long(ticket.getLot_count());

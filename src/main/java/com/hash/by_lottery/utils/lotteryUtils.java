@@ -449,7 +449,7 @@ public class lotteryUtils {
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
         switch ((int) jsonObject.get("issue") % 3) {
             case 1:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(345600000)));
+                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
             case 2:
                 jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
             case 0:
@@ -523,7 +523,7 @@ public class lotteryUtils {
                 } else {
                     doubleNum[j][1]++;
                 }
-                if (i[j] > 4) {
+                if (B_S(i[j],type)==0) {
                     doubleNum[j][2]++;
                 } else {
                     doubleNum[j][3]++;
@@ -544,38 +544,63 @@ public class lotteryUtils {
             }
             int[][] newDoubleNum = new int[5][6];
             //for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    for (int k = 0; k < 4; k++) {
-                        newDoubleNum[j][k] = doubleNum[j][k];
-                    }
-                    newDoubleNum[j][4] = dt[j][0];
-                    newDoubleNum[j][5] = dt[j][1];
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 4; k++) {
+                    newDoubleNum[j][k] = doubleNum[j][k];
                 }
+                newDoubleNum[j][4] = dt[j][0];
+                newDoubleNum[j][5] = dt[j][1];
+            }
 
-           // }
+            // }
             for (int i = 0; i < 5; i++) {
                 doubleNum[i] = newDoubleNum[i];
             }
 
         }
-        if (type == 4) {
-            int[] dt = new int[2];
+        if (type == 4||type == 6) {
+            int[][] dt = new int[4][2];
             for (List l :
                     arrayList) {
-                    if ((int) l.get(0) == 0) {
-                        dt[0]++;
+                for (int i = 0; i < l.size(); i++) {
+                    if ((int) l.get(i) == 0) {
+                        dt[i][0]++;
                     } else {
-                        dt[1]++;
+                        dt[i][1]++;
                     }
+                }
             }
 
-            int[] newDoubleNum = new int[6];
-            for (int i = 0; i < 4; i++) {
-                newDoubleNum[i] = doubleNum[0][i];
+            int[][] newDoubleNum = new int[4][6];
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    newDoubleNum[j][k] = doubleNum[j][k];
+                }
+                newDoubleNum[j][4] = dt[j][0];
+                newDoubleNum[j][5] = dt[j][1];
             }
-            newDoubleNum[4] = dt[0];
-            newDoubleNum[5] = dt[1];
-            doubleNum[0] = newDoubleNum;
+
+            // }
+            for (int i = 0; i < 4; i++) {
+                doubleNum[i] = newDoubleNum[i];
+            }
+//            int[] dt = new int[2];
+//            for (List l :
+//                    arrayList) {
+//                    if ((int) l.get(0) == 0) {
+//                        dt[0]++;
+//                    } else {
+//                        dt[1]++;
+//                    }
+//            }
+//
+//            int[] newDoubleNum = new int[6];
+//            for (int i = 0; i < 4; i++) {
+//                newDoubleNum[i] = doubleNum[0][i];
+//            }
+//            newDoubleNum[4] = dt[0];
+//            newDoubleNum[5] = dt[1];
+//            doubleNum[0] = newDoubleNum;
         }
         //龙虎
 
@@ -595,6 +620,7 @@ public class lotteryUtils {
      */
     public static Object[][] complexView(List<ExLotteryTicket> list) {
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        int type = list.get(0).getLot_type();
         ArrayList<String> date = getpastDaysList(15);
         Map<String, ArrayList<int[]>> map = new LinkedHashMap();
         for (String dateStr :
@@ -625,7 +651,7 @@ public class lotteryUtils {
                     } else {
                         group[i][1]++;
                     }
-                    if (ints[i] > 4) {
+                    if (B_S(ints[i],type)==0 ) {
                         group[i][2]++;
                     } else {
                         group[i][3]++;
@@ -707,6 +733,7 @@ public class lotteryUtils {
 //            jsonArray.add(jsonObject);
 //        }
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        int type = list.get(0).getLot_type();
         ArrayList<String> date = getpastDaysList(15);
         Map<String, ArrayList<int[]>> map = new LinkedHashMap();
         for (String dateStr :
@@ -737,7 +764,7 @@ public class lotteryUtils {
                     } else {
                         group[i][1]++;
                     }
-                    if (ints[i] > 4) {
+                    if (B_S(ints[i],type)==0 ) {
                         group[i][2]++;
                     } else {
                         group[i][3]++;
@@ -851,7 +878,8 @@ public class lotteryUtils {
     public static ArrayList<String> getpastDaysList(int intervals) {
         ArrayList<String> pastDaysList = new ArrayList<>();
         ArrayList<String> fetureDaysList = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < intervals
+                ; i++) {
             pastDaysList.add(getPastDate(i));
             fetureDaysList.add(getFetureDate(i));
         }
@@ -888,5 +916,28 @@ public class lotteryUtils {
         return result;
     }
 
+    /**
+     * @Description: 返回单球大小
+     * @Param: [i, type]
+     * @return: int
+     * @Author: Hash
+     * @Date: 2019/4/12
+     */
+    private static int B_S(int i, int type) {
+        switch (type) {
+            case 1:
+                return (i > 5 ? 0 : 1);
+            case 2:
 
+                return (i > 4 ? 0 : 1);
+            case 3:
+                return (i > 5 ? 0 : 1);
+            case 4:
+                return (i > 10 ? 0 : 1);
+            case 6:
+                return (i > 10 ? 0 : 1);
+
+        }
+        return i;
+    }
 }
