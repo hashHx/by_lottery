@@ -3,6 +3,7 @@ package com.hash.by_lottery.entities;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @ClassName ExLotteryTicket
@@ -13,10 +14,8 @@ import lombok.Setter;
  **/
 
 @Data
-@Getter
-@Setter
+@Accessors(chain = true)
 public class ExLotteryTicket  {
-
     private Long l_id;
     private String lot_name;
     private int lot_count;
@@ -25,6 +24,7 @@ public class ExLotteryTicket  {
     private String lot_videoUrl;
     private String lot_videoImg;
     private String lot_imgUrl;
+    private String lot_iconUrl;
     private String lot_code;
     private String draw_code;
     private String draw_issue;

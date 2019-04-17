@@ -81,7 +81,5 @@ public class IdGen {
         return System.currentTimeMillis();
     }
 
-    public static void main(String[] args) {
-        System.out.println(IdGen.get().nextId());
-    }
+
 }

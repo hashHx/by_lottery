@@ -38,11 +38,11 @@ public class BaseLotteryTicketServiceImpl implements BaseLotteryTicketService {
     }
 
     @Override
-    public String getCurrentCount(String lotCode) {
-        if (dao.getCurrentCount(lotCode)!=null){
+    public int getCurrentCount(String lotCode) {
+        if (dao.getCurrentCount(lotCode)!= 0 ){
             return dao.getCurrentCount(lotCode);
         }else {
-            return "1";
+            return 0;
         }
     }
 

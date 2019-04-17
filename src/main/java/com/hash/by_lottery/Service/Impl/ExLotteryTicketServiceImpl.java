@@ -8,9 +8,15 @@ import com.hash.by_lottery.dao.BaseLotteryTicketDao;
 import com.hash.by_lottery.dao.ExLotteryTicketDao;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.entities.LongDragon;
+import com.hash.by_lottery.entities.ticketPlan;
+import com.hash.by_lottery.log.LogUtils;
 import com.hash.by_lottery.utils.longDragonUtils;
+import com.hash.by_lottery.utils.lotteryUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import sun.security.krb5.internal.Ticket;
 
 import java.util.*;
 
@@ -32,6 +38,8 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
     @Autowired
     private BaseLotteryTicketDao dao_;
 
+
+    Logger logger = LogUtils.getBussinessLogger();
 
     @Override
     public List<ExLotteryTicket> stuffTickerInfo(String code) {
@@ -59,17 +67,15 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         List<ExLotteryTicket> list = new ArrayList<>();
         List<String> list_issue = new ArrayList<>();
         List<JSONObject> list_code = new ArrayList<>();
-        limit = (Integer.parseInt(dao_.getCurrentCount(code)) < 25 ? Integer.parseInt(dao_.getCurrentCount(code)) : 25);
+        limit = dao_.getCurrentCount(code) < 25 ? dao_.getCurrentCount(code) : 25;
         Stack<ExLotteryTicket> stack = new Stack<>();
         for (ExLotteryTicket e :
                 dao.getLimitTicketList(code, limit)) {
             stack.push(e);
         }
-
         for (int i = 0; i < limit; i++) {
             list.add(i, stack.pop());
         }
-
         //获取期数列表
         for (ExLotteryTicket t : list
         ) {
@@ -109,7 +115,7 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
             t = t_;
             issue = Long.parseLong(t.getDraw_issue()) - 1;
             t_ = dao.getTicketInfoByIssue(lot_code, String.valueOf(issue));
-            CRAS = AndOperation(CRAS,longDragonUtils.countRankAndState(t.getLot_type(), t, t_));
+            CRAS = AndOperation(CRAS, longDragonUtils.countRankAndState(t.getLot_type(), t, t_));
             flag = longDragonUtils.counter(PM, CRAS);
             if (flag == false) {
                 break;
@@ -128,29 +134,29 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
         ArrayList<ExLotteryTicket> arr = (ArrayList) dao.getTicketTypeInfo();
         JSONArray array = new JSONArray();
         JSONObject object = new JSONObject();
-        if (arr!=null){
-            for (ExLotteryTicket e:
-                 arr) {
+        if (arr != null) {
+            for (ExLotteryTicket e :
+                    arr) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("lotCode",e.getLot_code());
-                jsonObject.put("lotName",e.getLot_name());
-                jsonObject.put("lotType",e.getLot_type());
-                jsonObject.put("iconUrl",e.getLot_imgUrl());
-                jsonObject.put("lotState",e.getLot_state());
-                jsonObject.put("isHot",e.getIs_hot());
+                jsonObject.put("lotCode", e.getLot_code());
+                jsonObject.put("lotName", e.getLot_name());
+                jsonObject.put("lotType", e.getLot_type());
+                jsonObject.put("iconUrl", e.getLot_imgUrl());
+                jsonObject.put("lotState", e.getLot_state());
+                jsonObject.put("isHot", e.getIs_hot());
                 array.add(jsonObject);
             }
-            object.put("error_code",0);
-            object.put("data",array);
-        }else {
-            object.put("error_code",1);
-            object.put("data","数据出错");
+            object.put("error_code", 0);
+            object.put("data", array);
+        } else {
+            object.put("error_code", 1);
+            object.put("data", "数据出错");
         }
         return object;
     }
 
 
-    public List<ExLotteryTicket> getTicketInfoDoubleList(String code){
+    public List<ExLotteryTicket> getTicketInfoDoubleList(String code) {
         return dao.getTicketInfoDoubleList(code);
     }
 
@@ -165,19 +171,52 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
     }
 
     //&操作判断是否继续叠加
-    private static List AndOperation(List<List> list1,List<List> list2){
+    private static List AndOperation(List<List> list1, List<List> list2) {
         List listOut = new ArrayList();
         int l = list1.size();
         for (int i = 0; i < l; i++) {
             List listIn = new ArrayList();
             int l_ = list1.get(i).size();
             for (int j = 0; j < l_; j++) {
-                listIn.add(((boolean)list1.get(i).get(j))&((boolean)list2.get(i).get(j)));
+                listIn.add(((boolean) list1.get(i).get(j)) & ((boolean) list2.get(i).get(j)));
             }
-           listOut.add(listIn);
+            listOut.add(listIn);
         }
-        System.out.println(listOut);
         return listOut;
     }
 
+//    @Scheduled(cron = "0/30 * 0-14 * * ?")
+//    public void ticketPlan() {
+//        dao.selectPlan()
+//                .stream()
+//                .forEach(ticketPlan -> {
+//                    if (ticketPlan.getStart_issue() == null) {
+//                        ticketPlan ticket = (dao.selectCache(ticketPlan.getLot_code())==null?null:dao.selectCache(ticketPlan.getLot_code()));
+//                        if (ticket!=null||ticket.getLot_code()!="10057"){ //排除幸运飞艇
+//                            dao.setPlan(new ticketPlan()
+//                                    .setLot_code(ticketPlan.getLot_code())
+//                                    .setStart_issue(ticket.getStart_issue())
+//                                    .setEnd_issue(String.valueOf(Long.parseLong(ticket.getStart_issue()) + Long.parseLong(ticket.getLot_count()) - 1)));
+//                            logger.info(ticket.getLot_code() + " : 已更新第一期最后一期期数");
+//                        }
+//                    }
+//                });
+//
+//    }
+//
+//
+//
+//    @Scheduled(cron = "50 59 23 * * ?")
+//    public void ticketPlanClean() {
+//        logger.info("清除行数" + dao.cleanPlan());
+//    }
+//
+//    @Scheduled(cron = "0 10 4 * * ?")
+//    public void ticketPlanClean10057() {
+//        logger.info("清除行数" + dao.cleanPlan_10057());
+//    }
+//
+//    public ticketPlan getPlanWithLotCode(String lot_code){
+//        return dao.selectPlanWithLotCode(lot_code);
+//    }
 }

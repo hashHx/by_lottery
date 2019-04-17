@@ -45,7 +45,7 @@ import java.util.*;
 @RestController
 public class LotteryTicketController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LogUtils.getBussinessLogger();
 
     @Autowired
     private BaseLotteryTicketService service;
@@ -56,6 +56,8 @@ public class LotteryTicketController {
     @Autowired
     private ConfigService service_config;
 
+
+
     @RequestMapping(value = "/lottery/ticketInfo/{lotCode}/{lotIssue}", method = RequestMethod.GET)
     public String getTickerInfo(@PathVariable("lotCode") String lotCode, @PathVariable("lotIssue") String lotIssue) {
 
@@ -65,12 +67,13 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/spider", method = RequestMethod.POST)
     public String getSpiderInfo(BaseLotteryTicket ticket) {
-        Logger logger = LogUtils.getBussinessLogger();
-        logger.trace(ticket.toString());
+        logger.info(ticket.toString());
         synchronized (this.getClass()) {
-            if (ticket.getDraw_code() != null) {
+            if (ticket.getDraw_code() != ""||ticket.getDraw_code() != null) {
                 BaseLotteryTicket check = service.getTickerInfo(ticket.getLot_code(), ticket.getDraw_issue());
                 if (check != null) {
+                    logger.error("重复信息" +
+                            "——————"+ticket.toString());
                     return "二四你在逗我呢";
                 }
                 ticket.setL_id(IdGen.get().nextId());
@@ -81,7 +84,8 @@ public class LotteryTicketController {
                 logger.trace(ticket.toString() + "spaceSave");
                 return "ok";
             } else {
-                return "error";
+                logger.error("号码为空！————"+ticket.toString());
+                return "空字符串，大佬";
             }
         }
     }
@@ -138,18 +142,16 @@ public class LotteryTicketController {
             List<ExLotteryTicket> list = service_ex.getTicketList(lotCode);
             List<Object> ticketList_ = new ArrayList();
             if (list != null) {
-                ticketGen.setIssue(service.getFirstIssue(lotCode));
                 for (ExLotteryTicket eticket : list
                 ) {
-                    map = ticketGen.getresult(eticket, eticket.getLot_type());
+                    map = ticketGen.getresult(eticket, eticket.getLot_type(),service_ex,service);
                     ticketList_.add(map);
                 }
             } else {
                 list = service_ex.getTicketListWithTime(lotCode,lotteryUtils.getpastDaysList(1).get(0));
-                ticketGen.setIssue(service.getFirstIssue(lotCode));
                 for (ExLotteryTicket eticket : list
                 ) {
-                    map = ticketGen.getresult(eticket, eticket.getLot_type());
+                    map = ticketGen.getresult(eticket, eticket.getLot_type(),service_ex,service);
                     ticketList_.add(map);
                 }
             }
@@ -175,7 +177,7 @@ public class LotteryTicketController {
                 List<Object> ticketList = new ArrayList();
                 for (ExLotteryTicket e : list
                 ) {
-                    map = ticketGen.getresult(e, e.getLot_type());
+                    map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
                     ticketList.add(map);
                 }
                 return ResultGen.getResult(ticketList, 0);
@@ -248,10 +250,9 @@ public class LotteryTicketController {
                 } else {
                     Long issue = service.getFirstIssue(lotCode);
                     if (issue != null) {
-                        ticketGen.setIssue(service.getFirstIssue(lotCode));
-                        map = ticketGen.getresult(t, t.getLot_type());
+                        map = ticketGen.getresult(t, t.getLot_type(),service_ex,service);
                     } else {
-                        map = ticketGen.getresult(t, t.getLot_type());
+                        map = ticketGen.getresult(t, t.getLot_type(),service_ex,service);
                     }
                     return ResultGen.getResult((HashMap<Object, Object>) map, 0);
                 }
@@ -261,8 +262,8 @@ public class LotteryTicketController {
 
     @RequestMapping(value = "/lottery/indexTicketsSort", method = RequestMethod.GET)
     public String[] sort() {
-        return new String[]{"11009", "10057", "10002", "10001", "11006", "11008", "11003", "11010", "11007", "11002", "110001", "11005", "11004"};
-        //return new String[]{"11009","10057","10002","10001","11006","11008","11003","11010","11013","11007","11002","11001","11012","11005","11004"};
+        //return new String[]{"11009", "10057", "10002", "10001", "11006", "11008", "11003", "11010", "11007", "11002", "110001", "11005", "11004"};
+        return new String[]{"11009","10057","10002","10001","11006","11008","11003","11010","11013","11007","11002","11001","11012","11005","11004"};
     }
 
     private List<String> String2ArrayList(String[] strings) {
@@ -288,11 +289,10 @@ public class LotteryTicketController {
                 ex) {
             Long issue = service.getFirstIssue(e.getLot_code());
             if (issue == null) {
-                map = ticketGen.getresult(e, e.getLot_type());
+                map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
                 arr.add(map);
             } else {
-                ticketGen.setIssue(service.getFirstIssue(e.getLot_code()));
-                map = ticketGen.getresult(e, e.getLot_type());
+                map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
                 arr.add(map);
             }
         }
@@ -308,12 +308,12 @@ public class LotteryTicketController {
         return service_ex.getLongDragonInfo(lotCode);
     }
 
-    private void countFun(Map map, String lotCode) {
-        int count = Integer.parseInt(service.getCurrentCount(lotCode));
-        map.put("currentCount", count);
-        int totalCount = (int) map.get("totalCount");
-        map.put("surplusCount", totalCount - count);
-    }
+//    private void countFun(Map map, String lotCode) {
+//        int count = Integer.parseInt(service.getCurrentCount(lotCode));
+//        map.put("currentCount", count);
+//        int totalCount = (int) map.get("totalCount");
+//        map.put("surplusCount", totalCount - count);
+//    }
 
     @RequestMapping(value = "/lottery/ticketTypeInfo", method = RequestMethod.GET)
     public Object getTicketTypeInfo() {
@@ -354,12 +354,45 @@ public class LotteryTicketController {
         return null;
     }
 
-
+    //单双大小路珠
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/SizeParityLine", method = RequestMethod.GET)
     public JSONObject SizeParityLine(@PathVariable("lotCode") String lotCode) {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
         if (list != null) {
             JSONObject js = lotteryUtils.getDSBSRoadBead(list);
+            return js;
+        }
+        return null;
+    }
+
+    //龙虎路珠
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/DragonTigerLine", method = RequestMethod.GET)
+    public JSONObject DragonTigerLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            JSONObject js = lotteryUtils.getDTRoadBead(list);
+            return js;
+        }
+        return null;
+    }
+
+    //冠亚和路珠
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/QuinellaLine", method = RequestMethod.GET)
+    public JSONObject FS_Line(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            JSONObject js = lotteryUtils.getFSRoadBead(list);
+            return js;
+        }
+        return null;
+    }
+
+    //总和路珠（ssc）
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/TotalLine", method = RequestMethod.GET)
+    public JSONObject TotalLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            JSONObject js = lotteryUtils.getTotalRoadBead(list);
             return js;
         }
         return null;

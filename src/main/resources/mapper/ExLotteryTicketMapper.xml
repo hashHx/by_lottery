@@ -5,19 +5,19 @@
 <mapper namespace="com.hash.by_lottery.dao.ExLotteryTicketDao">
 
 	<select id="stuffInfoToExLotteryTicket" parameterType="String" resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_iconUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} ;
 	</select>
 
 	<select id="getNewTicketInfo" parameterType="String" resultType="ExLotteryTicket">
-				select a.lot_code,draw_code,draw_issue,draw_time,a.lot_remark,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_state,is_hot
+				select a.lot_code,draw_code,draw_issue,draw_time,a.lot_remark,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_iconUrl,lot_imgUrl,lot_state,is_hot
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and draw_issue = (select MAX(draw_issue) from lottery_ticket where lot_code = #{lot_code});
 	</select>
 
 	<select id="getNewTicketInfoList" parameterType="String" resultType="ExLotteryTicket">
-		select lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_state,is_hot
+		select lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_iconUrl,lot_state,is_hot
 		from ticket_cache
 		where  lot_code in
 		<foreach collection="codes" index="index" item="item" open="(" separator="," close=")">
@@ -30,13 +30,13 @@
 	</insert>
 
 	<select id="getTicketInfoList" parameterType="String" resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_iconUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') ORDER BY draw_issue  DESC;
 	</select>
 
 	<select id="getTicketInfoDoubleList" parameterType="String" resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,LEFT(draw_time,10) as draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,LEFT(draw_time,10) as draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_iconUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and draw_time > DATE_SUB(now(),INTERVAL 15 DAY) ORDER BY draw_issue  DESC;
 	</select>
@@ -44,26 +44,26 @@
 
 
 	<select id="getTicketInfoList_" parameterType="String" resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_iconUrl,lot_imgUrl
 		from lottery_ticket_push a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') ORDER BY draw_issue  DESC;
 	</select>
 
 	<select id="getTicketInfoListWithTime" parameterType="String" resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_iconUrl,lot_imgUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and LEFT(draw_time,10) = #{draw_time} ORDER BY draw_time  DESC;
 	</select>
 
 
 	<select id="getLimitTicketList"  resultType="ExLotteryTicket">
-		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_iconUrl,lot_imgUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') ORDER BY draw_time DESC LIMIT #{limit};
 	</select>
 
 	<select id="getTicketInfoByIssue" parameterType="String" resultType="ExLotteryTicket">
-				select a.lot_code,draw_code,draw_issue,draw_time,a.lot_remark,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl
+				select a.lot_code,draw_code,draw_issue,draw_time,a.lot_remark,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_iconUrl,lot_imgUrl
 		from lottery_ticket a,lottery_type b
 		where b.lot_code = a.lot_code and a.lot_code = #{lot_code} and draw_issue = #{draw_issue};
 	</select>
@@ -74,6 +74,27 @@
 	</select>
 
 
+	<update id="cleanPlan">
+		update ticket_plan set start_issue = null,end_issue = null where lot_code != "10057";
+	</update>
 
+	<update id="cleanPlan_10057">
+		update ticket_plan set start_issue = null,end_issue = null where lot_code = "10057";
+	</update>
+
+	<update id="setPlan" parameterType="ticketPlan" >
+		update ticket_plan set start_issue = #{start_issue},end_issue = #{end_issue} where lot_code = #{lot_code};
+	</update>
+	
+	<select id="selectCache" resultType="ticketPlan" parameterType="String">
+		select draw_issue as start_issue , lot_count from ticket_cache where lot_code =#{lot_code} and LEFT(draw_time,10) = DATE_FORMAT(SYSDATE(),'%Y-%m-%d') ;
+	</select>
+
+	<select id="selectPlanWithLotCode" resultType="ticketPlan" parameterType="String">
+		select * from ticket_plan where lot_code = #{lot_code};
+	</select>
+	<select id="selectPlan" resultType="ticketPlan" >
+		select * from ticket_plan ;
+	</select>
 
 </mapper>

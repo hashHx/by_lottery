@@ -1,6 +1,8 @@
 package com.hash.by_lottery.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hash.by_lottery.Service.BaseLotteryTicketService;
+import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 
 import java.util.ArrayList;
@@ -17,14 +19,8 @@ import java.util.Map;
 
 public class ticketGen {
 
-    private static Long firstIssue;
 
-    public static void setIssue(Long issue) {
-        firstIssue = issue;
-    }
-
-
-    public static HashMap<Object, Object> getresult(ExLotteryTicket ticket, int type) {
+    public static HashMap<Object, Object> getresult(ExLotteryTicket ticket, int type, ExLotteryTicketService service, BaseLotteryTicketService service_base) {
         Map data = new HashMap();
         data.put("lotCode", ticket.getLot_code());
         data.put("lotName", ticket.getLot_name());
@@ -35,27 +31,33 @@ public class ticketGen {
         data.put("drawIssue", String.valueOf(Long.valueOf(ticket.getDraw_issue()) + 1));
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(ticket.getDraw_time()));
         data.put("preDrawTime", time);
-        data.put("nextDrawTime", String.valueOf(time + (ticket.getLot_interval() * 1000)+2100));
+        data.put("nextDrawTime", String.valueOf(time + (ticket.getLot_interval() * 1000)+1500));
         Long issue = Long.parseLong(ticket.getDraw_issue());
-        Long issue_ = firstIssue;
-        Long count = new Long(ticket.getLot_count());
-        if (issue_!=0L){
-        if ((issue - issue_ + 1) == count) {
-            System.out.println(issue - issue_ + 1);
+        //Long issue_ = service.getPlanWithLotCode(ticket.getLot_code()).getEnd_issue()== null? 0L:Long.parseLong(service.getPlanWithLotCode(ticket.getLot_code()).getEnd_issue());
+        //Long count = new Long(ticket.getLot_count());
+        int currentCount = service_base.getCurrentCount(ticket.getLot_code());
+        data.put("currentCount",currentCount);
+        data.put("surplusCount",ticket.getLot_count()-currentCount);
+        //if (issue_!=0L)//{
+        if (currentCount==issue) {
             //本期为最后一期
             JSONObject jsonObject = getClosedList();
-            Long closing = (Long) jsonObject.get(ticket.getLot_code());
+            Long closing =  jsonObject.get(ticket.getLot_code())==null?0L:(Long)jsonObject.get(ticket.getLot_code());
             if (closing != 0L) {
                 data.replace("drawIssue", "");
                 data.put("nextDrawTime", String.valueOf(time + closing));
             }
-            if (ticket.getLot_code().equals("10002")) {
-                if ((issue - issue_ + 1) == 9L) {
-                    data.put("nextDrawTime", String.valueOf(time + 15600000L));
-                }
+
+        }
+    //}
+        if (ticket.getLot_code().equals("10002")) {
+
+            if (currentCount == 9L) {
+                data.put("nextDrawTime", String.valueOf(time + 15600000L));
             }
-        }}
-        data.put("iconUrl", ticket.getLot_imgUrl());
+        }
+        data.put("imgUrl", ticket.getLot_imgUrl());
+        data.put("iconUrl", ticket.getLot_iconUrl());
         data.put("videoImg", ticket.getLot_videoImg());
         data.put("videoUrl", ticket.getLot_videoUrl());
         data.put("totalCount", ticket.getLot_count());
@@ -176,23 +178,28 @@ public class ticketGen {
                 data.put("bigOrSmall", lotteryUtils.sum_BS(intCode, type));
                 data.put("tailBigSmall", lotteryUtils.tail_BS(intCode));
                 break;
-            //排列3
+            //排列3(MARK6)
             case 7:
-                data.put("firstNumber", drawCode[0]);
-                data.put("secondNumber", drawCode[1]);
-                data.put("thirdNumber", drawCode[2]);
-                data.put("hundredTenSum", lotteryUtils.hundredTenSum(intCode));
-                data.put("hundredTenSingleEven", lotteryUtils.hundredTenSingleEven(intCode));
-                data.put("hundredTenBigSmall", lotteryUtils.hundredTenBigSmall(intCode));
-                data.put("hundredOneSum", lotteryUtils.hundredOneSum(intCode));
-                data.put("hundredOneSingleEven", lotteryUtils.hundredOneSingleEven(intCode));
-                data.put("hundredOneBigSmall", lotteryUtils.hundredTenBigSmall(intCode));
-                data.put("tenOneSum", lotteryUtils.TenOneSum(intCode));
-                data.put("tenOneSingleEven", lotteryUtils.TenOneSingleEven(intCode));
-                data.put("tenOneBigSmall", lotteryUtils.TenOneBigSmall(intCode));
-                data.put("drawSum", lotteryUtils.sum_All(intCode));
-                data.put("drawSumSingleEven", lotteryUtils.sum_SD(intCode));
-                data.put("drawSumBigSmall", lotteryUtils.sum_BS(intCode, type));
+//                data.put("firstNumber", drawCode[0]);
+//                data.put("secondNumber", drawCode[1]);
+//                data.put("thirdNumber", drawCode[2]);
+//                data.put("hundredTenSum", lotteryUtils.hundredTenSum(intCode));
+//                data.put("hundredTenSingleEven", lotteryUtils.hundredTenSingleEven(intCode));
+//                data.put("hundredTenBigSmall", lotteryUtils.hundredTenBigSmall(intCode));
+//                data.put("hundredOneSum", lotteryUtils.hundredOneSum(intCode));
+//                data.put("hundredOneSingleEven", lotteryUtils.hundredOneSingleEven(intCode));
+//                data.put("hundredOneBigSmall", lotteryUtils.hundredTenBigSmall(intCode));
+//                data.put("tenOneSum", lotteryUtils.TenOneSum(intCode));
+//                data.put("tenOneSingleEven", lotteryUtils.TenOneSingleEven(intCode));
+//                data.put("tenOneBigSmall", lotteryUtils.TenOneBigSmall(intCode));
+//                data.put("drawSum", lotteryUtils.sum_All(intCode));
+//                data.put("drawSumSingleEven", lotteryUtils.sum_SD(intCode));
+//                data.put("drawSumBigSmall", lotteryUtils.sum_BS(intCode, type));
+
+                data.put("preDrawCode",ticket.getDraw_code());
+                data.put("issue",ticket.getDraw_issue());
+                data.put("color",Mark6Utils.getColors(lotteryCodeAdapter.toCalculate(ticket.getDraw_code())));
+                data.put("czAndFe",Mark6Utils.getAnimals((lotteryCodeAdapter.toCalculate(ticket.getDraw_code()))));
                 break;
 
 
@@ -205,6 +212,17 @@ public class ticketGen {
         object.put("10001", 34800000L);
         object.put("10006", 36600000L);
         object.put("10005", 37200000L);
+        object.put("10057", 32400000L);
+        object.put("10034", 37200000L);
+        object.put("10007", 38400000L);
+        object.put("10026", 33300000L);
+        object.put("10027", 39600000L);
+        object.put("10028", 38400000L);
+        object.put("10029", 43500000L);
+        object.put("10030", 39000000L);
+        object.put("10031", 37200000L);
+        object.put("10032", 43200000L);
+        object.put("10033", 34800000L);
         return object;
     }
 

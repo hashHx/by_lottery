@@ -5,9 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.ExLotteryTicket;
+import org.joda.time.DateTime;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @ClassName lotteryUtils
@@ -384,6 +387,17 @@ public class lotteryUtils {
     }
 
 
+    public static String timeStamp2Date(String seconds, String format) {
+        if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
+            return "";
+        }
+        if (format == null || format.isEmpty()) {
+            format = "yyyy-MM-dd HH:mm:ss";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(Long.valueOf(seconds)));
+    }
+
     /**
      * @Description: 判断是否为数字
      * @Param: [code, issue]
@@ -446,16 +460,10 @@ public class lotteryUtils {
         jsonObject.put("lotName", "香港六合彩");
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
-        Long time = Long.parseLong(lotteryUtils.date2TimeStamp(String.valueOf(jsonObject.get("preDrawDate")) + " 21:30:00"));
-        switch ((int) jsonObject.get("issue") % 3) {
-            case 1:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(259200000)));
-            case 2:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
-            case 0:
-                jsonObject.put("nextDrawTime", String.valueOf(time + new Long(172800000)));
-        }
-        //System.out.println((int) jsonObject.get("issue") % 3);
+        Long time = lotteryUtils.getThisWeekDate((int) jsonObject.get("issue") % 3);
+        jsonObject.put("nextDrawTime",time);
+        jsonObject.put("imgUrl","https://static.junanservice.com/lottery/images/xglhc.png");
+        jsonObject.put("iconUrl","https://static.junanservice.com/lottery/images/xglhc_icon.png");
         return jsonObject;
     }
 
@@ -493,7 +501,7 @@ public class lotteryUtils {
                 for (int j :
                         i) {
                     {
-                        count[j-1]++;
+                        count[j - 1]++;
                     }
 
                 }
@@ -533,7 +541,7 @@ public class lotteryUtils {
                 } else {
                     doubleNum[j][1]++;
                 }
-                if (B_S(i[j],type)==0) {
+                if (B_S(i[j], type) == 0) {
                     doubleNum[j][2]++;
                 } else {
                     doubleNum[j][3]++;
@@ -568,7 +576,7 @@ public class lotteryUtils {
             }
 
         }
-        if (type == 4||type == 6) {
+        if (type == 4 || type == 6) {
             int[][] dt = new int[4][2];
             for (List l :
                     arrayList) {
@@ -594,23 +602,7 @@ public class lotteryUtils {
             for (int i = 0; i < 4; i++) {
                 doubleNum[i] = newDoubleNum[i];
             }
-//            int[] dt = new int[2];
-//            for (List l :
-//                    arrayList) {
-//                    if ((int) l.get(0) == 0) {
-//                        dt[0]++;
-//                    } else {
-//                        dt[1]++;
-//                    }
-//            }
-//
-//            int[] newDoubleNum = new int[6];
-//            for (int i = 0; i < 4; i++) {
-//                newDoubleNum[i] = doubleNum[0][i];
-//            }
-//            newDoubleNum[4] = dt[0];
-//            newDoubleNum[5] = dt[1];
-//            doubleNum[0] = newDoubleNum;
+
         }
         //龙虎
 
@@ -661,7 +653,7 @@ public class lotteryUtils {
                     } else {
                         group[i][1]++;
                     }
-                    if (B_S(ints[i],type)==0 ) {
+                    if (B_S(ints[i], type) == 0) {
                         group[i][2]++;
                     } else {
                         group[i][3]++;
@@ -698,50 +690,6 @@ public class lotteryUtils {
      * @Date: 2019/4/9
      */
     public static Object[][] singleView(List<ExLotteryTicket> list) {
-//        int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
-//        ArrayList<String> date = getpastDaysList(15);
-//        Map<String, ArrayList<int[]>> map = new LinkedHashMap<>();
-//        for (String dateStr :
-//                date) {
-//            ArrayList<int[]> dateSTRING = new ArrayList<>();
-//            for (ExLotteryTicket e :
-//                    list) {
-//                if (e.getDraw_time().substring(0, 10).equals(dateStr)) {
-//                    int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
-//                    dateSTRING.add(ints);
-//                }
-//                map.put(dateStr, dateSTRING);
-//            }
-//        }
-//
-//        Iterator iter = map.entrySet().iterator();
-//        ArrayList<JSONObject> jsonArray = new ArrayList<>();
-//        while (iter.hasNext()) {
-//            Map.Entry entry = (Map.Entry) iter.next();
-//            String key = (String) entry.getKey();
-//            List<int[]> val = (List) entry.getValue();
-//            int[][] group = new int[4][bollNum];
-//            for (int[] ints :
-//                    val) {
-//                for (int i = 0; i < 4; i++) {
-//                    for (int j = 0; j < bollNum; j++) {
-//                        if (ints[j] % 2 == 1) {
-//                            group[0][j]++;
-//                        } else {
-//                            group[1][j]++;
-//                        }
-//                        if (ints[j] > 4) {
-//                            group[2][j]++;
-//                        } else {
-//                            group[3][j]++;
-//                        }
-//                    }
-//                }
-//            }
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put(key, group);
-//            jsonArray.add(jsonObject);
-//        }
         int bollNum = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         int type = list.get(0).getLot_type();
         ArrayList<String> date = getpastDaysList(15);
@@ -774,7 +722,7 @@ public class lotteryUtils {
                     } else {
                         group[i][1]++;
                     }
-                    if (B_S(ints[i],type)==0 ) {
+                    if (B_S(ints[i], type) == 0) {
                         group[i][2]++;
                     } else {
                         group[i][3]++;
@@ -802,7 +750,13 @@ public class lotteryUtils {
         return objs;
     }
 
-
+    /**
+     * @Description: 返回单双大小路珠列表JsonObject
+     * @Param: [list]
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Author: Hash
+     * @Date: 2019/4/13
+     */
     public static JSONObject getDSBSRoadBead(List<ExLotteryTicket> list) {
         int bollNum = list.get(0).getDraw_code().split(",").length;
         int type = list.get(0).getLot_type();
@@ -826,21 +780,103 @@ public class lotteryUtils {
         return object;
     }
 
+    /**
+     * @Description: 返回龙虎路珠列表JsonObject
+     * @Param: [list]
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Author: Hash
+     * @Date: 2019/4/13
+     */
+    public static JSONObject getDTRoadBead(List<ExLotteryTicket> list) {
+        int bollNum = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code())).size();
+        int[][] ints = new int[bollNum][list.size()];
+        for (int i = 0; i < bollNum; i++) {
+            for (int j = 0; j < list.size(); j++) {
+                ints[i][j] = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())).toArray(new Integer[bollNum])[i];
+            }
+        }
+
+        for (int[] in:
+             ints) {
+            for (int i:
+                 in) {
+                System.out.print(i+",");
+            }
+            System.out.println();
+        }
+
+        ArrayList DS = new ArrayList(); //龙虎
+        for (int i = 0; i < bollNum; i++) {
+            int[] DSs = ints[i];
+            System.out.println(moreArr(DS_Filter(DSs)));
+            DS.add(moreArr(DS_Filter(DSs)));
+            //System.out.println(DS.get(i));
+        }
+        JSONObject object = new JSONObject();
+        object.put("DragonTiger", DS);
+        return object;
+    }
+
+
+    /**
+     * @Description: 返回冠亚和路珠列表JsonObject
+     * @Param: [list]
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Author: Hash
+     * @Date: 2019/4/13
+     */
+    public static JSONObject getFSRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int[] FS_list = new int[size];
+        for (int i = 0; i < size; i++) {
+            FS_list[i] = sum_FS(lotteryCodeAdapter.toCalculate(list.get(i).getDraw_code()));
+        }
+        int[] BSs = new int[size];
+        for (int i = 0; i < size; i++) {
+            if (FS_list[i] > 11) {
+                BSs[i] = 0;
+            } else {
+                BSs[i] = 1;
+            }
+        }
+        JSONObject object = new JSONObject();
+        object.put("SIZE", moreArr(BSs));
+        object.put("DoubleSingle", moreArr(DS_Filter(FS_list)));
+        return object;
+    }
+
+    //总和路珠
+    public static JSONObject getTotalRoadBead(List<ExLotteryTicket> list){
+        int size = list.size();
+        int[] totalList = new int[size];
+        int type = list.get(0).getLot_type();
+        for (int i = 0; i < size; i++) {
+            totalList[i] = sum_All(lotteryCodeAdapter.toCalculate(list.get(i).getDraw_code()));
+        }
+        int[] DSs = DS_Filter(totalList);
+        //int[] BSs = BS_Filter(totalList,type);
+        int[] Bss = new int[size];
+        for (int i = 0; i < size; i++) {
+            Bss[i] = (totalList[i]> 22 ? 0:1);
+        }
+        JSONObject object = new JSONObject();
+        object.put("SIZE", moreArr(Bss));
+        object.put("DoubleSingle", moreArr(DSs));
+        return object;
+    }
+
     //单双过滤器
     private static int[] DS_Filter(int[] i) {
         int[] ints = new int[i.length];
         for (int j = 0; j < i.length; j++) {
             ints[j] = (i[j] % 2 == 1 ? 0 : 1);
-
         }
-
         return ints;
     }
 
     //大小过滤器
     private static int[] BS_Filter(int[] i, int type) {
         int[] ints = new int[i.length];
-
         switch (type) {
             case 1:
                 for (int j = 0; j < i.length; j++) {
@@ -874,13 +910,20 @@ public class lotteryUtils {
     private static List<List<Integer>> moreArr(int[] args) {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> list = new ArrayList();
-        for (int i = 0; i < args.length - 1; i++) {
+        int index = 0;
+        for (int i = 0; i < args.length-1; i++) {
             list.add(args[i]);
             if (args[i] != args[i + 1]) {
                 result.add(list);
                 list = new ArrayList<>();
+                index = i;
             }
         }
+        List<Integer> ex = new ArrayList<>();
+        for (int j = index+1; j < args.length; j++) {
+            ex.add(args[j]);
+        }
+        result.add(ex);
         return result;
     }
 
@@ -950,4 +993,24 @@ public class lotteryUtils {
         }
         return i;
     }
+
+    public static Long getThisWeekDate(int mode) {
+        DateTime now = DateTime.now();
+        switch (mode){
+            case 1:
+                if (now.getDayOfWeek()==7){
+                now = now.plusWeeks(2).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);}else {
+                    now = now.withDayOfWeek(2).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
+                }break;
+            case 2:
+                now = now.withDayOfWeek(4).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);break;
+            case 0:
+                now = now.withDayOfWeek(6).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);break;
+        }
+
+
+        return now.getMillis();
+    }
+
+
 }

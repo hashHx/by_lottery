@@ -2,6 +2,7 @@ package com.hash.by_lottery.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.entities.ExLotteryTicket;
+import com.hash.by_lottery.entities.ticketPlan;
 
 import java.util.List;
 
@@ -34,5 +35,7 @@ public interface ExLotteryTicketService {
     List<ExLotteryTicket> getIndexTickets(List<String> list);
 
     void insertCache(ExLotteryTicket ex);
+
+//    ticketPlan getPlanWithLotCode(String lot_code);
 
 }

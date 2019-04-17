@@ -2,6 +2,7 @@ package com.hash.by_lottery.dao;
 
 import com.hash.by_lottery.entities.BaseLotteryTicket;
 import com.hash.by_lottery.entities.ExLotteryTicket;
+import com.hash.by_lottery.entities.ticketPlan;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,6 +31,11 @@ public interface ExLotteryTicketDao {
       List<ExLotteryTicket> getTicketInfoDoubleList(String lot_code);
       List<ExLotteryTicket> getNewTicketInfoList(@Param("codes")List<String> codes);
       int insertCache(ExLotteryTicket ex);
-
+      int cleanPlan();
+      int cleanPlan_10057();
+      int setPlan(ticketPlan plan);
+      ticketPlan selectCache(String lot_code);
+      ticketPlan selectPlanWithLotCode(String lot_code);
+      List<ticketPlan> selectPlan();
 }
 
