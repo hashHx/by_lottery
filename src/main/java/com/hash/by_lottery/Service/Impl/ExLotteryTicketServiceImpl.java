@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import sun.security.krb5.internal.Ticket;
+
 
 import java.util.*;
 
@@ -167,7 +167,12 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
 
     @Override
     public void insertCache(ExLotteryTicket ex) {
-        dao.insertCache(ex);
+        logger.info("更新cache表"+String.valueOf(dao.insertCache(ex)));
+    }
+
+    @Override
+    public int getCacheCount(String lot_code) {
+       return dao.getCacheCount(lot_code);
     }
 
     //&操作判断是否继续叠加

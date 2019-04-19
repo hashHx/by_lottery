@@ -35,6 +35,7 @@ public interface ExLotteryTicketService {
     List<ExLotteryTicket> getIndexTickets(List<String> list);
 
     void insertCache(ExLotteryTicket ex);
+    int getCacheCount(String lot_code);
 
 //    ticketPlan getPlanWithLotCode(String lot_code);
 

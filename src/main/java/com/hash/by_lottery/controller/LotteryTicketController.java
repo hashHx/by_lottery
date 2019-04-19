@@ -57,7 +57,6 @@ public class LotteryTicketController {
     private ConfigService service_config;
 
 
-
     @RequestMapping(value = "/lottery/ticketInfo/{lotCode}/{lotIssue}", method = RequestMethod.GET)
     public String getTickerInfo(@PathVariable("lotCode") String lotCode, @PathVariable("lotIssue") String lotIssue) {
 
@@ -69,22 +68,24 @@ public class LotteryTicketController {
     public String getSpiderInfo(BaseLotteryTicket ticket) {
         logger.info(ticket.toString());
         synchronized (this.getClass()) {
-            if (ticket.getDraw_code() != ""||ticket.getDraw_code() != null) {
+            if (ticket.getDraw_code() != "" || ticket.getDraw_code() != null) {
                 BaseLotteryTicket check = service.getTickerInfo(ticket.getLot_code(), ticket.getDraw_issue());
                 if (check != null) {
                     logger.error("重复信息" +
-                            "——————"+ticket.toString());
+                            "——————" + ticket.toString());
                     return "二四你在逗我呢";
                 }
                 ticket.setL_id(IdGen.get().nextId());
                 service.saveBaseTicketInfo(ticket);
                 ExLotteryTicket newTicket = service_ex.getNewTicketInfo(ticket.getLot_code());
+                newTicket.setCurrentCount(service.getCurrentCount(ticket.getLot_code()));
                 service_ex.insertCache(newTicket);
+                logger.info("更新数据" + newTicket);
                 saveSpace.INSTANCE.setValue(newTicket.getLot_code(), newTicket);
                 logger.trace(ticket.toString() + "spaceSave");
                 return "ok";
             } else {
-                logger.error("号码为空！————"+ticket.toString());
+                logger.error("号码为空！————" + ticket.toString());
                 return "空字符串，大佬";
             }
         }
@@ -144,14 +145,14 @@ public class LotteryTicketController {
             if (list != null) {
                 for (ExLotteryTicket eticket : list
                 ) {
-                    map = ticketGen.getresult(eticket, eticket.getLot_type(),service_ex,service);
+                    map = ticketGen.getresult(eticket, eticket.getLot_type());
                     ticketList_.add(map);
                 }
             } else {
-                list = service_ex.getTicketListWithTime(lotCode,lotteryUtils.getpastDaysList(1).get(0));
+                list = service_ex.getTicketListWithTime(lotCode, lotteryUtils.getpastDaysList(1).get(0));
                 for (ExLotteryTicket eticket : list
                 ) {
-                    map = ticketGen.getresult(eticket, eticket.getLot_type(),service_ex,service);
+                    map = ticketGen.getresult(eticket, eticket.getLot_type());
                     ticketList_.add(map);
                 }
             }
@@ -177,7 +178,7 @@ public class LotteryTicketController {
                 List<Object> ticketList = new ArrayList();
                 for (ExLotteryTicket e : list
                 ) {
-                    map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
+                    map = ticketGen.getresult(e, e.getLot_type());
                     ticketList.add(map);
                 }
                 return ResultGen.getResult(ticketList, 0);
@@ -248,22 +249,19 @@ public class LotteryTicketController {
                     //期数不存在
                     return ResultGen.getResult((HashMap<Object, Object>) map, 3);
                 } else {
-                    Long issue = service.getFirstIssue(lotCode);
-                    if (issue != null) {
-                        map = ticketGen.getresult(t, t.getLot_type(),service_ex,service);
-                    } else {
-                        map = ticketGen.getresult(t, t.getLot_type(),service_ex,service);
-                    }
-                    return ResultGen.getResult((HashMap<Object, Object>) map, 0);
+                    t.setCurrentCount(service_ex.getCacheCount(t.getLot_code()));
+                    map = ticketGen.getresult(t, t.getLot_type());
                 }
+                return ResultGen.getResult((HashMap<Object, Object>) map, 0);
             }
         }
     }
 
+
     @RequestMapping(value = "/lottery/indexTicketsSort", method = RequestMethod.GET)
     public String[] sort() {
         //return new String[]{"11009", "10057", "10002", "10001", "11006", "11008", "11003", "11010", "11007", "11002", "110001", "11005", "11004"};
-        return new String[]{"11009","10057","10002","10001","11006","11008","11003","11010","11013","11007","11002","11001","11012","11005","11004"};
+        return new String[]{"11009", "10057", "10002", "10001", "11006", "11008", "11003", "11010", "11013", "11007", "11002", "11001", "11012", "11005", "11004"};
     }
 
     private List<String> String2ArrayList(String[] strings) {
@@ -287,18 +285,13 @@ public class LotteryTicketController {
         Map map = new HashMap();
         for (ExLotteryTicket e :
                 ex) {
-            Long issue = service.getFirstIssue(e.getLot_code());
-            if (issue == null) {
-                map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
-                arr.add(map);
-            } else {
-                map = ticketGen.getresult(e, e.getLot_type(),service_ex,service);
-                arr.add(map);
-            }
+            e.setCurrentCount(service_ex.getCacheCount(e.getLot_code()));
+            map = ticketGen.getresult(e, e.getLot_type());
+            arr.add(map);
+
         }
         System.out.println(System.currentTimeMillis() - timestamp);
         return ResultGen.getResult(arr, 0);
-
 
     }
 
@@ -308,12 +301,6 @@ public class LotteryTicketController {
         return service_ex.getLongDragonInfo(lotCode);
     }
 
-//    private void countFun(Map map, String lotCode) {
-//        int count = Integer.parseInt(service.getCurrentCount(lotCode));
-//        map.put("currentCount", count);
-//        int totalCount = (int) map.get("totalCount");
-//        map.put("surplusCount", totalCount - count);
-//    }
 
     @RequestMapping(value = "/lottery/ticketTypeInfo", method = RequestMethod.GET)
     public Object getTicketTypeInfo() {
@@ -342,6 +329,7 @@ public class LotteryTicketController {
     }
 
 
+    //历史单双大小
     @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/SizeParityHistory", method = RequestMethod.GET)
     public JSONObject getSizeParityHistory(@PathVariable("lotCode") String lotCode) {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketInfoDoubleList(lotCode);
@@ -398,6 +386,61 @@ public class LotteryTicketController {
         return null;
     }
 
+    //号码路珠 getNumberRoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/NumberLine", method = RequestMethod.GET)
+    public List<List> NumberLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.getNumberRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
+    //中发白路珠 getZFBRoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/ZFBLine", method = RequestMethod.GET)
+    public List<List> ZFBLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.ZFBRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
+    //东南西北路珠 getNumberRoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/ESWNLine", method = RequestMethod.GET)
+    public List<List> ESWNLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.ESWNRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
+    //合数单双路珠 sumNumberRoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/sumNumberLine", method = RequestMethod.GET)
+    public List<List> sumNumberLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.sumNumberRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
+    //尾数大小路珠 tailRoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/tailLine", method = RequestMethod.GET)
+    public List<List> tailLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.tailRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
 
     @RequestMapping(value = "/lottery/allTickets", method = RequestMethod.GET)
     public net.sf.json.JSONArray getAllTicket() {
@@ -405,63 +448,41 @@ public class LotteryTicketController {
     }
 
 
+    @RequestMapping(value = "/lottery/saveSpace", method = RequestMethod.GET)
+    public JSONObject getSaveSpace() {
+        return saveSpace.INSTANCE.getValue();
+    }
+
+
     public enum saveSpace {
-        INSTANCE;
+    INSTANCE;
 
-        private JSONObject value;
+    private JSONObject value;
 
-        private saveSpace() {
-            value = new JSONObject();
-        }
-
-        public JSONObject getValue() {
-            return value;
-        }
-
-        public void setValue(JSONObject value) {
-            this.value = value;
-        }
-
-        public void setValue(String key, Object value) {
-            if (this.value.get(key) != null) {
-                this.value.remove(key);
-                this.value.put(key, value);
-                System.out.println(key + " update " + value);
-            } else {
-                this.value.put(key, value);
-                System.out.println(key + " create " + value);
-            }
-        }
+    private saveSpace() {
+        value = new JSONObject();
     }
 
-    public enum firstIssue {
-        INSTANCE;
+    public JSONObject getValue() {
+        return value;
+    }
 
-        private JSONObject value;
+    public void setValue(JSONObject value) {
+        this.value = value;
+    }
 
-        private firstIssue() {
-            value = new JSONObject();
-        }
-
-        public JSONObject getValue() {
-            return value;
-        }
-
-        public void setValue(JSONObject value) {
-            this.value = value;
-        }
-
-        public void setValue(String key, Object value) {
-            if (this.value.get(key) != null) {
-                this.value.remove(key);
-                this.value.put(key, value);
-                System.out.println(key + " update " + value);
-            } else {
-                this.value.put(key, value);
-                System.out.println(key + " create " + value);
-            }
+    public void setValue(String key, Object value) {
+        if (this.value.get(key) != null) {
+            this.value.remove(key);
+            this.value.put(key, value);
+            System.out.println(key + " update " + value);
+        } else {
+            this.value.put(key, value);
+            System.out.println(key + " create " + value);
         }
     }
+}
+
 
 
 }

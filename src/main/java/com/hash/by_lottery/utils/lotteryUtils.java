@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.ExLotteryTicket;
+import org.apache.commons.lang.ArrayUtils;
 import org.joda.time.DateTime;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Stream;
+
 
 /**
  * @ClassName lotteryUtils
@@ -245,8 +245,18 @@ public class lotteryUtils {
         return (sum_All(code) % 10) < 5 ? 1 : 0;
     }
 
+
     public static int tail_SD(int[] code) {
         return (sum_All(code) % 2) == 0 ? 1 : 0;
+    }
+
+
+    public static int[] tail_BS_list(int[] code) {
+        int[] temp = new int[code.length];
+        for (int i = 0; i < code.length; i++) {
+            temp[i] = code[i] < 5 ? 1 : 0;
+        }
+        return temp;
     }
 
     /**
@@ -460,10 +470,10 @@ public class lotteryUtils {
         jsonObject.put("lotName", "香港六合彩");
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
-        Long time = lotteryUtils.getThisWeekDate((int) jsonObject.get("issue") % 3);
-        jsonObject.put("nextDrawTime",time);
-        jsonObject.put("imgUrl","https://static.junanservice.com/lottery/images/xglhc.png");
-        jsonObject.put("iconUrl","https://static.junanservice.com/lottery/images/xglhc_icon.png");
+        Long time = Long.parseLong(date2TimeStamp(new Mark6Utils().year_month_day.get(String.valueOf((Integer) jsonObject.get("issue") + 1))));
+        jsonObject.put("nextDrawTime", time);
+        jsonObject.put("imgUrl", "https://static.junanservice.com/lottery/images/xglhc.png");
+        jsonObject.put("iconUrl", "https://static.junanservice.com/lottery/images/xglhc_icon.png");
         return jsonObject;
     }
 
@@ -561,7 +571,7 @@ public class lotteryUtils {
                 }
             }
             int[][] newDoubleNum = new int[5][6];
-            //for (int i = 0; i < 5; i++) {
+
             for (int j = 0; j < 5; j++) {
                 for (int k = 0; k < 4; k++) {
                     newDoubleNum[j][k] = doubleNum[j][k];
@@ -570,11 +580,98 @@ public class lotteryUtils {
                 newDoubleNum[j][5] = dt[j][1];
             }
 
-            // }
             for (int i = 0; i < 5; i++) {
                 doubleNum[i] = newDoubleNum[i];
             }
 
+            List<List> result = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                int size = doubleNum[i].length;
+                List listIn = new ArrayList();
+                for (int j = 0; j < size; j++) {
+                    listIn.add(doubleNum[i][j]);
+                }
+                result.add(listIn);
+            }
+            Integer[] FS_sum = new Integer[4];
+            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
+            for (int[] i:
+                 objects) {
+                if ((i[0] + i[1] )% 2 == 0) {
+                    FS_sum[1]++;
+                } else {
+                    FS_sum[0]++;
+                }
+                if ((i[0] + i[1] )> 11 ) {
+                    FS_sum[2]++;
+                } else {
+                    FS_sum[3]++;
+                }
+            }
+            result.add(Arrays.asList(FS_sum));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("doubleCount", result);
+            return jsonObject;
+        }
+        if (type == 2){
+            List<List> result = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                int size = doubleNum[i].length;
+                List listIn = new ArrayList();
+                for (int j = 0; j < size; j++) {
+                    listIn.add(doubleNum[i][j]);
+                }
+                result.add(listIn);
+            }
+            Integer[] FS_sum = new Integer[4];
+            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
+            for (int[] i:
+                    objects) {
+                if (sum_All(i)% 2 == 0) {
+                    FS_sum[1]++;
+                } else {
+                    FS_sum[0]++;
+                }
+                if (sum_All(i)> 23 ) {
+                    FS_sum[2]++;
+                } else {
+                    FS_sum[3]++;
+                }
+            }
+            result.add(Arrays.asList(FS_sum));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("doubleCount", result);
+            return jsonObject;
+        }
+        if (type == 3){
+            List<List> result = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                int size = doubleNum[i].length;
+                List listIn = new ArrayList();
+                for (int j = 0; j < size; j++) {
+                    listIn.add(doubleNum[i][j]);
+                }
+                result.add(listIn);
+            }
+            Integer[] FS_sum = new Integer[4];
+            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
+            for (int[] i:
+                    objects) {
+                if (sum_All(i)% 2 == 0) {
+                    FS_sum[1]++;
+                } else {
+                    FS_sum[0]++;
+                }
+                if (sum_All(i)> 30 ) {
+                    FS_sum[2]++;
+                } if (sum_All(i)< 30 ){
+                    FS_sum[3]++;
+                }
+            }
+            result.add(Arrays.asList(FS_sum));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("doubleCount", result);
+            return jsonObject;
         }
         if (type == 4 || type == 6) {
             int[][] dt = new int[4][2];
@@ -603,9 +700,36 @@ public class lotteryUtils {
                 doubleNum[i] = newDoubleNum[i];
             }
 
+            List<List> result = new ArrayList<>();
+            for (int i = 0; i < length; i++) {
+                int size = doubleNum[i].length;
+                List listIn = new ArrayList();
+                for (int j = 0; j < size; j++) {
+                    listIn.add(doubleNum[i][j]);
+                }
+                result.add(listIn);
+            }
+            Integer[] FS_sum = new Integer[4];
+            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
+            for (int[] i:
+                    objects) {
+                if (sum_All(i)% 2 == 0) {
+                    FS_sum[1]++;
+                } else {
+                    FS_sum[0]++;
+                }
+                if (sum_All(i)> 84 ) {
+                    FS_sum[2]++;
+                } if (sum_All(i)< 84 ){
+                    FS_sum[3]++;
+                }
+            }
+            result.add(Arrays.asList(FS_sum));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("doubleCount", result);
+            return jsonObject;
         }
         //龙虎
-
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("doubleCount", doubleNum);
@@ -796,11 +920,11 @@ public class lotteryUtils {
             }
         }
 
-        for (int[] in:
-             ints) {
-            for (int i:
-                 in) {
-                System.out.print(i+",");
+        for (int[] in :
+                ints) {
+            for (int i :
+                    in) {
+                System.out.print(i + ",");
             }
             System.out.println();
         }
@@ -846,7 +970,7 @@ public class lotteryUtils {
     }
 
     //总和路珠
-    public static JSONObject getTotalRoadBead(List<ExLotteryTicket> list){
+    public static JSONObject getTotalRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
         int[] totalList = new int[size];
         int type = list.get(0).getLot_type();
@@ -854,15 +978,189 @@ public class lotteryUtils {
             totalList[i] = sum_All(lotteryCodeAdapter.toCalculate(list.get(i).getDraw_code()));
         }
         int[] DSs = DS_Filter(totalList);
-        //int[] BSs = BS_Filter(totalList,type);
         int[] Bss = new int[size];
         for (int i = 0; i < size; i++) {
-            Bss[i] = (totalList[i]> 22 ? 0:1);
+            Bss[i] = (totalList[i] > 22 ? 0 : 1);
         }
         JSONObject object = new JSONObject();
         object.put("SIZE", moreArr(Bss));
         object.put("DoubleSingle", moreArr(DSs));
         return object;
+    }
+
+    //号码路珠  时时彩，快3 2456
+    public static List getNumberRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int type = list.get(0).getLot_type();
+        int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        List<int[]> ticketCode = new ArrayList<>();
+        for (ExLotteryTicket t :
+                list) {
+            ticketCode.add(lotteryCodeAdapter.toCalculate(t.getDraw_code()));
+        }
+        List<List> result = new ArrayList<>();
+        switch (type) {
+            case 2:
+                for (int i = 0; i < 10; i++) {
+                    int[] temp = new int[size];
+                    for (int j = 0; j < size; j++) {
+                        ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
+                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        if (j == size - 1) {
+                            result.add(moreArr(temp));
+                        }
+                    }
+                }
+                break;
+            case 4:
+                for (int i = 1; i < 21; i++) {
+                    int[] temp = new int[size];
+                    for (int j = 0; j < size; j++) {
+                        ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
+                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        if (j == size - 1) {
+                            result.add(moreArr(temp));
+                        }
+                    }
+                }
+                break;
+            case 5:
+                for (int i = 1; i < 7; i++) {
+                    int[] temp = new int[size];
+                    for (int j = 0; j < size; j++) {
+                        ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
+                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        if (j == size - 1) {
+                            result.add(moreArr(temp));
+                        }
+                    }
+                }
+                break;
+            case 6:
+                for (int i = 1; i < 21; i++) {
+                    int[] temp = new int[size];
+                    for (int j = 0; j < size; j++) {
+                        ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
+                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        if (j == size - 1) {
+                            result.add(moreArr(temp));
+                        }
+                    }
+                }
+                break;
+        }
+
+        return result;
+    }
+
+    //东南西北路珠
+    public static List ESWNRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        List result = new ArrayList();
+        for (int i = 0; i < num; i++) {
+            int[] temp = new int[size];
+            for (int j = 0; j < size; j++) {
+                //System.out.println(lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code()));
+                temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
+                //System.out.println(i1+"  "+j);
+
+            }
+            result.add(moreArr(ESWN_Filter(temp)));
+        }
+        return result;
+    }
+
+
+    //中发白路珠
+    public static List ZFBRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        List result = new ArrayList();
+        for (int i = 0; i < num; i++) {
+            int[] temp = new int[size];
+            for (int j = 0; j < size; j++) {
+                temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
+            }
+            result.add(moreArr(ZFB_Filter(temp)));
+        }
+        return result;
+    }
+
+    //合数单双路珠
+    public static List sumNumberRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        List result = new ArrayList();
+        for (int i = 0; i < num; i++) {
+            int[] temp = new int[size];
+            for (int j = 0; j < size; j++) {
+                temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
+            }
+            result.add(moreArr(DS_Filter(sum_number(temp))));
+        }
+        return result;
+    }
+
+    //尾数大小路珠
+    public static List tailRoadBead(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
+        List result = new ArrayList();
+        for (int i = 0; i < num; i++) {
+            int[] temp = new int[size];
+            for (int j = 0; j < size; j++) {
+                temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
+            }
+            result.add(moreArr(DS_Filter(tail_BS_list(temp))));
+        }
+        return result;
+    }
+
+    //东南西北过滤器
+    private static int[] ESWN_Filter(int[] i) {
+        int[] ints = new int[i.length];
+        Integer[] East = {1, 5, 9, 13, 17};
+        Integer[] SOUTH = {2, 6, 10, 14, 18};
+        Integer[] WEST = {3, 7, 11, 15, 19};
+        Integer[] NORTH = {4, 8, 12, 16, 20};
+        for (int j = 0; j < i.length; j++) {
+            if (Arrays.asList(East).contains(i[j])) {
+                ints[j] = 0;
+            }
+            if (Arrays.asList(SOUTH).contains(i[j])) {
+                ints[j] = 1;
+            }
+            if (Arrays.asList(WEST).contains(i[j])) {
+                ints[j] = 2;
+            }
+            if (Arrays.asList(NORTH).contains(i[j])) {
+                ints[j] = 3;
+            }
+        }
+
+        return ints;
+    }
+
+    //中发白过滤器
+    private static int[] ZFB_Filter(int[] i) {
+        int[] ints = new int[i.length];
+        Integer[] Z = {1, 2, 3, 4, 5, 6, 7};
+        Integer[] F = {8, 9, 10, 11, 12, 13, 14};
+        Integer[] B = {15, 16, 17, 18, 19, 20};
+        for (int j = 0; j < i.length; j++) {
+            if (Arrays.asList(Z).contains(i[j])) {
+                ints[j] = 0;
+            }
+            if (Arrays.asList(F).contains(i[j])) {
+                ints[j] = 1;
+            }
+            if (Arrays.asList(B).contains(i[j])) {
+                ints[j] = 2;
+            }
+        }
+
+        return ints;
     }
 
     //单双过滤器
@@ -911,7 +1209,7 @@ public class lotteryUtils {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> list = new ArrayList();
         int index = 0;
-        for (int i = 0; i < args.length-1; i++) {
+        for (int i = 0; i < args.length - 1; i++) {
             list.add(args[i]);
             if (args[i] != args[i + 1]) {
                 result.add(list);
@@ -920,7 +1218,7 @@ public class lotteryUtils {
             }
         }
         List<Integer> ex = new ArrayList<>();
-        for (int j = index+1; j < args.length; j++) {
+        for (int j = index + 1; j < args.length; j++) {
             ex.add(args[j]);
         }
         result.add(ex);
@@ -996,16 +1294,20 @@ public class lotteryUtils {
 
     public static Long getThisWeekDate(int mode) {
         DateTime now = DateTime.now();
-        switch (mode){
+        switch (mode) {
             case 1:
-                if (now.getDayOfWeek()==7){
-                now = now.plusWeeks(2).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);}else {
+                if (now.getDayOfWeek() == 7) {
+                    now = now.plusWeeks(2).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
+                } else {
                     now = now.withDayOfWeek(2).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
-                }break;
+                }
+                break;
             case 2:
-                now = now.withDayOfWeek(4).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);break;
+                now = now.withDayOfWeek(4).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
+                break;
             case 0:
-                now = now.withDayOfWeek(6).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);break;
+                now = now.withDayOfWeek(6).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
+                break;
         }
 
 

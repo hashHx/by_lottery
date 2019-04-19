@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * @ClassName ExLotteryTicket
  * @Descritption 拓展彩票类
@@ -15,7 +17,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class ExLotteryTicket  {
+public class ExLotteryTicket  implements Serializable {
     private Long l_id;
     private String lot_name;
     private int lot_count;
@@ -31,5 +33,6 @@ public class ExLotteryTicket  {
     private String draw_time;
     private int lot_state;
     private int is_hot;
+    private int currentCount;
 
 }

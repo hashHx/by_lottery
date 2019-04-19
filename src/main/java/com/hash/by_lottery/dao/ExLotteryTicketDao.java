@@ -37,5 +37,6 @@ public interface ExLotteryTicketDao {
       ticketPlan selectCache(String lot_code);
       ticketPlan selectPlanWithLotCode(String lot_code);
       List<ticketPlan> selectPlan();
+      int getCacheCount(String lot_code);
 }
 

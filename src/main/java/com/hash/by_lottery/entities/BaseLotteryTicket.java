@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 @Data
 @Getter
 @Setter
 @Accessors(chain = true)
-public class BaseLotteryTicket {
+public class BaseLotteryTicket implements Serializable {
 
     private Long l_id;
     private String lot_code;

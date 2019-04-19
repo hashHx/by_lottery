@@ -20,7 +20,7 @@ import java.util.Map;
 public class ticketGen {
 
 
-    public static HashMap<Object, Object> getresult(ExLotteryTicket ticket, int type, ExLotteryTicketService service, BaseLotteryTicketService service_base) {
+    public static HashMap<Object, Object> getresult(ExLotteryTicket ticket, int type) {
         Map data = new HashMap();
         data.put("lotCode", ticket.getLot_code());
         data.put("lotName", ticket.getLot_name());
@@ -32,28 +32,28 @@ public class ticketGen {
         Long time = Long.parseLong(lotteryUtils.date2TimeStamp(ticket.getDraw_time()));
         data.put("preDrawTime", time);
         data.put("nextDrawTime", String.valueOf(time + (ticket.getLot_interval() * 1000)+1500));
-        Long issue = Long.parseLong(ticket.getDraw_issue());
-        //Long issue_ = service.getPlanWithLotCode(ticket.getLot_code()).getEnd_issue()== null? 0L:Long.parseLong(service.getPlanWithLotCode(ticket.getLot_code()).getEnd_issue());
-        //Long count = new Long(ticket.getLot_count());
-        int currentCount = service_base.getCurrentCount(ticket.getLot_code());
-        data.put("currentCount",currentCount);
-        data.put("surplusCount",ticket.getLot_count()-currentCount);
-        //if (issue_!=0L)//{
-        if (currentCount==issue) {
+        data.put("currentCount",ticket.getCurrentCount());
+        data.put("surplusCount",ticket.getLot_count()-ticket.getCurrentCount());
+        if (ticket.getCurrentCount()==ticket.getLot_count()) {
             //本期为最后一期
             JSONObject jsonObject = getClosedList();
             Long closing =  jsonObject.get(ticket.getLot_code())==null?0L:(Long)jsonObject.get(ticket.getLot_code());
             if (closing != 0L) {
                 data.replace("drawIssue", "");
-                data.put("nextDrawTime", String.valueOf(time + closing));
+                data.replace("nextDrawTime", String.valueOf(time + closing));
             }
-
         }
-    //}
         if (ticket.getLot_code().equals("10002")) {
+            if (ticket.getCurrentCount() == 9L) {
+                data.replace("drawIssue", "");
+                data.replace("nextDrawTime", String.valueOf(time + 15600000L));
+            }
+        }
+        if (ticket.getLot_code().equals("10057")) {
 
-            if (currentCount == 9L) {
-                data.put("nextDrawTime", String.valueOf(time + 15600000L));
+            if (String.valueOf(ticket.getCurrentCount()).endsWith("49")) {
+                data.replace("drawIssue", "");
+                data.replace("nextDrawTime", String.valueOf(time + 32400000L));
             }
         }
         data.put("imgUrl", ticket.getLot_imgUrl());
@@ -61,7 +61,6 @@ public class ticketGen {
         data.put("videoImg", ticket.getLot_videoImg());
         data.put("videoUrl", ticket.getLot_videoUrl());
         data.put("totalCount", ticket.getLot_count());
-        //data.put("drawNumberArr", ticket.getDraw_code().split(","));
         data.put("drawNumberArr", lotteryCodeAdapter.toCalculate(ticket.getDraw_code()));
         String[] drawCode = ticket.getDraw_code().split(",");
         data.put("isDraw", false);

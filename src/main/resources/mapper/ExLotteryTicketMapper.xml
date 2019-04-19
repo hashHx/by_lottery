@@ -25,9 +25,15 @@
 	    </foreach>
 	</select>
 
+
+
 	<insert id="insertCache" parameterType="ExLotteryTicket">
-		update ticket_cache set draw_code=#{draw_code},draw_issue=#{draw_issue},draw_time=#{draw_time},lot_name=#{lot_name},lot_count=#{lot_count},lot_interval=#{lot_interval},lot_type=#{lot_type},lot_videoUrl=#{lot_videoUrl},lot_videoImg=#{lot_videoImg},lot_imgUrl=#{lot_imgUrl},lot_state=#{lot_state},is_hot=#{is_hot} where lot_code = #{lot_code};
+		update ticket_cache set draw_code=#{draw_code},draw_issue=#{draw_issue},draw_time=#{draw_time},lot_name=#{lot_name},lot_count=#{lot_count},lot_interval=#{lot_interval},lot_type=#{lot_type},lot_videoUrl=#{lot_videoUrl},lot_videoImg=#{lot_videoImg},lot_imgUrl=#{lot_imgUrl},lot_state=#{lot_state},is_hot=#{is_hot},currentCount = #{currentCount} where lot_code = #{lot_code};
 	</insert>
+
+	<select id="getCacheCount" parameterType="String" resultType="int">
+		select currentCount from ticket_cache where lot_code = #{lot_code};
+	</select>
 
 	<select id="getTicketInfoList" parameterType="String" resultType="ExLotteryTicket">
 		select a.lot_code,draw_code,draw_issue,draw_time,lot_name,lot_count,lot_interval,lot_type,lot_videoUrl,lot_videoImg,lot_imgUrl,lot_iconUrl

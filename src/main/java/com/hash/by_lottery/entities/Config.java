@@ -3,6 +3,8 @@ package com.hash.by_lottery.entities;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * @ClassName ConfigDao
  * @Descritption 配置类
@@ -14,7 +16,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class Config {
+public class Config  implements Serializable {
 
     private int config_id;
     private String config_theme;

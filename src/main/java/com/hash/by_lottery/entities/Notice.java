@@ -3,6 +3,8 @@ package com.hash.by_lottery.entities;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * @ClassName Notice
  * @Descritption TODO
@@ -14,7 +16,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class Notice {
+public class Notice implements Serializable {
 
 
 
