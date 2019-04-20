@@ -161,6 +161,10 @@ public class lotteryUtils {
         return (code[0] + code[1]) % 2 != 0 ? 0 : 1;
     }
 
+    public static int FS_sum_BS(int[] code) {
+        return (code[0] + code[1]) > 11 ? 0 : 1;
+    }
+
     /**
      * @Description: 返回 前三，中三，后三 数组 (0-杂六，1-半顺，2-顺子，3-对子，4-豹子)
      * @Param: [code]
@@ -594,15 +598,18 @@ public class lotteryUtils {
                 result.add(listIn);
             }
             Integer[] FS_sum = new Integer[4];
-            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
-            for (int[] i:
-                 objects) {
-                if ((i[0] + i[1] )% 2 == 0) {
+            FS_sum[0] = 0;
+            FS_sum[1] = 0;
+            FS_sum[2] = 0;
+            FS_sum[3] = 0;
+            for (int[] i :
+                    objects) {
+                if ((i[0] + i[1]) % 2 == 0) {
                     FS_sum[1]++;
                 } else {
                     FS_sum[0]++;
                 }
-                if ((i[0] + i[1] )> 11 ) {
+                if ((i[0] + i[1]) > 11) {
                     FS_sum[2]++;
                 } else {
                     FS_sum[3]++;
@@ -613,7 +620,7 @@ public class lotteryUtils {
             jsonObject.put("doubleCount", result);
             return jsonObject;
         }
-        if (type == 2){
+        if (type == 2) {
             List<List> result = new ArrayList<>();
             for (int i = 0; i < length; i++) {
                 int size = doubleNum[i].length;
@@ -624,15 +631,18 @@ public class lotteryUtils {
                 result.add(listIn);
             }
             Integer[] FS_sum = new Integer[4];
-            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
-            for (int[] i:
+            FS_sum[0] = 0;
+            FS_sum[1] = 0;
+            FS_sum[2] = 0;
+            FS_sum[3] = 0;
+            for (int[] i :
                     objects) {
-                if (sum_All(i)% 2 == 0) {
+                if (sum_All(i) % 2 == 0) {
                     FS_sum[1]++;
                 } else {
                     FS_sum[0]++;
                 }
-                if (sum_All(i)> 23 ) {
+                if (sum_All(i) > 23) {
                     FS_sum[2]++;
                 } else {
                     FS_sum[3]++;
@@ -643,7 +653,7 @@ public class lotteryUtils {
             jsonObject.put("doubleCount", result);
             return jsonObject;
         }
-        if (type == 3){
+        if (type == 3) {
             List<List> result = new ArrayList<>();
             for (int i = 0; i < length; i++) {
                 int size = doubleNum[i].length;
@@ -654,17 +664,21 @@ public class lotteryUtils {
                 result.add(listIn);
             }
             Integer[] FS_sum = new Integer[4];
-            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
-            for (int[] i:
+            FS_sum[0] = 0;
+            FS_sum[1] = 0;
+            FS_sum[2] = 0;
+            FS_sum[3] = 0;
+            for (int[] i :
                     objects) {
-                if (sum_All(i)% 2 == 0) {
+                if (sum_All(i) % 2 == 0) {
                     FS_sum[1]++;
                 } else {
                     FS_sum[0]++;
                 }
-                if (sum_All(i)> 30 ) {
+                if (sum_All(i) > 30) {
                     FS_sum[2]++;
-                } if (sum_All(i)< 30 ){
+                }
+                if (sum_All(i) < 30) {
                     FS_sum[3]++;
                 }
             }
@@ -710,17 +724,21 @@ public class lotteryUtils {
                 result.add(listIn);
             }
             Integer[] FS_sum = new Integer[4];
-            FS_sum[0] = 0;FS_sum[1] = 0;FS_sum[2] = 0;FS_sum[3] = 0;
-            for (int[] i:
+            FS_sum[0] = 0;
+            FS_sum[1] = 0;
+            FS_sum[2] = 0;
+            FS_sum[3] = 0;
+            for (int[] i :
                     objects) {
-                if (sum_All(i)% 2 == 0) {
+                if (sum_All(i) % 2 == 0) {
                     FS_sum[1]++;
                 } else {
                     FS_sum[0]++;
                 }
-                if (sum_All(i)> 84 ) {
+                if (sum_All(i) > 84) {
                     FS_sum[2]++;
-                } if (sum_All(i)< 84 ){
+                }
+                if (sum_All(i) < 84) {
                     FS_sum[3]++;
                 }
             }
@@ -895,7 +913,7 @@ public class lotteryUtils {
         for (int i = 0; i < bollNum; i++) {
             int[] DSs = ints[i];
             int[] BSs = ints[i];
-            DS.add(moreArr(DS_Filter(DSs)));
+            DS.add(moreArr(DS_Filter(DSs, type)));
             BS.add(moreArr(BS_Filter(BSs, type)));
         }
         JSONObject object = new JSONObject();
@@ -914,6 +932,7 @@ public class lotteryUtils {
     public static JSONObject getDTRoadBead(List<ExLotteryTicket> list) {
         int bollNum = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code())).size();
         int[][] ints = new int[bollNum][list.size()];
+        int type = list.get(0).getLot_type();
         for (int i = 0; i < bollNum; i++) {
             for (int j = 0; j < list.size(); j++) {
                 ints[i][j] = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())).toArray(new Integer[bollNum])[i];
@@ -932,8 +951,8 @@ public class lotteryUtils {
         ArrayList DS = new ArrayList(); //龙虎
         for (int i = 0; i < bollNum; i++) {
             int[] DSs = ints[i];
-            System.out.println(moreArr(DS_Filter(DSs)));
-            DS.add(moreArr(DS_Filter(DSs)));
+            System.out.println(moreArr(DS_Filter(DSs, type)));
+            DS.add(moreArr(DS_Filter(DSs, type)));
             //System.out.println(DS.get(i));
         }
         JSONObject object = new JSONObject();
@@ -951,6 +970,7 @@ public class lotteryUtils {
      */
     public static JSONObject getFSRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
+        int type = list.get(0).getLot_type();
         int[] FS_list = new int[size];
         for (int i = 0; i < size; i++) {
             FS_list[i] = sum_FS(lotteryCodeAdapter.toCalculate(list.get(i).getDraw_code()));
@@ -965,7 +985,7 @@ public class lotteryUtils {
         }
         JSONObject object = new JSONObject();
         object.put("SIZE", moreArr(BSs));
-        object.put("DoubleSingle", moreArr(DS_Filter(FS_list)));
+        object.put("DoubleSingle", moreArr(DS_Filter(FS_list, type)));
         return object;
     }
 
@@ -977,7 +997,7 @@ public class lotteryUtils {
         for (int i = 0; i < size; i++) {
             totalList[i] = sum_All(lotteryCodeAdapter.toCalculate(list.get(i).getDraw_code()));
         }
-        int[] DSs = DS_Filter(totalList);
+        int[] DSs = DS_Filter(totalList, type);
         int[] Bss = new int[size];
         for (int i = 0; i < size; i++) {
             Bss[i] = (totalList[i] > 22 ? 0 : 1);
@@ -1056,6 +1076,7 @@ public class lotteryUtils {
     //东南西北路珠
     public static List ESWNRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
+        int type = list.get(0).getLot_type();
         int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         List result = new ArrayList();
         for (int i = 0; i < num; i++) {
@@ -1075,6 +1096,7 @@ public class lotteryUtils {
     //中发白路珠
     public static List ZFBRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
+        int type = list.get(0).getLot_type();
         int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         List result = new ArrayList();
         for (int i = 0; i < num; i++) {
@@ -1090,6 +1112,7 @@ public class lotteryUtils {
     //合数单双路珠
     public static List sumNumberRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
+        int type = list.get(0).getLot_type();
         int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         List result = new ArrayList();
         for (int i = 0; i < num; i++) {
@@ -1097,7 +1120,7 @@ public class lotteryUtils {
             for (int j = 0; j < size; j++) {
                 temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
             }
-            result.add(moreArr(DS_Filter(sum_number(temp))));
+            result.add(moreArr(DS_Filter(sum_number(temp), type)));
         }
         return result;
     }
@@ -1105,6 +1128,7 @@ public class lotteryUtils {
     //尾数大小路珠
     public static List tailRoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
+        int type = list.get(0).getLot_type();
         int num = lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code()).length;
         List result = new ArrayList();
         for (int i = 0; i < num; i++) {
@@ -1112,10 +1136,199 @@ public class lotteryUtils {
             for (int j = 0; j < size; j++) {
                 temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
             }
-            result.add(moreArr(DS_Filter(tail_BS_list(temp))));
+            result.add(moreArr(DS_Filter(tail_BS_list(temp), type)));
         }
         return result;
     }
+
+
+    //LineAnalysis 路珠分析
+    public static List RoadBeadAnalysis(List<ExLotteryTicket> list) {
+        int size = list.size();
+        int type = list.get(0).getLot_type();
+        List<List> result = new ArrayList<>();
+        List<int[]> ticketCode = new ArrayList<>();
+        for (ExLotteryTicket t :
+                list) {
+            ticketCode.add(lotteryCodeAdapter.toCalculate(t.getDraw_code()));
+        }
+        switch (type) {
+            case 1:
+                List listNum1 = new ArrayList();
+                for (int i = 0; i < 10; i++) {
+                    int[] BS = new int[size];
+                    int[] DS = new int[size];
+                    for (int j = 0; j < size; j++) {
+
+                        BS[j] = ticketCode.get(j)[i];
+                        DS[j] = ticketCode.get(j)[i];
+
+                    }
+                    listNum1.add(moreArr(DS_Filter(DS, type)));
+                    listNum1.add(moreArr(BS_Filter(BS, type)));
+                    if (i < 5) {
+                        int[] DT = new int[ticketCode.size()];
+                        for (int k = 0; k < size; k++) {
+                            DT[k] = DragonTiger(ticketCode.get(k)).get(i);
+                        }
+                        listNum1.add(moreArr(DT));
+                    }
+
+                }
+                int[] FS_DS = new int[size];
+                int[] FS_BS = new int[size];
+                for (int j = 0; j < size; j++) {
+                    FS_DS[j] = FS_sum_SD(ticketCode.get(j));
+                    FS_BS[j] = FS_sum_BS(ticketCode.get(j));
+                }
+                listNum1.add(moreArr(FS_DS));
+                listNum1.add(moreArr(FS_BS));
+                return listNum1;
+            case 2:
+                List listNum2 = new ArrayList();
+                for (int i = 0; i < 5; i++) {
+
+                    int[] BS = new int[size];
+                    int[] DS = new int[size];
+                    for (int k = 0; k < size; k++) {
+                        BS[k] = ticketCode.get(k)[i];
+                        DS[k] = ticketCode.get(k)[i];
+                    }
+                    listNum2.add(moreArr(DS_Filter(DS, type)));
+                    listNum2.add(moreArr(BS_Filter(BS, type)));
+                }
+                int[] sum_DS = new int[size];
+                int[] sum_BS = new int[size];
+                int[] DT = new int[size];
+                for (int i = 0; i < size; i++) {
+                    sum_DS[i] = (sum_SD(ticketCode.get(i)));
+                    sum_BS[i] = (sum_BS(ticketCode.get(i), type));
+                    DT[i] = DragonTiger(ticketCode.get(i)).get(0);
+                }
+                listNum2.add(moreArr(sum_DS));
+                listNum2.add(moreArr(sum_BS));
+                listNum2.add(moreArr(DT));
+                return listNum2;
+            case 3:
+                List listNum3 = new ArrayList();
+                for (int i = 0; i < 5; i++) {
+                    int[] BS = new int[size];
+                    int[] DS = new int[size];
+                    for (int k = 0; k < size; k++) {
+                        BS[k] = ticketCode.get(k)[i];
+                        DS[k] = ticketCode.get(k)[i];
+                    }
+
+                    listNum3.add(moreArr(DS_Filter(DS, type)));
+                    listNum3.add(moreArr(BS_Filter(BS, type)));
+                }
+                int[] sum3_DS = new int[size];
+                int[] sum3_BS = new int[size];
+                int[] DT3 = new int[size];
+                int[] tailBS = new int[size];
+                for (int i = 0; i < size; i++) {
+                    sum3_DS[i] = (sum_SD(ticketCode.get(i)));
+                    sum3_BS[i] = (sum_BS(ticketCode.get(i), type));
+                    DT3[i] = DragonTiger(ticketCode.get(i)).get(0);
+                    tailBS[i] = tail_BS(ticketCode.get(i));
+                }
+                listNum3.add(moreArr(sum3_DS));
+                listNum3.add(moreArr(sum3_BS));
+                listNum3.add(moreArr(DT3));
+                listNum3.add(moreArr(tailBS));
+                return listNum3;
+            case 4:
+                List listNum4 = new ArrayList();
+                for (int i = 0; i < 8; i++) {
+                    int[] BS = new int[size];
+                    int[] DS = new int[size];
+                    int[] ZFB = new int[size];
+                    int[] ESWN = new int[size];
+                    int[] tail_BS = new int[size];
+                    int[] sumNumber = new int[size];
+                    for (int k = 0; k < size; k++) {
+                        BS[k] = ticketCode.get(k)[i];
+                        DS[k] = ticketCode.get(k)[i];
+                        ZFB[k] = ticketCode.get(k)[i];
+                        ESWN[k] = ticketCode.get(k)[i];
+                        tail_BS[k] = ticketCode.get(k)[i];
+                        sumNumber[k] = ticketCode.get(k)[i];
+                    }
+                    listNum4.add(moreArr(BS_Filter(BS, type)));
+                    listNum4.add(moreArr(DS_Filter(DS, type)));
+                    if (i < 4) {
+                        int[] DT4 = new int[ticketCode.size()];
+                        for (int k = 0; k < size; k++) {
+                            DT4[k] = DragonTiger(ticketCode.get(k)).get(i);
+                        }
+                        listNum4.add(moreArr(DT4));
+
+                    }
+                    listNum4.add(moreArr(tail_BS_list(tail_BS)));
+                    listNum4.add(moreArr(DS_Filter(sum_number(sumNumber), type)));
+                    listNum4.add(moreArr(ZFB_Filter(ZFB)));
+                    listNum4.add(moreArr(ESWN_Filter(ESWN)));
+                }
+                int[] sum_DS4 = new int[size];
+                int[] sum_BS4 = new int[size];
+                int[] sum_tail_BS4 = new int[size];
+                for (int i = 0; i < size; i++) {
+                    sum_DS4[i] = (sum_SD(ticketCode.get(i)));
+                    sum_BS4[i] = (sum_BS(ticketCode.get(i), type));
+                    sum_tail_BS4[i] = tail_BS(ticketCode.get(i));
+                }
+                listNum4.add(moreArr(sum_DS4));
+                listNum4.add(moreArr(sum_BS4));
+                listNum4.add(moreArr(sum_tail_BS4));
+                return listNum4;
+            case 6:
+                List listNum6 = new ArrayList();
+                for (int i = 0; i < 8; i++) {
+                    int[] BS = new int[size];
+                    int[] DS = new int[size];
+                    int[] ZFB = new int[size];
+                    int[] ESWN = new int[size];
+                    int[] tail_BS = new int[size];
+                    int[] sumNumber = new int[size];
+                    for (int k = 0; k < size; k++) {
+                        BS[k] = ticketCode.get(k)[i];
+                        DS[k] = ticketCode.get(k)[i];
+                        ZFB[k] = ticketCode.get(k)[i];
+                        ESWN[k] = ticketCode.get(k)[i];
+                        tail_BS[k] = ticketCode.get(k)[i];
+                        sumNumber[k] = ticketCode.get(k)[i];
+                    }
+                    listNum6.add(moreArr(BS_Filter(BS, type)));
+                    listNum6.add(moreArr(DS_Filter(DS, type)));
+                    if (i < 4) {
+                        int[] DT6 = new int[ticketCode.size()];
+                        for (int k = 0; k < size; k++) {
+                            DT6[k] = DragonTiger(ticketCode.get(k)).get(i);
+                        }
+                        listNum6.add(moreArr(DT6));
+
+                    }
+                    listNum6.add(moreArr(tail_BS_list(tail_BS)));
+                    listNum6.add(moreArr(DS_Filter(sum_number(sumNumber), type)));
+                    listNum6.add(moreArr(ZFB_Filter(ZFB)));
+                    listNum6.add(moreArr(ESWN_Filter(ESWN)));
+                }
+                int[] sum_DS6 = new int[size];
+                int[] sum_BS6 = new int[size];
+                int[] sum_tail_BS6 = new int[size];
+                for (int i = 0; i < size; i++) {
+                    sum_DS6[i] = (sum_SD(ticketCode.get(i)));
+                    sum_BS6[i] = (sum_BS(ticketCode.get(i), type));
+                    sum_tail_BS6[i] = tail_BS(ticketCode.get(i));
+                }
+                listNum6.add(moreArr(sum_DS6));
+                listNum6.add(moreArr(sum_BS6));
+                listNum6.add(moreArr(sum_tail_BS6));
+                return listNum6;
+        }
+        return null;
+    }
+
 
     //东南西北过滤器
     private static int[] ESWN_Filter(int[] i) {
@@ -1164,8 +1377,14 @@ public class lotteryUtils {
     }
 
     //单双过滤器
-    private static int[] DS_Filter(int[] i) {
+    private static int[] DS_Filter(int[] i, int type) {
         int[] ints = new int[i.length];
+        if (type == 3) {
+            for (int j = 0; j < i.length; j++) {
+                ints[j] = (i[j] == 11 ? 2 : (i[j] % 2 == 1 ? 0 : 1));
+            }
+            return ints;
+        }
         for (int j = 0; j < i.length; j++) {
             ints[j] = (i[j] % 2 == 1 ? 0 : 1);
         }
@@ -1188,7 +1407,7 @@ public class lotteryUtils {
                 return ints;
             case 3:
                 for (int j = 0; j < i.length; j++) {
-                    ints[j] = (i[j] > 5 ? 0 : 1);
+                    ints[j] = (i[j] == 11 ? 2 : (i[j] > 5 ? 0 : 1));
                 }
                 return ints;
             case 4:

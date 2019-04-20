@@ -441,6 +441,16 @@ public class LotteryTicketController {
         return null;
     }
 
+    //路珠分析 LineAnalysis
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/LineAnalysis", method = RequestMethod.GET)
+    public List<List> LineAnalysis(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.RoadBeadAnalysis(list);
+            return result;
+        }
+        return null;
+    }
 
     @RequestMapping(value = "/lottery/allTickets", method = RequestMethod.GET)
     public net.sf.json.JSONArray getAllTicket() {
