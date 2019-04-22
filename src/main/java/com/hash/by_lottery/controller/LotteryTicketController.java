@@ -7,21 +7,15 @@ import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ConfigService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
 import com.hash.by_lottery.entities.BaseLotteryTicket;
-import com.hash.by_lottery.entities.Config;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import com.hash.by_lottery.log.LogUtils;
 import com.hash.by_lottery.utils.*;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-
-import javax.annotation.security.DenyAll;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -31,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -290,7 +283,6 @@ public class LotteryTicketController {
             arr.add(map);
 
         }
-        System.out.println(System.currentTimeMillis() - timestamp);
         return ResultGen.getResult(arr, 0);
 
     }
@@ -436,6 +428,17 @@ public class LotteryTicketController {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
         if (list != null) {
             List result = lotteryUtils.tailRoadBead(list);
+            return result;
+        }
+        return null;
+    }
+
+    //号码前后路珠 BARoadBead
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/BeforeAfterLine", method = RequestMethod.GET)
+    public List<List> BeforeAfterLine(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
+        if (list != null) {
+            List result = lotteryUtils.BARoadBead(list);
             return result;
         }
         return null;

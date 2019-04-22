@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hash.by_lottery.Service.BaseLotteryTicketService;
 import com.hash.by_lottery.Service.ExLotteryTicketService;
+import com.hash.by_lottery.component.MissionComponent;
 import com.hash.by_lottery.entities.ExLotteryTicket;
 import org.apache.commons.lang.ArrayUtils;
 import org.joda.time.DateTime;
@@ -463,19 +464,13 @@ public class lotteryUtils {
         return null;
     }
 
-    public static String getString(String str, char start, char end) {
-        int countStart = str.indexOf(start);
-        int countEnd = str.lastIndexOf(end);
-        return str.substring(countStart, countEnd);
-    }
 
     public static JSONObject SIXSUM_utils(JSONObject jsonObject) {
         jsonObject.put("lotCode", "11009");
         jsonObject.put("lotName", "香港六合彩");
         jsonObject.put("lotType", 7);
         jsonObject.put("serverTime", System.currentTimeMillis());
-        Long time = Long.parseLong(date2TimeStamp(new Mark6Utils().year_month_day.get(String.valueOf((Integer) jsonObject.get("issue") + 1))));
-        jsonObject.put("nextDrawTime", time);
+        jsonObject.put("nextDrawTime", MissionComponent.getNearDate());
         jsonObject.put("imgUrl", "https://static.junanservice.com/lottery/images/xglhc.png");
         jsonObject.put("iconUrl", "https://static.junanservice.com/lottery/images/xglhc_icon.png");
         return jsonObject;
@@ -508,7 +503,6 @@ public class lotteryUtils {
                 }
             }
         }
-
         if (type == 3) {
             count = new int[11];
             for (int[] i : objects) {
@@ -521,7 +515,6 @@ public class lotteryUtils {
                 }
             }
         }
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("numberCount", count);
         return jsonObject;
@@ -538,7 +531,6 @@ public class lotteryUtils {
         int type = list.get(0).getLot_type();
         ArrayList<int[]> objects = new ArrayList<>();
         ArrayList<List> arrayList = new ArrayList();
-        JSONArray array = new JSONArray();
         for (ExLotteryTicket e :
                 list) {
             int[] ints = lotteryCodeAdapter.toCalculate(e.getDraw_code());
@@ -699,7 +691,6 @@ public class lotteryUtils {
                     }
                 }
             }
-
             int[][] newDoubleNum = new int[4][6];
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 4; k++) {
@@ -708,8 +699,6 @@ public class lotteryUtils {
                 newDoubleNum[j][4] = dt[j][0];
                 newDoubleNum[j][5] = dt[j][1];
             }
-
-            // }
             for (int i = 0; i < 4; i++) {
                 doubleNum[i] = newDoubleNum[i];
             }
@@ -747,8 +736,6 @@ public class lotteryUtils {
             jsonObject.put("doubleCount", result);
             return jsonObject;
         }
-        //龙虎
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("doubleCount", doubleNum);
         return jsonObject;
@@ -779,7 +766,6 @@ public class lotteryUtils {
             }
             map.put(dateStr, dateSTRING);
         }
-
         Iterator iter = map.entrySet().iterator();
         ArrayList<JSONObject> jsonArray = new ArrayList<>();
         while (iter.hasNext()) {
@@ -891,7 +877,7 @@ public class lotteryUtils {
         }
         return objs;
     }
-
+// ---------------------------------------------------------------- 路珠系列开始
     /**
      * @Description: 返回单双大小路珠列表JsonObject
      * @Param: [list]
@@ -932,28 +918,16 @@ public class lotteryUtils {
     public static JSONObject getDTRoadBead(List<ExLotteryTicket> list) {
         int bollNum = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(0).getDraw_code())).size();
         int[][] ints = new int[bollNum][list.size()];
-        int type = list.get(0).getLot_type();
+        //int type = list.get(0).getLot_type();
         for (int i = 0; i < bollNum; i++) {
             for (int j = 0; j < list.size(); j++) {
                 ints[i][j] = DragonTiger(lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())).toArray(new Integer[bollNum])[i];
             }
         }
-
-        for (int[] in :
-                ints) {
-            for (int i :
-                    in) {
-                System.out.print(i + ",");
-            }
-            System.out.println();
-        }
-
         ArrayList DS = new ArrayList(); //龙虎
         for (int i = 0; i < bollNum; i++) {
             int[] DSs = ints[i];
-            System.out.println(moreArr(DS_Filter(DSs, type)));
-            DS.add(moreArr(DS_Filter(DSs, type)));
-            //System.out.println(DS.get(i));
+            DS.add(moreArr(DSs));
         }
         JSONObject object = new JSONObject();
         object.put("DragonTiger", DS);
@@ -1025,7 +999,7 @@ public class lotteryUtils {
                     int[] temp = new int[size];
                     for (int j = 0; j < size; j++) {
                         ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
-                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        temp[j] = arrayList.contains(i) ? 0 : 1;
                         if (j == size - 1) {
                             result.add(moreArr(temp));
                         }
@@ -1037,7 +1011,7 @@ public class lotteryUtils {
                     int[] temp = new int[size];
                     for (int j = 0; j < size; j++) {
                         ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
-                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        temp[j] = arrayList.contains(i) ? 0 : 1;
                         if (j == size - 1) {
                             result.add(moreArr(temp));
                         }
@@ -1049,7 +1023,7 @@ public class lotteryUtils {
                     int[] temp = new int[size];
                     for (int j = 0; j < size; j++) {
                         ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
-                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        temp[j] = arrayList.contains(i) ? 0 : 1;
                         if (j == size - 1) {
                             result.add(moreArr(temp));
                         }
@@ -1061,7 +1035,7 @@ public class lotteryUtils {
                     int[] temp = new int[size];
                     for (int j = 0; j < size; j++) {
                         ArrayList arrayList = new ArrayList(Arrays.asList(ArrayUtils.toObject(ticketCode.get(j))));
-                        temp[j] = arrayList.contains(i) ? 1 : 0;
+                        temp[j] = arrayList.contains(i) ? 0 : 1;
                         if (j == size - 1) {
                             result.add(moreArr(temp));
                         }
@@ -1082,10 +1056,7 @@ public class lotteryUtils {
         for (int i = 0; i < num; i++) {
             int[] temp = new int[size];
             for (int j = 0; j < size; j++) {
-                //System.out.println(lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code()));
                 temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
-                //System.out.println(i1+"  "+j);
-
             }
             result.add(moreArr(ESWN_Filter(temp)));
         }
@@ -1142,11 +1113,30 @@ public class lotteryUtils {
     }
 
 
+    //号码前后路珠
+    public static List BARoadBead(List<ExLotteryTicket> list){
+        int size = list.size();
+        List<int[]> ticketCode = new ArrayList<>();
+        for (ExLotteryTicket t :
+                list) {
+            ticketCode.add(BA_Filter(lotteryCodeAdapter.toCalculate(t.getDraw_code())));
+        }
+        List result = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            int[] newInt = new int[size];
+            for (int j = 0; j < size; j++) {
+                newInt[j] = ticketCode.get(j)[i];
+            }
+            result.add(moreArr(newInt));
+        }
+        return result;
+    }
+
+
     //LineAnalysis 路珠分析
     public static List RoadBeadAnalysis(List<ExLotteryTicket> list) {
         int size = list.size();
         int type = list.get(0).getLot_type();
-        List<List> result = new ArrayList<>();
         List<int[]> ticketCode = new ArrayList<>();
         for (ExLotteryTicket t :
                 list) {
@@ -1329,6 +1319,7 @@ public class lotteryUtils {
         return null;
     }
 
+// ---------------------------------------------------------------- 路珠系列结束
 
     //东南西北过滤器
     private static int[] ESWN_Filter(int[] i) {
@@ -1424,6 +1415,7 @@ public class lotteryUtils {
         return i;
     }
 
+    //路珠分组组件
     private static List<List<Integer>> moreArr(int[] args) {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> list = new ArrayList();
@@ -1511,6 +1503,17 @@ public class lotteryUtils {
         return i;
     }
 
+    //号码前后过滤器(传入每期号码数组)
+    private static int[] BA_Filter(int[] code){
+       int[] temp = new int[code.length];
+        List list = Arrays.asList(ArrayUtils.toObject(code));
+        for (int i = 1; i < code.length+1 ; i++) {
+            temp[i-1] = (list.indexOf(i)+1) < 6 ? 0:1;
+        }
+        return temp;
+    }
+
+
     public static Long getThisWeekDate(int mode) {
         DateTime now = DateTime.now();
         switch (mode) {
@@ -1528,7 +1531,6 @@ public class lotteryUtils {
                 now = now.withDayOfWeek(6).withHourOfDay(21).withMinuteOfHour(30).withSecondOfMinute(0);
                 break;
         }
-
 
         return now.getMillis();
     }

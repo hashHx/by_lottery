@@ -51,7 +51,7 @@ public class ticketGen {
         }
         if (ticket.getLot_code().equals("10057")) {
 
-            if (String.valueOf(ticket.getCurrentCount()).endsWith("49")) {
+            if (String.valueOf(ticket.getDraw_issue()).endsWith("49")) {
                 data.replace("drawIssue", "");
                 data.replace("nextDrawTime", String.valueOf(time + 32400000L));
             }
