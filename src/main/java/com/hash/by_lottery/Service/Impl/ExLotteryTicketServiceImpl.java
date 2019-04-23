@@ -58,6 +58,11 @@ public class ExLotteryTicketServiceImpl implements ExLotteryTicketService {
     }
 
     @Override
+    public List<ExLotteryTicket> getTicketListWithLimit(String code, int limit) {
+        return dao.getTicketListLimit(code,limit);
+    }
+
+    @Override
     public List<ExLotteryTicket> getTicketListWithTime(String code, String time) {
         return dao.getTicketInfoListWithTime(code, time);
     }

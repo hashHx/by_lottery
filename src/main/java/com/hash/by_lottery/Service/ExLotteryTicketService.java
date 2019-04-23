@@ -22,6 +22,8 @@ public interface ExLotteryTicketService {
 
     List<ExLotteryTicket> getTicketList(String code);
 
+    List<ExLotteryTicket> getTicketListWithLimit(String code, int limit);
+
     List<ExLotteryTicket> getTicketListWithTime(String code,String time);
 
     List<JSONObject> getLimitTicketList(String code, int limit);

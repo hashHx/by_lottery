@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 
 /**
@@ -259,7 +260,7 @@ public class lotteryUtils {
     public static int[] tail_BS_list(int[] code) {
         int[] temp = new int[code.length];
         for (int i = 0; i < code.length; i++) {
-            temp[i] = code[i] < 5 ? 1 : 0;
+            temp[i] = (code[i] % 10) < 5 ? 1 : 0;
         }
         return temp;
     }
@@ -878,6 +879,7 @@ public class lotteryUtils {
         return objs;
     }
 // ---------------------------------------------------------------- 路珠系列开始
+
     /**
      * @Description: 返回单双大小路珠列表JsonObject
      * @Param: [list]
@@ -1107,14 +1109,14 @@ public class lotteryUtils {
             for (int j = 0; j < size; j++) {
                 temp[j] = lotteryCodeAdapter.toCalculate(list.get(j).getDraw_code())[i];
             }
-            result.add(moreArr(DS_Filter(tail_BS_list(temp), type)));
+            result.add(moreArr((tail_BS_list(temp))));
         }
         return result;
     }
 
 
     //号码前后路珠
-    public static List BARoadBead(List<ExLotteryTicket> list){
+    public static List BARoadBead(List<ExLotteryTicket> list) {
         int size = list.size();
         List<int[]> ticketCode = new ArrayList<>();
         for (ExLotteryTicket t :
@@ -1321,6 +1323,49 @@ public class lotteryUtils {
 
 // ---------------------------------------------------------------- 路珠系列结束
 
+
+// ---------------------------------------------------------------- 走势系列开始
+
+    //号码走势 pk10
+    public static List NumberTrend(List<ExLotteryTicket> list) {
+        int size = list.size();
+        List<int[]> ticketCode = new ArrayList<>();
+        List<String> issueCode = new ArrayList<>();
+        for (ExLotteryTicket t :
+                list) {
+            ticketCode.add(lotteryCodeAdapter.toCalculate(t.getDraw_code()));
+            issueCode.add(t.getDraw_issue());
+        }
+        List numList = new ArrayList();
+        for (int index = 1; index < 11; index++) {
+            List numListIn = new ArrayList();
+            List numIn = new ArrayList();
+            for (int j = 1; j < 11; j++) {
+                Integer[] numInteger = new Integer[ticketCode.size()];
+                Integer count = 1;
+                for (int i = ticketCode.size() - 1; i >= 0; i--) {
+                    if (ticketCode.get(i)[index - 1] == j) {
+                        numInteger[i] = index;
+                        count = 1;
+                    } else {
+                        numInteger[i] = count;
+                        count++;
+                    }
+                }
+                numListIn.add(numInteger);
+            }
+            for (int[] ints:
+                 ticketCode) {
+                numIn.add(ints[index-1]);
+            }
+            numListIn.add(0,issueCode);
+            numListIn.add(1,numIn);
+            numList.add(numListIn);
+        }
+
+        return numList;
+    }
+
     //东南西北过滤器
     private static int[] ESWN_Filter(int[] i) {
         int[] ints = new int[i.length];
@@ -1448,6 +1493,7 @@ public class lotteryUtils {
         return pastDaysList;
     }
 
+
     /**
      * 获取过去第几天的日期
      *
@@ -1504,11 +1550,11 @@ public class lotteryUtils {
     }
 
     //号码前后过滤器(传入每期号码数组)
-    private static int[] BA_Filter(int[] code){
-       int[] temp = new int[code.length];
+    private static int[] BA_Filter(int[] code) {
+        int[] temp = new int[code.length];
         List list = Arrays.asList(ArrayUtils.toObject(code));
-        for (int i = 1; i < code.length+1 ; i++) {
-            temp[i-1] = (list.indexOf(i)+1) < 6 ? 0:1;
+        for (int i = 1; i < code.length + 1; i++) {
+            temp[i - 1] = (list.indexOf(i) + 1) < 6 ? 0 : 1;
         }
         return temp;
     }

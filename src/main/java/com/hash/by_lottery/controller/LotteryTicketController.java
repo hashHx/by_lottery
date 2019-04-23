@@ -429,6 +429,7 @@ public class LotteryTicketController {
         if (list != null) {
             List result = lotteryUtils.tailRoadBead(list);
             return result;
+
         }
         return null;
     }
@@ -450,6 +451,17 @@ public class LotteryTicketController {
         ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketList(lotCode);
         if (list != null) {
             List result = lotteryUtils.RoadBeadAnalysis(list);
+            return result;
+        }
+        return null;
+    }
+
+    //号码走势 NumberTrend
+    @RequestMapping(value = "/lottery/TicketInfoList/{lotCode}/NumberTrend", method = RequestMethod.GET)
+    public List<List> NumberTrend(@PathVariable("lotCode") String lotCode) {
+        ArrayList<ExLotteryTicket> list = (ArrayList<ExLotteryTicket>) service_ex.getTicketListWithLimit(lotCode,132);
+        if (list != null) {
+            List result = lotteryUtils.NumberTrend(list);
             return result;
         }
         return null;
